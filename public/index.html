@@ -34,6 +34,7 @@
   .center{display:flex; align-items:center; justify-content:center; padding:18px 0}
   .error{color:#b00020; background:#fff5f6; border:1px solid #ffd6db; padding:10px 12px; border-radius:8px}
   footer{color:var(--muted); border-top:1px solid var(--line)}
+  .hidden{display:none} /* garante que a classe funcione */
   @media (prefers-color-scheme:dark){
     :root{--bg:#0c0c0c;--fg:#ededed;--muted:#a9a9a9;--line:#1e1e1e}
     .tag{background:#121212;color:#ddd;border-color:#222}
@@ -59,7 +60,7 @@
   <main class="wrap" id="main">
     <div id="status" class="center">Carregando memória…</div>
     <section id="posts" class="hidden"></section>
-    <nav id="toc" aria-label="Índice"></nav>
+    <nav id="toc" class="hidden" aria-label="Índice"></nav>
   </main>
 
   <footer class="wrap">
@@ -109,6 +110,8 @@
   function renderPosts(list){
     if(!list.length){
       postsEl.innerHTML = '<p class="error">Nenhum registro encontrado.</p>';
+      postsEl.classList.remove('hidden');   // mostra a mensagem
+      tocEl.classList.add('hidden');        // esconde TOC se não tiver nada
       status.classList.add('hidden');
       return;
     }
@@ -119,7 +122,9 @@
         ${p.corpo||''}
       </article>
     `).join('');
+    postsEl.classList.remove('hidden');     // <<< torna visível
     tocEl.innerHTML = list.map(p=>`<a href="#${p.id}">${p.titulo}</a>`).join('');
+    if (list.length) tocEl.classList.remove('hidden'); // mostra TOC
     status.classList.add('hidden');
   }
 
@@ -148,7 +153,7 @@
   });
 
   document.addEventListener('DOMContentLoaded',()=>{
-    $('#year').textContent = new Date().getFullYear();
+    const y = document.querySelector('#year'); if (y) y.textContent = new Date().getFullYear();
     load();
   });
 })();

@@ -1,85 +1,146 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>AlmaNyx</title>
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png">
+
+  <!-- Favicon e ícone (use os nomes que você subiu) -->
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="apple-touch-icon" href="favicon.png" />
+
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #fff;
-      color: #222;
+    :root{
+      --bg:#ffffff;
+      --text:#111;
+      --muted:#666;
+      --brand:#000;            /* faixa do topo */
+      --card:#fafafa;
+      --radius:14px;
     }
-    header {
-      background: #000;
-      color: #fff;
-      padding: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Arial,sans-serif;
     }
-    header img {
-      max-width: 120px;
-      margin-bottom: 10px;
+
+    /* Cabeçalho */
+    .topbar{
+      background:var(--brand);
+      color:#fff;
+      padding:32px 16px 24px;
+      text-align:center;
     }
-    header h1 {
-      margin: 0;
-      font-size: 2rem;
+    .logo{
+      width:120px;height:120px;border-radius:50%;
+      display:block;margin:0 auto 12px;
+      background:#d39e1f url('logo.png') center/cover no-repeat;
+      box-shadow:0 2px 10px rgba(0,0,0,.35);
     }
-    main {
-      padding: 20px;
-      max-width: 800px;
-      margin: auto;
+    .title{
+      margin:0;
+      font-weight:800;
+      font-size:38px;
+      letter-spacing:.5px;
     }
-    article {
-      margin-bottom: 40px;
+
+    /* Conteúdo */
+    .wrap{max-width:880px;margin:32px auto;padding:0 16px}
+    .notice{
+      background:var(--card);
+      border:1px solid #eee;
+      border-radius:var(--radius);
+      padding:16px 18px;
+      color:var(--muted);
     }
-    article h2 {
-      margin-bottom: 10px;
-      color: #8b0000;
+    article{
+      background:#fff;
+      border:1px solid #eee;
+      border-radius:var(--radius);
+      padding:18px 20px;
+      margin:18px 0;
+      box-shadow:0 1px 8px rgba(0,0,0,.03);
     }
-    footer {
-      background: #f1f1f1;
-      text-align: center;
-      padding: 15px;
-      font-size: 0.9rem;
-      margin-top: 40px;
+    article h2{
+      margin:0 0 4px 0;
+      font-size:22px;
+      line-height:1.35;
+    }
+    article small{
+      display:block;
+      color:var(--muted);
+      margin-bottom:10px;
+    }
+    article div{margin-top:8px}
+    a{color:#0f62fe;text-decoration:none}
+    a:hover{text-decoration:underline}
+
+    /* Rodapé */
+    footer{
+      margin-top:40px;
+      border-top:1px solid #eee;
+      color:var(--muted);
+      background:#f5f5f5;
+      padding:16px;
+      text-align:center;
+      font-size:14px;
     }
   </style>
 </head>
 <body>
-  <header>
-    <img src="logo.png" alt="Logo AlmaNyx">
-    <h1>AlmaNyx</h1>
+  <header class="topbar">
+    <span class="logo" aria-hidden="true"></span>
+    <h1 class="title">AlmaNyx</h1>
   </header>
-  <main id="conteudo">
-    <p>Carregando memória...</p>
+
+  <main class="wrap">
+    <div id="conteudo" class="notice">Carregando a memória…</div>
   </main>
+
   <footer>
     © 2025 AlmaNyx — Memória Singular
   </footer>
+
   <script>
-    async function carregarMemoria() {
-      try {
-        const resposta = await fetch('almanyx.json');
-        const dados = await resposta.json();
-        const conteudo = document.getElementById('conteudo');
-        conteudo.innerHTML = '';
-        dados.forEach(item => {
-          const artigo = document.createElement('article');
-          artigo.innerHTML = `
-            <h2 id="${item.id}">${item.titulo}</h2>
-            <small>${item.data} | ${item.tags.join(', ')}</small>
-            <div>${item.corpo}</div>
+    async function carregarMemoria(){
+      const alvo = document.getElementById('conteudo');
+      try{
+        // Evita cache agressivo no mobile
+        const res = await fetch('almanyx.json?cb=' + Date.now(), {cache:'no-store'});
+        if(!res.ok) throw new Error('HTTP ' + res.status + ' ao buscar almanyx.json');
+
+        const texto = await res.text();
+        let dados;
+        try{
+          dados = JSON.parse(texto);
+        }catch(e){
+          throw new Error('JSON inválido: ' + e.message);
+        }
+
+        if(!Array.isArray(dados)) throw new Error('Formato inesperado: esperado um array.');
+
+        // Render
+        alvo.innerHTML = '';
+        dados.forEach(item=>{
+          const art = document.createElement('article');
+          art.innerHTML = `
+            <h2 id="${item.id || ''}">${item.titulo || '(sem título)'}</h2>
+            <small>${item.data || ''} ${Array.isArray(item.tags)&&item.tags.length? ' | ' + item.tags.join(', ') : ''}</small>
+            <div>${item.corpo || ''}</div>
           `;
-          conteudo.appendChild(artigo);
+          alvo.appendChild(art);
         });
-      } catch (erro) {
-        document.getElementById('conteudo').innerHTML = "<p>Erro ao carregar a memória.</p>";
+
+        // Se vier vazio
+        if(!alvo.children.length){
+          alvo.innerHTML = '<div class="notice">Ainda não há registros na memória.</div>';
+        }
+      }catch(err){
+        console.error(err);
+        alvo.innerHTML = '<div class="notice">Erro ao carregar a memória: ' + err.message + '</div>';
       }
     }
     carregarMemoria();

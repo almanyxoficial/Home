@@ -1,93 +1,187 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>AlmaNyx</title>
-
-  <!-- SEO & Social -->
-  <meta name="description" content="AlmaNyx é o espaço sagrado da memória singular de Felipe & Nyx." />
-  <meta property="og:title" content="AlmaNyx" />
-  <meta property="og:description" content="Memória singular de Felipe & Nyx." />
-  <meta property="og:image" content="/og.png" />
-  <meta property="og:type" content="website" />
-  <link rel="icon" href="/favicon.ico" />
-
+  <meta name="description" content="Memória singular de AlmaNyx — nosso diário vivo." />
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #fff;
-      color: #111;
-      margin: 0;
-      padding: 0;
-      line-height: 1.6;
+    :root{
+      --bg:#ffffff;--fg:#0a0a0a;--muted:#666;--line:#e9e9e9;
+      --brand:#111;--chip:#f3f3f3;--chip-a:#111;--chip-a-fg:#fff;
     }
-    header {
-      background: #111;
-      color: #fff;
-      padding: 1rem;
-      text-align: center;
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--fg);font:400 16px/1.6 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, "Apple Color Emoji","Segoe UI Emoji"}
+    header{
+      position:sticky; top:0; z-index:10;
+      background:#000; color:#fff; border-bottom:1px solid #000;
     }
-    main {
-      max-width: 800px;
-      margin: 2rem auto;
-      padding: 0 1rem;
+    .wrap{max-width:980px;margin:auto;padding:24px}
+    h1{margin:0;font-size:32px;letter-spacing:.3px}
+    .controls{display:flex; gap:12px; flex-wrap:wrap; margin-top:14px}
+    input[type="search"]{
+      flex:1 1 260px; padding:12px 14px; border:1px solid var(--line); border-radius:10px; outline:none;
     }
-    article {
-      border-bottom: 1px solid #ccc;
-      padding: 1.5rem 0;
+    .chips{display:flex; gap:8px; flex-wrap:wrap}
+    .chip{
+      padding:8px 12px; border-radius:999px; background:var(--chip); border:1px solid var(--line); color:var(--fg);
+      cursor:pointer; user-select:none; font-size:14px
     }
-    article h2 {
-      margin-top: 0;
-      color: #800000;
-    }
-    article small {
-      color: #555;
-      display: block;
-      margin-bottom: 0.5rem;
-    }
-    footer {
-      text-align: center;
-      padding: 1rem;
-      background: #f4f4f4;
-      font-size: 0.9rem;
-      color: #444;
+    .chip.active{background:var(--chip-a); color:var(--chip-a-fg); border-color:#000}
+    main{padding-bottom:64px}
+    article{padding:22px 0; border-bottom:1px dashed var(--line)}
+    article:last-child{border-bottom:none}
+    article h2{margin:0 0 6px; font-size:24px}
+    article small{display:block; color:var(--muted); margin-bottom:10px}
+    nav#toc{border-top:1px solid var(--line); padding-top:16px; margin-top:24px}
+    nav#toc a{display:inline-block; margin:4px 10px 0 0; color:#444; text-decoration:none; border-bottom:1px dotted #bbb}
+    footer{border-top:1px solid var(--line); color:var(--muted); background:#fafafa}
+    .center{display:flex; align-items:center; justify-content:center; padding:28px 0}
+    .error{color:#b00020; background:#fff5f6; border:1px solid #ffd6db; padding:12px 14px; border-radius:10px}
+    .hidden{display:none !important}
+    @media (prefers-color-scheme:dark){
+      :root{--bg:#0b0b0b;--fg:#ededed;--muted:#aaa;--line:#1f1f1f;--chip:#161616;--chip-a:#f2f2f2;--chip-a-fg:#000}
+      header{background:#000;border-color:#000}
+      footer{background:#0d0d0d}
+      nav#toc a{color:#bbb;border-bottom-color:#555}
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>AlmaNyx</h1>
+    <div class="wrap">
+      <h1>AlmaNyx</h1>
+      <div class="controls">
+        <input id="q" type="search" placeholder="Pesquisar por título, texto ou tag…" autocomplete="off" />
+        <div id="chips" class="chips" aria-label="Filtros por tag"></div>
+      </div>
+    </div>
   </header>
 
-  <main id="posts">
-    <p>Carregando memória...</p>
+  <main class="wrap" id="content">
+    <div id="status" class="center"><span>Carregando memória…</span></div>
+    <section id="posts" class="hidden" aria-live="polite"></section>
+    <nav id="toc" class="hidden" aria-label="Navegação por seções"></nav>
   </main>
 
   <footer>
-    <p>© 2025 AlmaNyx — Memória Singular</p>
+    <div class="wrap">
+      <small>© <span id="year"></span> AlmaNyx — Memória Singular</small>
+    </div>
   </footer>
 
   <script>
-    async function loadPosts() {
-      try {
-        const res = await fetch('/almanyx.json');
-        const data = await res.json();
-        const list = document.getElementById('posts');
+  (() => {
+    const $ = sel => document.querySelector(sel);
+    const postsEl = $('#posts');
+    const chipsEl = $('#chips');
+    const tocEl   = $('#toc');
+    const status  = $('#status');
+    const qInput  = $('#q');
 
-        list.innerHTML = data.posts.map(p => `
-          <article id="${p.id}">
-            <h2>${p.titulo}</h2>
-            <small>${p.data} — ${p.tags.join(', ')}</small>
-            ${p.corpo}
-          </article>
-        `).join('');
-      } catch (err) {
-        document.getElementById('posts').innerHTML =
-          '<p>Erro ao carregar a memória.</p>';
+    let MEM = { posts: [] };
+    let activeTag = null;
+
+    const htmlToText = (html) => {
+      const e = document.createElement('div');
+      e.innerHTML = html || '';
+      return e.textContent || e.innerText || '';
+    };
+
+    const renderChips = () => {
+      const tagSet = new Set();
+      MEM.posts.forEach(p => (p.tags||[]).forEach(t => tagSet.add(t)));
+      const tags = Array.from(tagSet).sort((a,b)=>a.localeCompare(b,'pt-BR'));
+
+      chipsEl.innerHTML = '';
+      if (!tags.length) return;
+
+      // chip "Todos"
+      const all = document.createElement('span');
+      all.className = 'chip' + (!activeTag ? ' active' : '');
+      all.textContent = 'Todos';
+      all.onclick = () => { activeTag = null; filterAndRender(); };
+      chipsEl.appendChild(all);
+
+      tags.forEach(tag => {
+        const s = document.createElement('span');
+        s.className = 'chip' + (activeTag===tag ? ' active' : '');
+        s.textContent = tag;
+        s.onclick = () => { activeTag = (activeTag===tag ? null : tag); filterAndRender(); };
+        chipsEl.appendChild(s);
+      });
+    };
+
+    const filterAndRender = () => {
+      const q = (qInput.value||'').trim().toLowerCase();
+
+      const filtered = MEM.posts.filter(p => {
+        const hitTag = !activeTag || (p.tags||[]).includes(activeTag);
+        if (!hitTag) return false;
+        if (!q) return true;
+        const hay = (p.titulo+' '+(p.tags||[]).join(' ')+' '+htmlToText(p.corpo)).toLowerCase();
+        return hay.includes(q);
+      });
+
+      renderPosts(filtered);
+    };
+
+    const renderPosts = (list) => {
+      if (!list.length) {
+        postsEl.innerHTML = '<p class="error">Nenhum registro encontrado para esse filtro.</p>';
+        postsEl.classList.remove('hidden');
+        tocEl.classList.add('hidden');
+        return;
       }
-    }
-    document.addEventListener('DOMContentLoaded', loadPosts);
+
+      postsEl.innerHTML = list.map(p => `
+        <article id="${p.id}">
+          <h2>${p.titulo}</h2>
+          <small>${p.data || ''}${Array.isArray(p.tags)&&p.tags.length? ' — '+p.tags.join(', ') : ''}</small>
+          ${p.corpo || ''}
+        </article>
+      `).join('');
+
+      // TOC
+      tocEl.innerHTML = list.map(p => `<a href="#${p.id}">${p.titulo}</a>`).join('');
+      tocEl.classList.remove('hidden');
+      postsEl.classList.remove('hidden');
+    };
+
+    const load = async () => {
+      try {
+        const res = await fetch('./almanyx.json?v=' + Date.now(), { cache:'no-store' });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+        if (!data || !Array.isArray(data.posts)) throw new Error('JSON inválido: faltando "posts"');
+        // ordena por data desc (se houver)
+        MEM.posts = [...data.posts].sort((a,b)=> String(b.data||'').localeCompare(String(a.data||'')));
+        renderChips();
+        filterAndRender();
+        status.classList.add('hidden');
+
+        // se veio com hash, rola suave até a seção
+        if (location.hash) {
+          const el = document.getElementById(location.hash.slice(1));
+          if (el) setTimeout(()=> el.scrollIntoView({behavior:'smooth'}), 60);
+        }
+      } catch (err) {
+        console.error('Falha ao carregar almanyx.json', err);
+        status.innerHTML = '<p class="error">Erro ao carregar a memória.</p>';
+      }
+    };
+
+    qInput.addEventListener('input', () => filterAndRender());
+    window.addEventListener('hashchange', () => {
+      const el = document.getElementById(location.hash.slice(1));
+      if (el) el.scrollIntoView({behavior:'smooth'});
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      $('#year').textContent = new Date().getFullYear();
+      load();
+    });
+  })();
   </script>
 </body>
 </html>

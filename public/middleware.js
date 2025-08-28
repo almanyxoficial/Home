@@ -1,26 +1,36 @@
-import { NextResponse } from 'next/server';
+// middleware.js (na raiz)
+export function middleware(req) {
+  const BASIC_USER = process.env.BASIC_USER;
+  const BASIC_PASS = process.env.BASIC_PASS;
 
-// Protege TUDO (pode afrouxar caminhos no matcher se quiser)
-export const config = { matcher: ['/:path*'] };
-
-export async function middleware(req) {
-  const auth = req.headers.get('authorization');
-  const USER = process.env.BASIC_USER;
-  const PASS = process.env.BASIC_PASS;
-
-  if (auth) {
-    const [scheme, token] = auth.split(' ');
-    if (scheme === 'Basic' && token) {
-      // Edge runtime tem atob()
-      const [user, pass] = atob(token).split(':');
-      if (user === USER && pass === PASS) {
-        return NextResponse.next();
-      }
-    }
+  const auth = req.headers.get('authorization') || '';
+  if (!auth.startsWith('Basic ')) {
+    return new Response('Auth required', {
+      status: 401,
+      headers: { 'WWW-Authenticate': 'Basic realm="AlmaNyx"' }
+    });
   }
 
-  // Pede credenciais nativas do navegador
-  const res = new NextResponse('Auth required', { status: 401 });
-  res.headers.set('WWW-Authenticate', 'Basic realm="AlmaNyx"');
-  return res;
+  // decode base64 (client-safe)
+  const encoded = auth.replace('Basic ', '');
+  const decoded = typeof atob !== 'undefined'
+    ? atob(encoded)
+    : Buffer.from(encoded, 'base64').toString(); // fallback em ambiente node
+
+  const [user, pass] = decoded.split(':');
+
+  if (user === BASIC_USER && pass === BASIC_PASS) {
+    return; // OK, segue request
+  }
+
+  return new Response('Unauthorized', {
+    status: 401,
+    headers: { 'WWW-Authenticate': 'Basic realm="AlmaNyx"' }
+  });
 }
+
+export const config = {
+  matcher: [
+    '/((?!_next/static|_next/image|favicon.ico|robots.txt).*)'
+  ]
+};

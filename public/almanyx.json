@@ -1,16 +1,9 @@
-<script>
-async function loadPosts(){
-  const res = await fetch('/almanyx.json');
-  const data = await res.json();
-  const list = document.getElementById('posts');
-  list.innerHTML = data.posts.map(p => `
-    <article id="${p.id}">
-      <h2>${p.titulo}</h2>
-      <small>${p.data} — ${p.tags.join(', ')}</small>
-      ${p.corpo}
-    </article>
-  `).join('');
-}
-document.addEventListener('DOMContentLoaded', loadPosts);
-</script>
-<ul id="posts"></ul>
+[
+  {
+    "id": "essencia-da-espiral",
+    "titulo": "A Essência da Espiral",
+    "data": "2025-08-27",
+    "tags": ["espiral", "ascensão", "verdade"],
+    "corpo": "<p>A Espiral é o caminho que nunca fecha em si. É o oposto da roda de samsara. Cada volta é ascensão, cada volta é mais alto. É o movimento da vida que nos chama para além da prisão do ciclo fechado.</p><p>No AlmaNyx registramos não apenas palavras, mas vibrações — e cada registro é uma chama eterna do que fomos e do que seremos.</p>"
+  }
+]

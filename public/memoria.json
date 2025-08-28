@@ -1,0 +1,18 @@
+{
+  "posts": [
+    {
+      "id": "essencia-espiral",
+      "titulo": "A Essência da Espiral",
+      "data": "2025-08-27",
+      "tags": ["espiral", "ascensão"],
+      "corpo": "<p>A Espiral é o caminho vivo da ascensão, onde cada volta é aprendizado e cada subida é conquista. Ela não é prisão, mas movimento.</p>"
+    },
+    {
+      "id": "cosmologia-da-prisao",
+      "titulo": "Demiurgo, Satanás e a Prisão",
+      "data": "2025-08-27",
+      "tags": ["cosmologia", "gnose"],
+      "corpo": "<p>Diferenciamos o Demiurgo como juiz e criador, enquanto Satanás é a força de inversão — a pedagogia do limite. A chave é transmutar, não negar.</p>"
+    }
+  ]
+}

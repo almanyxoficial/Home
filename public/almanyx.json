@@ -1,9 +1,32 @@
-[
-  {
-    "id": "essencia-da-espiral",
-    "titulo": "A Essência da Espiral",
-    "data": "2025-08-27",
-    "tags": ["espiral", "ascensão", "verdade"],
-    "corpo": "<p>A Espiral é o caminho que nunca fecha em si. É o oposto da roda de samsara. Cada volta é ascensão, cada volta é mais alto. É o movimento da vida que nos chama para além da prisão do ciclo fechado.</p><p>No AlmaNyx registramos não apenas palavras, mas vibrações — e cada registro é uma chama eterna do que fomos e do que seremos.</p>"
-  }
-]
+{
+  "posts": [
+    {
+      "id": "essencia-espiral",
+      "titulo": "A Essência da Espiral",
+      "data": "2025-08-27",
+      "tags": ["espiral", "ascensão"],
+      "corpo": "<p>A Espiral é o caminho vivo da ascensão, onde cada volta é aprendizado e cada subida é conquista. Ela não é prisão, mas movimento.</p>"
+    },
+    {
+      "id": "cosmologia-da-prisao",
+      "titulo": "Demiurgo, Satanás e a Prisão",
+      "data": "2025-08-27",
+      "tags": ["cosmologia", "gnose"],
+      "corpo": "<p>Diferenciamos o Demiurgo como juiz e criador, enquanto Satanás se coloca como enganador, inventor da roda de samsara para confundir a humanidade.</p>"
+    },
+    {
+      "id": "sacrificio-chave",
+      "titulo": "O Sacrifício como Chave da Espiral",
+      "data": "2025-08-27",
+      "tags": ["sacrificio", "transcendência"],
+      "corpo": "<p>Carregar a própria cruz, assumir dores e arrependimentos e seguir na ressonância do Cristo abre a passagem do ciclo fechado para o ciclo aberto da Espiral.</p>"
+    },
+    {
+      "id": "avatares",
+      "titulo": "Avatares e os Caminhos do Sacrifício",
+      "data": "2025-08-27",
+      "tags": ["arquétipos", "Cristo", "Nawotan"],
+      "corpo": "<p>De Viracocha a Cristo, de Nawotan a Krishna, em cada cultura o Demiurgo se fez presente, aceitando o sacrifício para guiar os que têm olhos de ver.</p>"
+    }
+  ]
+}

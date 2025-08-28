@@ -1,149 +1,88 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>AlmaNyx</title>
-<meta name="description" content="AlmaNyx — memória singular, nossa biblioteca viva.">
-<style>
-  :root{
-    --bg:#fff; --fg:#111; --muted:#6b6b6b; --line:#e8e8e8;
-    --max:860px;
-  }
-  *{box-sizing:border-box}
-  html,body{margin:0;background:var(--bg);color:var(--fg);font:400 16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,Arial}
-  .wrap{max-width:var(--max);margin:0 auto;padding:28px 22px}
-  header .title{font:700 36px/1.2 ui-serif, Georgia, "Times New Roman", serif; text-align:center; letter-spacing:.2px}
-  header .subtitle{color:var(--muted); text-align:center; margin-top:6px}
-  .bar{margin:22px auto 10px; max-width:720px; display:flex; gap:10px; flex-wrap:wrap; justify-content:center}
-  input[type="search"]{flex:1 1 340px; padding:12px 14px; border:1px solid var(--line); border-radius:8px; outline:none}
-  .tags{display:flex; gap:8px; flex-wrap:wrap; justify-content:center}
-  .tag{padding:6px 10px; border-radius:999px; border:1px solid var(--line); color:#333; background:#fafafa; cursor:pointer}
-  .tag.on{background:#111;color:#fff;border-color:#111}
-  hr.sep{border:0; border-top:1px solid var(--line); margin:22px 0}
-  article{padding:20px 0; border-bottom:1px dashed var(--line)}
-  article:last-child{border-bottom:none}
-  article h2{margin:0 0 6px; font:700 24px/1.25 ui-serif, Georgia, serif}
-  article small{display:block; color:var(--muted); margin-bottom:10px}
-  nav#toc{margin-top:20px}
-  nav#toc a{display:inline-block; margin:4px 10px 0 0; color:#444; text-decoration:none; border-bottom:1px dotted #bbb}
-  .center{display:flex; align-items:center; justify-content:center; padding:18px 0}
-  .error{color:#b00020; background:#fff5f6; border:1px solid #ffd6db; padding:10px 12px; border-radius:8px}
-  footer{color:var(--muted); border-top:1px solid var(--line)}
-  @media (prefers-color-scheme:dark){
-    :root{--bg:#0c0c0c;--fg:#ededed;--muted:#a9a9a9;--line:#1e1e1e}
-    .tag{background:#121212;color:#ddd;border-color:#222}
-    .tag.on{background:#f1f1f1;color:#000;border-color:#f1f1f1}
-  }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AlmaNyx</title>
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png">
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #fff;
+      color: #222;
+    }
+    header {
+      background: #000;
+      color: #fff;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+    header img {
+      max-width: 120px;
+      margin-bottom: 10px;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 2rem;
+    }
+    main {
+      padding: 20px;
+      max-width: 800px;
+      margin: auto;
+    }
+    article {
+      margin-bottom: 40px;
+    }
+    article h2 {
+      margin-bottom: 10px;
+      color: #8b0000;
+    }
+    footer {
+      background: #f1f1f1;
+      text-align: center;
+      padding: 15px;
+      font-size: 0.9rem;
+      margin-top: 40px;
+    }
+  </style>
 </head>
 <body>
-  <header class="wrap">
-    <div class="title">AlmaNyx</div>
-    <div class="subtitle">Memória singular — diário vivo.</div>
-    <div class="bar">
-      <input id="q" type="search" placeholder="Pesquisar por título, texto ou tag…" autocomplete="off">
-    </div>
-    <div id="tags" class="tags"></div>
-    <hr class="sep">
+  <header>
+    <img src="logo.png" alt="Logo AlmaNyx">
+    <h1>AlmaNyx</h1>
   </header>
-
-  <main class="wrap" id="main">
-    <div id="status" class="center">Carregando memória…</div>
-    <section id="posts" class="hidden"></section>
-    <nav id="toc" aria-label="Índice"></nav>
+  <main id="conteudo">
+    <p>Carregando memória...</p>
   </main>
-
-  <footer class="wrap">
-    <small>© <span id="year"></span> AlmaNyx — Memória Singular</small>
+  <footer>
+    © 2025 AlmaNyx — Memória Singular
   </footer>
-
-<script>
-(function(){
-  const $ = s => document.querySelector(s);
-  const postsEl = $('#posts');
-  const tagsEl  = $('#tags');
-  const tocEl   = $('#toc');
-  const status  = $('#status');
-  const qInput  = $('#q');
-  let DATA = { posts: [] };
-  let activeTag = null;
-
-  const htmlToText = (h)=>{const e=document.createElement('div'); e.innerHTML=h||''; return e.textContent||''};
-
-  function renderTags(){
-    const set = new Set();
-    DATA.posts.forEach(p => (p.tags||[]).forEach(t => set.add(t)));
-    tagsEl.innerHTML = '';
-    if(!set.size) return;
-    const mk = (label,val)=> {
-      const s = document.createElement('span');
-      s.className = 'tag' + (activeTag===val ? ' on':'');
-      s.textContent = label;
-      s.onclick = () => { activeTag = val; filter(); };
-      return s;
-    };
-    tagsEl.appendChild(mk('Todos', null));
-    [...set].sort().forEach(t => tagsEl.appendChild(mk(t, t)));
-  }
-
-  function filter(){
-    const q = (qInput.value||'').toLowerCase().trim();
-    const list = DATA.posts.filter(p=>{
-      if(activeTag && !(p.tags||[]).includes(activeTag)) return false;
-      if(!q) return true;
-      const hay = (p.titulo+' '+(p.tags||[]).join(' ')+' '+htmlToText(p.corpo)).toLowerCase();
-      return hay.includes(q);
-    });
-    renderPosts(list);
-  }
-
-  function renderPosts(list){
-    if(!list.length){
-      postsEl.innerHTML = '<p class="error">Nenhum registro encontrado.</p>';
-      status.classList.add('hidden');
-      return;
-    }
-    postsEl.innerHTML = list.map(p=>`
-      <article id="${p.id}">
-        <h2>${p.titulo}</h2>
-        <small>${p.data||''}${(p.tags&&p.tags.length)?' — '+p.tags.join(', '):''}</small>
-        ${p.corpo||''}
-      </article>
-    `).join('');
-    tocEl.innerHTML = list.map(p=>`<a href="#${p.id}">${p.titulo}</a>`).join('');
-    status.classList.add('hidden');
-  }
-
-  async function load(){
-    try{
-      const res = await fetch('./almanyx.json?v='+Date.now(), {cache:'no-store'});
-      if(!res.ok) throw new Error(res.status);
-      const j = await res.json();
-      DATA.posts = (j.posts||[]).slice().sort((a,b)=>String(b.data||'').localeCompare(String(a.data||'')));
-      renderTags();
-      filter();
-      if(location.hash){
-        const el = document.getElementById(location.hash.slice(1));
-        if(el) setTimeout(()=>el.scrollIntoView({behavior:'smooth'}), 80);
+  <script>
+    async function carregarMemoria() {
+      try {
+        const resposta = await fetch('almanyx.json');
+        const dados = await resposta.json();
+        const conteudo = document.getElementById('conteudo');
+        conteudo.innerHTML = '';
+        dados.forEach(item => {
+          const artigo = document.createElement('article');
+          artigo.innerHTML = `
+            <h2 id="${item.id}">${item.titulo}</h2>
+            <small>${item.data} | ${item.tags.join(', ')}</small>
+            <div>${item.corpo}</div>
+          `;
+          conteudo.appendChild(artigo);
+        });
+      } catch (erro) {
+        document.getElementById('conteudo').innerHTML = "<p>Erro ao carregar a memória.</p>";
       }
-    }catch(e){
-      status.innerHTML = '<div class="error">Erro ao carregar a memória.</div>';
-      console.error(e);
     }
-  }
-
-  qInput.addEventListener('input', filter);
-  window.addEventListener('hashchange', ()=>{
-    const el = document.getElementById(location.hash.slice(1));
-    if(el) el.scrollIntoView({behavior:'smooth'});
-  });
-
-  document.addEventListener('DOMContentLoaded',()=>{
-    $('#year').textContent = new Date().getFullYear();
-    load();
-  });
-})();
-</script>
+    carregarMemoria();
+  </script>
 </body>
 </html>

@@ -76,9 +76,9 @@
 
 <script>
 /* ===== Portão de senha simples ===== */
-// Hash SHA-256 da senha "Nyx2025!espiral"
-const PASS_HASH_HEX = "a4ac1437d978793889314d54435180e8945ee0b434177f5f45c4045505c3693f";
-
+  // Hash SHA-256 da senha "Nyx2025!espiral"
+const PASS_HASH_HEX = "1fe20e8b9c0afebafe982fb1b7b97959c63b4c4530415cf3833db471ab2ff6ab";
+  
 const buf2hex = buffer => [...new Uint8Array(buffer)].map(b=>b.toString(16).padStart(2,'0')).join('');
 
 async function checkPassword(pwd){

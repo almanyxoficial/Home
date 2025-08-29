@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Teste Senha</title>
+</head>
+<body>
+<script>
+const buf2hex = buffer => [...new Uint8Array(buffer)].map(b=>b.toString(16).padStart(2,'0')).join('');
+
+async function sha256(txt){
+  const buf = new TextEncoder().encode(txt);
+  const hashBuf = await crypto.subtle.digest("SHA-256", buf);
+  return buf2hex(hashBuf);
+}
+
+(async ()=>{
+  const pwd = prompt("Digite a senha de teste:");
+  if(pwd){
+    const h = await sha256(pwd);
+    document.body.innerHTML = `<p>Senha digitada: <b>${pwd}</b></p><p>Hash gerado: <code>${h}</code></p>`;
+  } else {
+    document.body.innerHTML = "<p>Nenhuma senha digitada.</p>";
+  }
+})();
+</script>
+</body>
+</html>

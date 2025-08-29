@@ -16,10 +16,15 @@ export default function Home() {
   const [q, setQ] = useState('');
 
   useEffect(() => {
-    fetch('/memoria.json', { cache: 'no-store' })
-      .then(r => r.json())
-      .then(d => setPosts(Array.isArray(d.posts) ? d.posts : []))
-      .catch(() => setPosts([]));
+    (async () => {
+      try {
+        const r = await fetch('/memoria.json', { cache: 'no-store' });
+        const d = await r.json();
+        setPosts(Array.isArray(d.posts) ? d.posts : []);
+      } catch {
+        setPosts([]);
+      }
+    })();
   }, []);
 
   const filtered = useMemo(() => {

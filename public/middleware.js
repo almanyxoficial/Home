@@ -1,52 +1,41 @@
-// middleware.js
-import { NextResponse } from 'next/server'
-
-const decodeBase64 = (str) => {
-  // Edge runtime tem atob; Node nem sempre. Fallback seguro:
-  try { return atob(str) } catch { return Buffer.from(str, 'base64').toString() }
-}
+// middleware.js (na raiz do projeto)
 
 export function middleware(req) {
-  const BASIC_USER = process.env.BASIC_USER
-  const BASIC_PASS = process.env.BASIC_PASS
+  const BASIC_USER = process.env.BASIC_USER;
+  const BASIC_PASS = process.env.BASIC_PASS;
 
-  // Cabeçalho de auth enviado pelo navegador:
-  const auth = req.headers.get('authorization') || ''
+  // Pega o header de autenticação
+  const auth = req.headers.get("authorization");
 
-  // Sem header ou formato inesperado → pede credenciais
-  if (!auth.startsWith('Basic ')) {
-    return new Response('Auth required', {
+  // Se não tem header ou não começa com "Basic", pede login
+  if (!auth || !auth.startsWith("Basic ")) {
+    return new Response("Auth required", {
       status: 401,
       headers: {
-        'WWW-Authenticate': 'Basic realm="AlmaNyx"',
-        'Cache-Control': 'no-store',
+        "WWW-Authenticate": 'Basic realm="Protected"',
       },
-    })
+    });
   }
 
-  // Decodifica "Basic base64(user:pass)"
-  const encoded = auth.replace('Basic ', '')
-  const [user, pass] = decodeBase64(encoded).split(':')
+  // Decodifica o Base64
+  const encoded = auth.replace("Basic ", "");
+  const decoded =
+    typeof atob !== "undefined"
+      ? atob(encoded)
+      : Buffer.from(encoded, "base64").toString();
 
-  // Confere com as envs do Vercel
+  const [user, pass] = decoded.split(":");
+
+  // Confere usuário e senha
   if (user === BASIC_USER && pass === BASIC_PASS) {
-    return NextResponse.next()
+    return; // ok, segue request normal
   }
 
-  // Credenciais erradas
-  return new Response('Unauthorized', {
+  // Se falhar, retorna 401
+  return new Response("Unauthorized", {
     status: 401,
     headers: {
-      'WWW-Authenticate': 'Basic realm="AlmaNyx", charset="UTF-8"',
-      'Cache-Control': 'no-store',
+      "WWW-Authenticate": 'Basic realm="Protected"',
     },
-  })
-}
-
-// Evita rodar em assets estáticos/_next para não bloquear favicon/imagens
-export const config = {
-  matcher: [
-    // protege tudo, exceto assets:
-    '/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|.*\\.(png|jpg|jpeg|gif|svg|webp|ico)).*)',
-  ],
+  });
 }

@@ -16,12 +16,31 @@
     html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica,Arial}
     img{max-width:100%;display:block}
     a{color:inherit;text-decoration:none}
+    html{scroll-behavior:smooth}
 
-    /* Header */
-    header{background:#fff;border-bottom:1px solid var(--line)}
+    /* Topbar com menu */
+    .topbar{position:sticky;top:0;z-index:50;background:#ffffffcc;backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+    .topbar .row{max-width:var(--maxw);margin:0 auto;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.3px}
+    .menu-btn{display:inline-grid;place-items:center;width:40px;height:40px;border-radius:10px;border:1px solid var(--line);background:#fff;cursor:pointer}
+    .menu-btn .bars{width:18px;height:2px;background:#111;position:relative}
+    .menu-btn .bars:before,.menu-btn .bars:after{content:"";position:absolute;left:0;right:0;height:2px;background:#111}
+    .menu-btn .bars:before{top:-6px}.menu-btn .bars:after{top:6px}
+
+    /* Drawer */
+    .drawer{position:fixed;inset:0 auto 0 0;width:320px;max-width:85vw;background:#fff;border-right:1px solid var(--line);transform:translateX(-100%);transition:transform .25s ease;box-shadow:var(--shadow);display:flex;flex-direction:column}
+    .drawer.open{transform:translateX(0)}
+    .backdrop{position:fixed;inset:0;background:rgba(2,6,23,.4);opacity:0;pointer-events:none;transition:opacity .2s}
+    .backdrop.open{opacity:1;pointer-events:auto}
+    .drawer header{display:flex;align-items:center;justify-content:space-between;padding:14px;border-bottom:1px solid var(--line)}
+    .drawer a{padding:14px 16px;border-bottom:1px solid var(--line);color:var(--ink);text-decoration:none}
+    .drawer a:hover{background:#f8fafc}
+
+    /* Header visual (logo + banner) */
+    header.visual{background:#fff;border-bottom:1px solid var(--line)}
     .head{max-width:var(--maxw);margin:0 auto;padding:12px 16px;display:grid;gap:12px}
-    .brand{display:grid;place-items:center}
-    .brand img.logo{width:110px;height:110px;object-fit:cover;border-radius:50%;border:6px solid #fff;box-shadow:var(--shadow)}
+    .brand-center{display:grid;place-items:center}
+    .brand-center img.logo{width:110px;height:110px;object-fit:cover;border-radius:50%;border:6px solid #fff;box-shadow:var(--shadow)}
     .banner{border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
     .banner img{width:100%;height:220px;object-fit:cover}
     @media(min-width:900px){ .banner img{height:260px} }
@@ -31,12 +50,12 @@
     .titlebar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:10px}
     .count{padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:#fff;color:#0f172a;font-size:12px}
 
-    /* Grid de cards — 2 no mobile */
+    /* Grid — 2 cards no mobile */
     .grid{display:grid;gap:16px;grid-template-columns:repeat(2,1fr)}
     @media(min-width:720px){ .grid{grid-template-columns:repeat(3,1fr)} }
     @media(min-width:1024px){ .grid{grid-template-columns:repeat(4,1fr)} }
 
-    /* Card estilo polaroid simples */
+    /* Card */
     .card{background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:10px;display:grid;gap:10px}
     .thumb{width:100%;aspect-ratio:1/1;border-radius:8px;background:#eef6ff;display:grid;place-items:center;overflow:hidden}
     .thumb img{width:100%;height:100%;object-fit:cover}
@@ -45,57 +64,143 @@
     .price{font-weight:900;font-size:20px}
 
     /* Botão WhatsApp grande com logo */
-    .cta-whats{
-      display:inline-flex;align-items:center;gap:10px;
-      padding:12px 16px;border-radius:12px;border:1px solid var(--accent);
-      background:#eafff1;color:#064e3b;font-weight:700;box-shadow:0 2px 0 rgba(2,6,23,.06);
-      transition:transform .05s ease;
-    }
-    .cta-whats:active{ transform:translateY(1px) }
+    .cta-whats{display:inline-flex;align-items:center;gap:10px;padding:12px 16px;border-radius:12px;border:1px solid var(--accent);background:#eafff1;color:#064e3b;font-weight:700;box-shadow:0 2px 0 rgba(2,6,23,.06);transition:transform .05s ease}
+    .cta-whats:active{transform:translateY(1px)}
     .wa-icon{width:28px;height:28px;display:inline-grid;place-items:center}
     .wa-icon svg{width:28px;height:28px;display:block}
 
+    section{scroll-margin-top:80px} /* para âncora não ficar escondida sob a topbar */
     footer{color:var(--muted);text-align:center;margin:24px 0 14px}
   </style>
 </head>
 <body>
-  <header>
+  <!-- TOPBAR + MENU -->
+  <div class="topbar">
+    <div class="row">
+      <button id="btnMenu" class="menu-btn" aria-expanded="false" aria-controls="drawer" aria-label="Abrir menu"><div class="bars"></div></button>
+      <div class="brand">Nerdola Bricks</div>
+      <a class="brand" href="#contatos" style="font-weight:600;color:#0f172a;opacity:.85">Contatos</a>
+    </div>
+  </div>
+
+  <div id="backdrop" class="backdrop" aria-hidden="true"></div>
+  <aside id="drawer" class="drawer" role="dialog" aria-label="Menu">
+    <header>
+      <strong>Menu</strong>
+      <button id="btnClose" class="menu-btn" aria-label="Fechar menu"><div class="bars"></div></button>
+    </header>
+    <a href="#sobre" onclick="closeDrawer()">Sobre</a>
+    <a href="#pecas" onclick="closeDrawer()">Peças</a>
+    <a href="#minifiguras" onclick="closeDrawer()">Minifiguras</a>
+    <a href="#sets" onclick="closeDrawer()">Sets</a>
+    <a href="#contatos" onclick="closeDrawer()">Contatos</a>
+  </aside>
+
+  <!-- HEADER VISUAL -->
+  <header class="visual">
     <div class="head">
-      <div class="brand">
-        <!-- coloque sua logo em logonb.png -->
+      <div class="brand-center">
+        <!-- sua logo -->
         <img class="logo" src="logonb.png" alt="Nerdola Bricks — logotipo">
       </div>
       <div class="banner">
-        <!-- coloque seu banner em bannernb.png -->
+        <!-- seu banner -->
         <img src="bannernb.png" alt="Banner Nerdola Bricks">
       </div>
     </div>
   </header>
 
   <main class="wrap">
-    <div class="titlebar">
-      <h1 style="margin:0">Catálogo Nerdola Bricks</h1>
-      <span id="count" class="count">0 itens</span>
-    </div>
+    <!-- SOBRE -->
+    <section id="sobre">
+      <div class="titlebar">
+        <h1 style="margin:0">Sobre</h1>
+      </div>
+      <p style="max-width:70ch;line-height:1.6">
+        Bem-vindo ao Nerdola Bricks! Aqui você encontra peças, minifiguras e sets LEGO selecionados com carinho.
+        Atualizamos o catálogo sempre que chegam novidades. Fale comigo no WhatsApp para combinar entrega e pagamento.
+      </p>
+    </section>
 
-    <section id="grid" class="grid" aria-live="polite" aria-busy="true"></section>
+    <!-- PEÇAS -->
+    <section id="pecas">
+      <div class="titlebar">
+        <h2 style="margin:0">Peças</h2>
+        <span id="count-pecas" class="count">0 itens</span>
+      </div>
+      <div id="grid-pecas" class="grid" aria-live="polite" aria-busy="true"></div>
+    </section>
+
+    <!-- MINIFIGURAS -->
+    <section id="minifiguras">
+      <div class="titlebar">
+        <h2 style="margin:0">Minifiguras</h2>
+        <span id="count-minifiguras" class="count">0 itens</span>
+      </div>
+      <div id="grid-minifiguras" class="grid" aria-live="polite" aria-busy="true"></div>
+    </section>
+
+    <!-- SETS -->
+    <section id="sets">
+      <div class="titlebar">
+        <h2 style="margin:0">Sets</h2>
+        <span id="count-sets" class="count">0 itens</span>
+      </div>
+      <div id="grid-sets" class="grid" aria-live="polite" aria-busy="true"></div>
+    </section>
+
+    <!-- CONTATOS -->
+    <section id="contatos">
+      <div class="titlebar">
+        <h2 style="margin:0">Contatos</h2>
+      </div>
+      <p style="line-height:1.6">
+        Fale comigo no WhatsApp para tirar dúvidas e reservar itens:
+      </p>
+      <a class="cta-whats" target="_blank" rel="noopener" id="waBig">
+        <span class="wa-icon"></span>
+        <span>Chamar no WhatsApp</span>
+      </a>
+    </section>
 
     <footer>© <span id="year"></span> — Nerdola Bricks</footer>
   </main>
 
   <script>
-    // ===== CONFIGURE AQUI SEU WHATSAPP =====
+    /* ===== CONFIG ===== */
     const WHATS_NUMBER = '5511999999999'; // DDI+DDD+número, ex.: 5511999999999
     const BRL = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
 
-    // ===== PRODUTOS EXEMPLO (edite à vontade) =====
+    /* ===== DADOS EXEMPLO =====
+       category: 'peca' | 'minifig' | 'set'
+    */
     const products = [
-      { id:'nb-42115', name:'Technic Lamborghini Sián (42115)', price:2599.90, theme:'Technic', condition:'novo', img:'produto1.jpg' },
-      { id:'nb-21336', name:'IDEAS The Office (21336)',        price:1099.00, theme:'IDEAS',   condition:'usado', img:'produto2.jpg' },
-      { id:'nb-75257', name:'Star Wars Millennium Falcon (75257)', price:1899.00, theme:'Star Wars', condition:'usado', img:'produto3.jpg' },
-      { id:'nb-10280', name:'Icons Flower Bouquet (10280)',    price:379.90,  theme:'Icons',   condition:'novo',  img:'produto4.jpg' }
+      { id:'nb-p-2x2-plate-red', name:'Plate 2x2 Vermelha (10 un.)', price:14.90, category:'peca', condition:'novo', img:'produto1.jpg' },
+      { id:'nb-p-axle-5', name:'Axle 5L Preto (20 un.)', price:19.90, category:'peca', condition:'novo', img:'produto2.jpg' },
+      { id:'nb-m-darthvader', name:'Minifig Darth Vader (original)', price:149.90, category:'minifig', condition:'usado', img:'produto3.jpg' },
+      { id:'nb-m-tonystark', name:'Minifig Tony Stark MK43', price:129.90, category:'minifig', condition:'usado', img:'produto4.jpg' },
+      { id:'nb-s-42115', name:'Technic Lamborghini Sián (42115)', price:2599.90, category:'set', condition:'novo', img:'produto5.jpg' },
+      { id:'nb-s-21336', name:'IDEAS The Office (21336)', price:1099.00, category:'set', condition:'usado', img:'produto6.jpg' }
     ];
 
+    /* ===== MENU (drawer) ===== */
+    const drawer = document.getElementById('drawer');
+    const backdrop = document.getElementById('backdrop');
+    const btnMenu = document.getElementById('btnMenu');
+    const btnClose = document.getElementById('btnClose');
+
+    function openDrawer(v){
+      if(v){ drawer.classList.add('open'); backdrop.classList.add('open'); btnMenu.setAttribute('aria-expanded','true'); }
+      else { drawer.classList.remove('open'); backdrop.classList.remove('open'); btnMenu.setAttribute('aria-expanded','false'); }
+    }
+    function closeDrawer(){ openDrawer(false); }
+
+    btnMenu.addEventListener('click', ()=>openDrawer(true));
+    btnClose.addEventListener('click', ()=>openDrawer(false));
+    backdrop.addEventListener('click', ()=>openDrawer(false));
+    document.addEventListener('keydown', e=>{ if(e.key==='Escape') openDrawer(false); });
+
+    /* ===== HELPERS ===== */
     const $ = (q,el=document)=>el.querySelector(q);
 
     function waIconSVG(){
@@ -112,7 +217,7 @@
       el.innerHTML = `
         <div class="thumb">${p.img ? `<img src="${p.img}" alt="${p.name}">` : `<span style="color:#64748b;font-weight:700">IMG</span>`}</div>
         <div class="name">${p.name}</div>
-        <div class="meta">${p.theme || ''} • ${p.condition === 'novo' ? 'Novo' : 'Usado'}</div>
+        <div class="meta">${(p.category==='set'?'Set':p.category==='minifig'?'Minifigura':'Peça')} • ${p.condition==='novo'?'Novo':'Usado'}</div>
         <div class="price">${BRL.format(p.price)}</div>
         <a class="cta-whats" target="_blank" rel="noopener"
            href="https://wa.me/${WHATS_NUMBER}?text=${encodeURIComponent('Olá! Tenho interesse no item '+p.name+' (ID: '+p.id+') por '+BRL.format(p.price)+'. Ainda está disponível?')}">
@@ -123,17 +228,29 @@
       return el;
     }
 
-    function render(list){
-      const mount = $('#grid');
-      mount.innerHTML = '';
-      list.forEach(p => mount.appendChild(buildCard(p)));
-      $('#count').textContent = `${list.length} item${list.length===1?'':'s'}`;
-      mount.setAttribute('aria-busy','false');
+    function renderSection(sectionId, countId, category){
+      const grid = document.getElementById(sectionId);
+      const count = document.getElementById(countId);
+      const list = products.filter(p => p.category === category);
+      grid.innerHTML = '';
+      list.forEach(p => grid.appendChild(buildCard(p)));
+      count.textContent = `${list.length} item${list.length===1?'':'s'}`;
+      grid.setAttribute('aria-busy','false');
     }
 
+    /* ===== START ===== */
     document.addEventListener('DOMContentLoaded', () => {
-      $('#year').textContent = new Date().getFullYear();
-      render(products);
+      document.getElementById('year').textContent = new Date().getFullYear();
+
+      // Botão grandão de contatos
+      const waBig = document.getElementById('waBig');
+      waBig.href = `https://wa.me/${WHATS_NUMBER}?text=${encodeURIComponent('Olá! Vim pelo catálogo Nerdola Bricks e quero tirar dúvidas.')}`;
+      waBig.querySelector('.wa-icon').innerHTML = waIconSVG();
+
+      // Render das seções
+      renderSection('grid-pecas', 'count-pecas', 'peca');
+      renderSection('grid-minifiguras', 'count-minifiguras', 'minifig');
+      renderSection('grid-sets', 'count-sets', 'set');
     });
   </script>
 </body>

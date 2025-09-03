@@ -1,184 +1,140 @@
 <!doctype html>
-
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Catálogo LEGO — Base</title>
-  <meta name="description" content="Modelo base em HTML com menu hambúrguer, logo, banner e grade de produtos com preço e WhatsApp." />
-  <meta name="theme-color" content="#0ea5e9" />
+  <title>Nerdola Bricks — Catálogo</title>
+  <meta name="description" content="Catálogo de LEGO novos e usados do Nerdola Bricks, com contato por WhatsApp.">
+  <meta name="theme-color" content="#0ea5e9">
   <style>
     :root{
       --bg:#f6f8fb; --ink:#0f172a; --muted:#475569; --line:#e2e8f0; --card:#ffffff;
-      --accent:#0ea5e9; --accent-2:#22c55e; --radius:16px; --shadow:0 10px 30px rgba(15,23,42,.08);
+      --accent:#22c55e; --radius:16px; --shadow:0 10px 30px rgba(15,23,42,.08);
       --maxw:1200px;
     }
     *{box-sizing:border-box}
     html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica,Arial}
     img{max-width:100%;display:block}
-    a{color:inherit;text-decoration:none}/* Topbar + menu */
-.topbar{position:sticky;top:0;z-index:50;background:#ffffffcc;backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
-.topbar .row{max-width:var(--maxw);margin:0 auto;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.brand{font-weight:800;letter-spacing:.3px}
-.menu-btn{display:inline-grid;place-items:center;width:40px;height:40px;border-radius:10px;border:1px solid var(--line);background:#fff;cursor:pointer}
-.menu-btn .bars{width:18px;height:2px;background:#111;position:relative}
-.menu-btn .bars:before,.menu-btn .bars:after{content:"";position:absolute;left:0;right:0;height:2px;background:#111}
-.menu-btn .bars:before{top:-6px}.menu-btn .bars:after{top:6px}
+    a{color:inherit;text-decoration:none}
 
-.drawer{position:fixed;inset:0 auto 0 0;width:320px;max-width:85vw;background:#fff;border-right:1px solid var(--line);transform:translateX(-100%);transition:transform .25s ease;box-shadow:var(--shadow);display:flex;flex-direction:column}
-.drawer.open{transform:translateX(0)}
-.backdrop{position:fixed;inset:0;background:rgba(2,6,23,.4);opacity:0;pointer-events:none;transition:opacity .2s}
-.backdrop.open{opacity:1;pointer-events:auto}
-.drawer header{display:flex;align-items:center;justify-content:space-between;padding:14px;border-bottom:1px solid var(--line)}
-.drawer a{padding:12px 16px;border-bottom:1px solid var(--line);color:var(--ink)}
+    /* Header */
+    header{background:#fff;border-bottom:1px solid var(--line)}
+    .head{max-width:var(--maxw);margin:0 auto;padding:12px 16px;display:grid;gap:12px}
+    .brand{display:grid;place-items:center}
+    .brand img.logo{width:110px;height:110px;object-fit:cover;border-radius:50%;border:6px solid #fff;box-shadow:var(--shadow)}
+    .banner{border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+    .banner img{width:100%;height:220px;object-fit:cover}
+    @media(min-width:900px){ .banner img{height:260px} }
 
-/* Hero (logo + banner) */
-.hero{max-width:var(--maxw);margin:0 auto;padding:20px 16px 10px}
-.logo-circle{width:140px;height:140px;border-radius:50%;margin:12px auto;background:linear-gradient(180deg,#e0f2fe,#f0f9ff);border:6px solid #fff;box-shadow:var(--shadow);display:grid;place-items:center;overflow:hidden}
-.logo-circle img{width:100%;height:100%;object-fit:cover}
-.logo-circle span{font-weight:800;font-size:26px;color:#111}
+    /* Título + contagem */
+    .wrap{max-width:var(--maxw);margin:0 auto;padding:16px}
+    .titlebar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+    .count{padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:#fff;color:#0f172a;font-size:12px}
 
-.banner{margin:14px auto 6px;border-radius:14px;overflow:hidden;border:1px solid var(--line);box-shadow:var(--shadow)}
-.banner .ph{height:180px;background:linear-gradient(180deg,#e0f2fe,#f0f9ff);display:grid;place-items:center;color:#0f172a;font-weight:800;font-size:28px}
-@media(min-width:900px){.banner .ph{height:220px}}
+    /* Grid de cards — 2 no mobile */
+    .grid{display:grid;gap:16px;grid-template-columns:repeat(2,1fr)}
+    @media(min-width:720px){ .grid{grid-template-columns:repeat(3,1fr)} }
+    @media(min-width:1024px){ .grid{grid-template-columns:repeat(4,1fr)} }
 
-/* Toolbar simples (contagem e busca opcional) */
-.toolbar{max-width:var(--maxw);margin:4px auto 10px;padding:0 16px;display:flex;align-items:center;gap:10px}
-.count{padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:#fff;color:#0f172a;font-size:12px}
-.search{flex:1;display:none}
-.search input{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--line)}
-@media(min-width:700px){.search{display:block}}
+    /* Card estilo polaroid simples */
+    .card{background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:10px;display:grid;gap:10px}
+    .thumb{width:100%;aspect-ratio:1/1;border-radius:8px;background:#eef6ff;display:grid;place-items:center;overflow:hidden}
+    .thumb img{width:100%;height:100%;object-fit:cover}
+    .name{font-weight:700;font-size:14px;line-height:1.2}
+    .meta{color:var(--muted);font-size:12px}
+    .price{font-weight:900;font-size:20px}
 
-/* Grid & card (estilo polaroid) */
-.wrap{max-width:var(--maxw);margin:0 auto;padding:6px 16px 20px}
-.grid{display:grid;gap:16px;grid-template-columns:1fr}
-@media(min-width:640px){.grid{grid-template-columns:1fr 1fr}}
-@media(min-width:1024px){.grid{grid-template-columns:1fr 1fr 1fr 1fr}}
+    /* Botão WhatsApp grande com logo */
+    .cta-whats{
+      display:inline-flex;align-items:center;gap:10px;
+      padding:12px 16px;border-radius:12px;border:1px solid var(--accent);
+      background:#eafff1;color:#064e3b;font-weight:700;box-shadow:0 2px 0 rgba(2,6,23,.06);
+      transition:transform .05s ease;
+    }
+    .cta-whats:active{ transform:translateY(1px) }
+    .wa-icon{width:28px;height:28px;display:inline-grid;place-items:center}
+    .wa-icon svg{width:28px;height:28px;display:block}
 
-.card{background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:10px;display:grid;gap:10px}
-.frame{background:#fff;border:1px solid #dce3ea;border-radius:8px;padding:8px;display:grid;gap:8px}
-.thumb{width:100%;aspect-ratio:1/1;border-radius:6px;background:linear-gradient(180deg,#e7f5ff,#d1fadf);display:grid;place-items:center;overflow:hidden}
-.thumb img{width:100%;height:100%;object-fit:cover}
-.caption{display:flex;align-items:center;justify-content:space-between}
-.price{font-weight:900;font-size:18px}
-.wa{display:inline-grid;place-items:center;width:36px;height:36px;border-radius:999px;background:#eafff1;border:1px solid #b7f7cc}
-.wa svg{width:22px;height:22px}
-
-footer{color:var(--muted);text-align:center;margin:22px 0 14px}
-
+    footer{color:var(--muted);text-align:center;margin:24px 0 14px}
   </style>
 </head>
 <body>
-  <!-- Topbar -->
-  <div class="topbar">
-    <div class="row">
-      <button id="btnMenu" class="menu-btn" aria-expanded="false" aria-controls="drawer" aria-label="Abrir menu"><div class="bars"></div></button>
-      <div class="brand">Catálogo LEGO</div>
-      <a class="brand" href="#contato" style="font-weight:600;color:#0f172a;opacity:.8">Contato</a>
-    </div>
-  </div>  <!-- Drawer -->  <div id="backdrop" class="backdrop" aria-hidden="true"></div>
-  <aside id="drawer" class="drawer" role="dialog" aria-label="Menu">
-    <header>
-      <strong>Menu</strong>
-      <button id="btnClose" class="menu-btn" aria-label="Fechar menu"><div class="bars"></div></button>
-    </header>
-    <a href="#inicio">Início</a>
-    <a href="#novos" onclick="filterCond('novo')">Novos</a>
-    <a href="#usados" onclick="filterCond('usado')">Usados</a>
-    <a href="#contato">Contato</a>
-  </aside>  <!-- Hero logo + banner -->  <section class="hero" id="inicio">
-    <div class="logo-circle" aria-label="Logo">
-      <!-- Substitua por <img src="logo.png" alt="Sua marca"/> -->
-      <span>LOGO</span>
-    </div>
-    <div class="banner">
-      <!-- Substitua por <img src="banner.jpg" alt="Banner"/> -->
-      <div class="ph">Banner</div>
-    </div>
-  </section>  <!-- Toolbar opcional -->  <div class="toolbar">
-    <span id="count" class="count">0 itens</span>
-    <div class="search"><input id="q" type="search" placeholder="Buscar por nome, tema, tag…" /></div>
-  </div>  <!-- Grid -->  <main class="wrap">
-    <section id="grid" class="grid" aria-live="polite" aria-busy="true"></section>
-    <footer>© <span id="year"></span> — Catálogo LEGO</footer>
-  </main><script>
-  // ======= Dados de exemplo (substitua pelo seu products.json se quiser) =======
-  const products = [
-    { id:'lego-42115', name:'LEGO Technic Lamborghini Sián (42115)', price:2599.90, condition:'novo', theme:'Technic', year:2020, pieces:3696, tags:['carros','colecionável'] },
-    { id:'lego-21336', name:'LEGO IDEAS The Office (21336)', price:1099.00, condition:'usado', theme:'IDEAS', year:2022, pieces:1164, tags:['série'] },
-    { id:'lego-75257', name:'LEGO Star Wars Millennium Falcon (75257)', price:1899.00, condition:'usado', theme:'Star Wars', year:2019, pieces:1351, tags:['nave','clássico'] },
-    { id:'lego-10280', name:'LEGO Botanical Collection Flower Bouquet (10280)', price:379.90, condition:'novo', theme:'Icons', year:2021, pieces:756, tags:['decoração'] },
-    { id:'lego-31129', name:'LEGO 3in1 Majestic Tiger (31129)', price:299.90, condition:'usado', theme:'Creator 3in1', year:2022, pieces:755, tags:['animais'] },
-    { id:'lego-76917', name:'LEGO Fast & Furious Nissan Skyline (76917)', price:299.90, condition:'novo', theme:'Speed Champions', year:2023, pieces:319, tags:['carros'] },
-    { id:'lego-60371', name:'LEGO City Quartel dos Bombeiros (60371)', price:649.90, condition:'novo', theme:'City', year:2023, pieces:843, tags:['cidade'] },
-    { id:'lego-75335', name:'LEGO BD-1 (75335)', price:899.90, condition:'usado', theme:'Star Wars', year:2022, pieces:1062, tags:['droid'] },
-  ];
-
-  const BRL = new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});
-  const $ = (q,el=document)=>el.querySelector(q);
-
-  function buildCard(p){
-    const el = document.createElement('article');
-    el.className = 'card';
-    el.innerHTML = `
-      <div class="frame">
-        <div class="thumb" aria-label="Imagem do produto">
-          <!-- Substitua pela sua imagem: <img src="images/${p.id}.jpg" alt="${p.name}"> -->
-          <span style="color:#334155;font-weight:700">IMG</span>
-        </div>
-        <div class="caption">
-          <div class="price">${BRL.format(p.price)}</div>
-          <a class="wa" aria-label="Chamar no WhatsApp" target="_blank" rel="noopener"
-             href="https://wa.me/SEU_NUMERO_AQUI?text=${encodeURIComponent('Olá! Tenho interesse no item '+p.name+' (ID: '+p.id+') por '+BRL.format(p.price)+'. Ainda está disponível?')}">
-            <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="16" cy="16" r="16" fill="#25D366"/>
-              <path fill="#fff" d="M21.8 18.3c-.2-.1-1.3-.6-1.5-.7-.2-.1-.3-.1-.4.1-.1.2-.5.7-.7.8-.1.1-.3.1-.5 0-.2-.1-.9-.3-1.7-1-.6-.5-1-1.2-1.1-1.4-.1-.2 0-.3.1-.4.1-.1.2-.3.3-.4.1-.1.1-.2.2-.3.1-.1.1-.2.2-.3.1-.1 0-.2 0-.3 0-.1-.4-1.1-.6-1.5-.2-.4-.3-.3-.5-.3h-.4c-.1 0-.3 0-.4.2-.1.2-.6.6-.6 1.5 0 .9.6 1.8.7 1.9.1.1 1.2 1.9 2.9 2.7 1.7.8 1.7.5 2 .5.3 0 1-.4 1.2-.8.2-.4.2-.8.1-.9-.1-.1-.2-.1-.4-.2zM16 9.3c-3.7 0-6.7 3-6.7 6.7 0 1.2.3 2.3.9 3.3l-1 3.6 3.7-1c1 .6 2.1.9 3.2.9 3.7 0 6.7-3 6.7-6.7 0-3.7-3-6.8-6.8-6.8z"/>
-            </svg>
-          </a>
-        </div>
+  <header>
+    <div class="head">
+      <div class="brand">
+        <!-- coloque sua logo em logonb.png -->
+        <img class="logo" src="logonb.png" alt="Nerdola Bricks — logotipo">
       </div>
-    `;
-    return el;
-  }
+      <div class="banner">
+        <!-- coloque seu banner em bannernb.png -->
+        <img src="bannernb.png" alt="Banner Nerdola Bricks">
+      </div>
+    </div>
+  </header>
 
-  function render(list){
-    const mount = $('#grid');
-    mount.innerHTML = '';
-    list.forEach(p => mount.appendChild(buildCard(p)));
-    $('#count').textContent = `${list.length} item${list.length===1?'':'s'}`;
-    mount.setAttribute('aria-busy','false');
-  }
+  <main class="wrap">
+    <div class="titlebar">
+      <h1 style="margin:0">Catálogo Nerdola Bricks</h1>
+      <span id="count" class="count">0 itens</span>
+    </div>
 
-  function filterText(){
-    const q = ($('#q')?.value || '').trim().toLowerCase();
-    if(!q) return products;
-    return products.filter(p => (`${p.name} ${p.theme||''} ${(p.tags||[]).join(' ')}`).toLowerCase().includes(q));
-  }
-  function filterCond(kind){
-    const res = products.filter(p => kind ? p.condition===kind : true);
-    render(res);
-  }
+    <section id="grid" class="grid" aria-live="polite" aria-busy="true"></section>
 
-  // Menu drawer
-  function openDrawer(v){
-    const d = document.getElementById('drawer');
-    const b = document.getElementById('backdrop');
-    const btn = document.getElementById('btnMenu');
-    if(v){ d.classList.add('open'); b.classList.add('open'); btn.setAttribute('aria-expanded','true'); }
-    else { d.classList.remove('open'); b.classList.remove('open'); btn.setAttribute('aria-expanded','false'); }
-  }
+    <footer>© <span id="year"></span> — Nerdola Bricks</footer>
+  </main>
 
-  document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('year').textContent = new Date().getFullYear();
-    render(products);
+  <script>
+    // ===== CONFIGURE AQUI SEU WHATSAPP =====
+    const WHATS_NUMBER = '5511999999999'; // DDI+DDD+número, ex.: 5511999999999
+    const BRL = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
 
-    const q = document.getElementById('q');
-    if(q) q.addEventListener('input', ()=>{ render(filterText()); });
+    // ===== PRODUTOS EXEMPLO (edite à vontade) =====
+    const products = [
+      { id:'nb-42115', name:'Technic Lamborghini Sián (42115)', price:2599.90, theme:'Technic', condition:'novo', img:'produto1.jpg' },
+      { id:'nb-21336', name:'IDEAS The Office (21336)',        price:1099.00, theme:'IDEAS',   condition:'usado', img:'produto2.jpg' },
+      { id:'nb-75257', name:'Star Wars Millennium Falcon (75257)', price:1899.00, theme:'Star Wars', condition:'usado', img:'produto3.jpg' },
+      { id:'nb-10280', name:'Icons Flower Bouquet (10280)',    price:379.90,  theme:'Icons',   condition:'novo',  img:'produto4.jpg' }
+    ];
 
-    document.getElementById('btnMenu').addEventListener('click', ()=>openDrawer(true));
-    document.getElementById('btnClose').addEventListener('click', ()=>openDrawer(false));
-    document.getElementById('backdrop').addEventListener('click', ()=>openDrawer(false));
-    document.addEventListener('keydown', e=>{ if(e.key==='Escape') openDrawer(false); });
-  });
-</script></body>
+    const $ = (q,el=document)=>el.querySelector(q);
+
+    function waIconSVG(){
+      return `
+        <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+          <circle cx="16" cy="16" r="16" fill="#25D366"/>
+          <path fill="#fff" d="M21.8 18.3c-.2-.1-1.3-.6-1.5-.7-.2-.1-.3-.1-.4.1-.1.2-.5.7-.7.8-.1.1-.3.1-.5 0-.2-.1-.9-.3-1.7-1-.6-.5-1-1.2-1.1-1.4-.1-.2 0-.3.1-.4l.3-.4c.1-.1.1-.2.2-.3s.1-.2.2-.3c.1-.1 0-.2 0-.3 0-.1-.4-1.1-.6-1.5-.2-.4-.3-.3-.5-.3h-.4c-.1 0-.3 0-.4.2-.1.2-.6.6-.6 1.5 0 .9.6 1.8.7 1.9.1.1 1.2 1.9 2.9 2.7 1.7.8 1.7.5 2 .5.3 0 1-.4 1.2-.8.2-.4.2-.8.1-.9-.1-.1-.2-.1-.4-.2zM16 9.3c-3.7 0-6.7 3-6.7 6.7 0 1.2.3 2.3.9 3.3l-1 3.6 3.7-1c1 .6 2.1.9 3.2.9 3.7 0 6.7-3 6.7-6.7 0-3.7-3-6.8-6.8-6.8z"/>
+        </svg>`;
+    }
+
+    function buildCard(p){
+      const el = document.createElement('article');
+      el.className = 'card';
+      el.innerHTML = `
+        <div class="thumb">${p.img ? `<img src="${p.img}" alt="${p.name}">` : `<span style="color:#64748b;font-weight:700">IMG</span>`}</div>
+        <div class="name">${p.name}</div>
+        <div class="meta">${p.theme || ''} • ${p.condition === 'novo' ? 'Novo' : 'Usado'}</div>
+        <div class="price">${BRL.format(p.price)}</div>
+        <a class="cta-whats" target="_blank" rel="noopener"
+           href="https://wa.me/${WHATS_NUMBER}?text=${encodeURIComponent('Olá! Tenho interesse no item '+p.name+' (ID: '+p.id+') por '+BRL.format(p.price)+'. Ainda está disponível?')}">
+          <span class="wa-icon">${waIconSVG()}</span>
+          <span>Chamar no WhatsApp</span>
+        </a>
+      `;
+      return el;
+    }
+
+    function render(list){
+      const mount = $('#grid');
+      mount.innerHTML = '';
+      list.forEach(p => mount.appendChild(buildCard(p)));
+      $('#count').textContent = `${list.length} item${list.length===1?'':'s'}`;
+      mount.setAttribute('aria-busy','false');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      $('#year').textContent = new Date().getFullYear();
+      render(products);
+    });
+  </script>
+</body>
 </html>

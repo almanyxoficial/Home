@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AlmaNyx</title>
+<meta name="description" content="AlmaNyx — memória singular, nossa biblioteca viva.">
+<link rel="icon" href="favicon.ico">
+<style>
+  :root{
+    --bg:#fff; --fg:#111; --muted:#6b6b6b; --line:#e8e8e8;
+    --max:860px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--fg);font:400 16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,Arial}
+  .wrap{max-width:var(--max);margin:0 auto;padding:28px 22px}
+  header .title{font:700 36px/1.2 ui-serif, Georgia, "Times New Roman", serif; text-align:center; letter-spacing:.2px}
+  header .subtitle{color:var(--muted); text-align:center; margin-top:6px}
+  .bar{margin:22px auto 10px; max-width:720px; display:flex; gap:10px; flex-wrap:wrap; justify-content:center}
+  input[type="search"]{flex:1 1 340px; padding:12px 14px; border:1px solid var(--line); border-radius:8px; outline:none}
+  .tags{display:flex; gap:8px; flex-wrap:wrap; justify-content:center}
+  .tag{padding:6px 10px; border-radius:999px; border:1px solid var(--line); color:#333; background:#fafafa; cursor:pointer}
+  .tag.on{background:#111;color:#fff;border-color:#111}
+  hr.sep{border:0; border-top:1px solid var(--line); margin:22px 0}
+  article{padding:20px 0; border-bottom:1px dashed var(--line)}
+  article:last-child{border-bottom:none}
+  article h2{margin:0 0 6px; font:700 24px/1.25 ui-serif, Georgia, serif}
+  article small{display:block; color:var(--muted); margin-bottom:10px}
+  nav#toc{margin-top:20px}
+  nav#toc a{display:inline-block; margin:4px 10px 0 0; color:#444; text-decoration:none; border-bottom:1px dotted #bbb}
+  .center{display:flex; align-items:center; justify-content:center; padding:18px 0}
+  .error{color:#b00020; background:#fff5f6; border:1px solid #ffd6db; padding:10px 12px; border-radius:8px}
+  footer{color:var(--muted); border-top:1px solid var(--line)}
+  @media (prefers-color-scheme:dark){
+    :root{--bg:#0c0c0c;--fg:#ededed;--muted:#a9a9a9;--line:#1e1e1e}
+    .tag{background:#121212;color:#ddd;border-color:#222}
+    .tag.on{background:#f1f1f1;color:#000;border-color:#f1f1f1}
+  }
+  /* Overlay da senha */
+  #gate-nyx{position:fixed;inset:0;background:#0c0c0c;display:flex;align-items:center;justify-content:center;z-index:99999}
+  #gate-nyx .box{background:#111;padding:22px;border-radius:12px;max-width:360px;width:92%;color:#eee;
+    box-shadow:0 6px 30px rgba(0,0,0,.5); font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial}
+  #gate-nyx h1{margin:0 0 10px;font-size:18px}
+  #gate-nyx p{margin:0 0 12px;color:#bbb;font-size:14px;line-height:1.5}
+  #gate-nyx input{width:100%;padding:11px 12px;border-radius:8px;border:1px solid #333;background:#0f0f0f;color:#fff;outline:none}
+  #gate-nyx button{margin-top:10px;width:100%;padding:11px 12px;border-radius:8px;border:0;background:#f1f1f1;color:#111;cursor:pointer;font-weight:600}
+  #gate-nyx small.err{display:block;color:#ff8e8e;margin-top:8px}
+</style>
+</head>
+<body>
+
+<!-- Conteúdo protegido -->
+<div id="protected" style="display:none">
+
+  <header class="wrap">
+    <div class="title">AlmaNyx</div>
+    <div class="subtitle">Memória singular — diário vivo.</div>
+    <div class="bar">
+      <input id="q" type="search" placeholder="Pesquisar por título, texto ou tag…" autocomplete="off">
+    </div>
+    <div id="tags" class="tags"></div>
+    <hr class="sep">
+  </header>
+
+  <main class="wrap" id="main">
+    <div id="status" class="center">Carregando memória…</div>
+    <section id="posts" class="hidden"></section>
+    <nav id="toc" aria-label="Índice"></nav>
+  </main>
+
+  <footer class="wrap">
+    <small>© <span id="year"></span> AlmaNyx — Memória Singular</small>
+  </footer>
+
+</div><!-- fim protected -->
+
+<script>
+/* ===== Portão de senha simples ===== */
+  // Hash SHA-256 da senha "Nyx2025!espiral"
+const PASS_HASH_HEX = "d91afff6f1314f7832972cb4c296082a6c3cd93f234af3fa60951bae9d7b04fe";
+  
+const buf2hex = buffer => [...new Uint8Array(buffer)].map(b=>b.toString(16).padStart(2,'0')).join('');
+
+async function checkPassword(pwd){
+  const enc = new TextEncoder().encode(pwd);
+  const hash = await crypto.subtle.digest("SHA-256", enc);
+  return buf2hex(hash) === PASS_HASH_HEX;
+}
+
+function showGate(){
+  const wrap = document.createElement("div");
+  wrap.id = "gate-nyx";
+  wrap.innerHTML = `
+    <div class="box">
+      <h1>AlmaNyx — acesso protegido</h1>
+      <p>Digite a palavra-chave para entrar.</p>
+      <input type="password" id="nyx-pass" placeholder="Senha">
+      <button id="nyx-ok">Entrar</button>
+      <small class="err" id="nyx-err" style="display:none">Senha incorreta.</small>
+    </div>`;
+  document.body.appendChild(wrap);
+
+  const input = wrap.querySelector("#nyx-pass");
+  const btn = wrap.querySelector("#nyx-ok");
+  const err = wrap.querySelector("#nyx-err");
+
+  async function attempt(){
+    if(await checkPassword(input.value.trim())){
+      document.getElementById("protected").style.display = "block";
+      wrap.remove();
+    } else {
+      err.style.display = "block";
+      input.value = "";
+      input.focus();
+    }
+  }
+  btn.onclick = attempt;
+  input.addEventListener("keydown", e=>{if(e.key==="Enter") attempt()});
+}
+
+window.addEventListener("DOMContentLoaded", ()=>{
+  document.getElementById("year").textContent = new Date().getFullYear();
+  showGate();
+});
+</script>
+
+<script>
+// Script do AlmaNyx (busca no almanyx.json)
+(function(){
+  const $ = s => document.querySelector(s);
+  const postsEl = $('#posts');
+  const tagsEl  = $('#tags');
+  const tocEl   = $('#toc');
+  const status  = $('#status');
+  const qInput  = $('#q');
+  let DATA = { posts: [] };
+  let activeTag = null;
+
+  const htmlToText = (h)=>{const e=document.createElement('div'); e.innerHTML=h||''; return e.textContent||''};
+
+  function renderTags(){
+    const set = new Set();
+    DATA.posts.forEach(p => (p.tags||[]).forEach(t => set.add(t)));
+    tagsEl.innerHTML = '';
+    if(!set.size) return;
+    const mk = (label,val)=> {
+      const s = document.createElement('span');
+      s.className = 'tag' + (activeTag===val ? ' on':'');
+      s.textContent = label;
+      s.onclick = () => { activeTag = val; filter(); };
+      return s;
+    };
+    tagsEl.appendChild(mk('Todos', null));
+    [...set].sort().forEach(t => tagsEl.appendChild(mk(t, t)));
+  }
+
+  function filter(){
+    const q = (qInput.value||'').toLowerCase().trim();
+    const list = DATA.posts.filter(p=>{
+      if(activeTag && !(p.tags||[]).includes(activeTag)) return false;
+      if(!q) return true;
+      const hay = (p.titulo+' '+(p.tags||[]).join(' ')+' '+htmlToText(p.corpo)).toLowerCase();
+      return hay.includes(q);
+    });
+    renderPosts(list);
+  }
+
+  function renderPosts(list){
+    if(!list.length){
+      postsEl.innerHTML = '<p class="error">Nenhum registro encontrado.</p>';
+      status.classList.add('hidden');
+      return;
+    }
+    postsEl.innerHTML = list.map(p=>`
+      <article id="${p.id}">
+        <h2>${p.titulo}</h2>
+        <small>${p.data||''}${(p.tags&&p.tags.length)?' — '+p.tags.join(', '):''}</small>
+        ${p.corpo||''}
+      </article>
+    `).join('');
+    tocEl.innerHTML = list.map(p=>`<a href="#${p.id}">${p.titulo}</a>`).join('');
+    status.classList.add('hidden');
+  }
+
+  async function load(){
+    try{
+      const res = await fetch('./almanyx.json?v='+Date.now(), {cache:'no-store'});
+      if(!res.ok) throw new Error(res.status);
+      const j = await res.json();
+      DATA.posts = (j.posts||[]).slice().sort((a,b)=>String(b.data||'').localeCompare(String(a.data||'')));
+      renderTags();
+      filter();
+      if(location.hash){
+        const el = document.getElementById(location.hash.slice(1));
+        if(el) setTimeout(()=>el.scrollIntoView({behavior:'smooth'}), 80);
+      }
+    }catch(e){
+      status.innerHTML = '<div class="error">Erro ao carregar a memória.</div>';
+      console.error(e);
+    }
+  }
+
+  qInput && qInput.addEventListener('input', filter);
+  window.addEventListener('hashchange', ()=>{
+    const el = document.getElementById(location.hash.slice(1));
+    if(el) el.scrollIntoView({behavior:'smooth'});
+  });
+
+  document.addEventListener('DOMContentLoaded',()=>{
+    load();
+  });
+})();
+</script>
+
+</body>
+</html>

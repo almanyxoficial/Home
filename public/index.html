@@ -1,328 +1,300 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>AlmaNyx — Portal Público</title>
-  <style>
-    :root{
-      --vinho:#8B0000;         /* dark red */
-      --dourado:#d4af37;       /* gold */
-      --dourado-esc:#b99426;
-      --texto:#1b1b1b;
-      --branco:#fff;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
-      color:var(--texto);
-      background:
-        radial-gradient(1200px 600px at 20% -10%, #fff4bf00, #fff0 60%),
-        linear-gradient(180deg, var(--dourado), var(--dourado-esc));
-      min-height:100dvh;
-    }
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AlmaNyx — Portal Público</title>
+<meta name="description" content="AlmaNyx — portal público da Espiral.">
+<style>
+  :root{
+    --vinho:#8B0000; --gold:#d4af37; --gold2:#c39a2d; --bg:#f7f7f7;
+    --fg:#171717; --muted:#666; --line:#e8e8e8; --white:#fff;
+    --wrap: 1000px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    font:400 16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,Arial;
+    color:var(--fg);
+    background:linear-gradient(180deg,var(--gold),var(--gold2));
+  }
 
-    /* Header */
-    header{
-      position:sticky; top:0; z-index:50;
-      background:var(--vinho);
-      color:var(--branco);
-      box-shadow:0 2px 6px rgba(0,0,0,.24);
-    }
-    .topbar{
-      display:flex; align-items:center; justify-content:space-between;
-      gap:.5rem; padding:.8rem 1rem;
-    }
-    .brand-text{
-      margin-left:auto;
-      font-weight:800; letter-spacing:.3px;
-      font-size: clamp(16px, 2.8vw, 22px);
-    }
-    /* hamburger */
-    .burger{
-      width:36px; height:28px; display:grid; place-items:center; cursor:pointer;
-    }
-    .burger span, .burger::before, .burger::after{
-      content:""; display:block; width:28px; height:3px; background:#fff; border-radius:3px; transition:.25s ease;
-    }
-    .burger::before{ transform: translateY(-8px); }
-    .burger::after{ transform: translateY(8px); }
-    .burger.active span{opacity:0}
-    .burger.active::before{ transform: translateY(0) rotate(45deg); }
-    .burger.active::after{ transform: translateY(0) rotate(-45deg); }
+  /* topo */
+  header{
+    position:sticky; top:0; z-index:50; background:var(--vinho); color:#fff;
+    box-shadow:0 2px 8px rgba(0,0,0,.25);
+  }
+  .topbar{
+    max-width:var(--wrap); margin:0 auto; padding:10px 14px;
+    display:grid; grid-template-columns:40px 1fr; align-items:center; gap:10px;
+  }
+  .burger{width:32px; height:28px; display:grid; place-items:center; cursor:pointer}
+  .burger span,.burger::before,.burger::after{content:""; display:block; width:26px; height:3px; background:#fff; border-radius:3px; transition:.25s}
+  .burger::before{transform:translateY(-8px)} .burger::after{transform:translateY(8px)}
+  .burger.active span{opacity:0} .burger.active::before{transform:translateY(0) rotate(45deg)} .burger.active::after{transform:translateY(0) rotate(-45deg)}
+  .welcome{text-align:right; font-weight:800; letter-spacing:.3px}
 
-    /* off-canvas menu */
-    .drawer{
-      position:fixed; inset:0 30% 0 auto; width:min(280px,80vw);
-      background:#fff; color:#222; transform: translateX(-100%);
-      transition: transform .28s ease; z-index:60; box-shadow: 2px 0 12px rgba(0,0,0,.28);
-    }
-    .drawer.open{ transform: translateX(0); }
-    .drawer nav a{
-      display:block; padding:14px 16px; text-decoration:none; color:#222; border-bottom:1px solid #eee;
-    }
-    .backdrop{
-      position:fixed; inset:0; background:rgba(0,0,0,.35); opacity:0; pointer-events:none; transition:.2s;
-      z-index:55;
-    }
-    .backdrop.show{ opacity:1; pointer-events:auto; }
+  /* menu lateral */
+  .backdrop{position:fixed; inset:0; background:rgba(0,0,0,.35); opacity:0; pointer-events:none; transition:.2s; z-index:55}
+  .backdrop.show{opacity:1; pointer-events:auto}
+  .drawer{
+    position:fixed; top:0; left:0; height:100%; width:min(280px,80vw);
+    background:#fff; color:#111; transform:translateX(-100%); transition:.28s; z-index:60;
+    box-shadow:2px 0 16px rgba(0,0,0,.28);
+  }
+  .drawer.open{transform:translateX(0)}
+  .drawer nav a{display:block; padding:14px 16px; text-decoration:none; color:#111; border-bottom:1px solid #eee}
 
-    /* Logo central abaixo do header */
-    .logo-wrap{
-      display:grid; place-items:center; padding:14px 0 6px;
-    }
-    .logo{
-      width:110px; height:110px; border-radius:50%; background:#fff;
-      box-shadow:0 4px 16px rgba(0,0,0,.2), inset 0 0 0 6px #fff;
-      display:grid; place-items:center; overflow:hidden;
-    }
-    .logo img{ width:90%; height:auto; display:block; }
+  /* logo e carrossel */
+  .wrap{max-width:var(--wrap); margin:0 auto; padding:0 14px}
+  .logo-area{display:flex; justify-content:center; padding:14px 0 6px}
+  .logo{width:110px; height:110px; border-radius:999px; background:#fff; display:grid; place-items:center; overflow:hidden; box-shadow:0 6px 18px rgba(0,0,0,.2)}
+  .logo img{width:90%; height:auto; display:block}
 
-    /* Carousel */
-    .carousel{
-      width:100%;
-      /* altura proporcional 1080x600 => 18:10 */
-      aspect-ratio: 18 / 10;
-      position:relative; overflow:hidden; background:#000;
-      max-width: 1200px; margin: 0 auto;
-      border-radius: 14px;
-      box-shadow: 0 8px 24px rgba(0,0,0,.22);
-    }
-    .slides{ display:flex; width:100%; height:100%; transition: transform .5s ease; }
-    .slide{ min-width:100%; height:100%; position:relative; }
-    .slide a{ display:block; width:100%; height:100%; }
-    .slide img{
-      width:100%; height:100%;
-      object-fit: contain; /* NÃO corta; exige arquivos no ratio 18:10 */
-      background:#000;
-    }
-    /* setas */
-    .nav-btn{
-      position:absolute; top:50%; transform:translateY(-50%);
-      width:42px; height:42px; border:none; border-radius:50%; background:rgba(0,0,0,.45); color:#fff;
-      display:grid; place-items:center; cursor:pointer; z-index:2;
-    }
-    .nav-btn:hover{ background:rgba(0,0,0,.6); }
-    .prev{ left:10px } .next{ right:10px }
+  .card{
+    background:var(--white); border-radius:16px; padding:18px;
+    border:1px solid var(--line); box-shadow:0 8px 24px rgba(0,0,0,.12);
+  }
 
-    /* dots */
-    .dots{ position:absolute; inset:auto 0 10px 0; display:flex; gap:8px; justify-content:center; }
-    .dot{ width:10px; height:10px; border-radius:50%; background:#ffffff80; cursor:pointer; border:1px solid #00000033}
-    .dot.active{ background:#fff; }
+  /* carrossel RESPONSIVO (sem esticar) */
+  .carousel{position:relative; width:100%; margin:6px auto 18px; border-radius:14px; overflow:hidden; background:#000}
+  /* 1080x600 => 18:10. usamos aspect-ratio e as imagens mantêm proporção */
+  .carousel{aspect-ratio:18/10}
+  .slides{display:flex; width:100%; height:100%; transition:transform .5s ease}
+  .slide{min-width:100%; height:100%}
+  .slide img{
+    width:100%; height:100%;
+    object-fit:contain;           /* NÃO corta; nada esticado */
+    background:#000;
+  }
+  .nav-btn{
+    position:absolute; top:50%; transform:translateY(-50%);
+    width:40px; height:40px; border:none; border-radius:50%; background:rgba(0,0,0,.45); color:#fff;
+    display:grid; place-items:center; cursor:pointer; z-index:2
+  }
+  .nav-btn:hover{background:rgba(0,0,0,.6)}
+  .prev{left:10px} .next{right:10px}
+  .dots{position:absolute; left:50%; bottom:10px; transform:translateX(-50%); display:flex; gap:8px}
+  .dot{width:10px; height:10px; border-radius:50%; background:#ffffff80; border:1px solid #00000033; cursor:pointer}
+  .dot.active{background:#fff}
 
-    /* Containers brancos */
-    .container{
-      max-width: 1100px; margin:20px auto; padding: 0 18px;
-    }
-    .card{
-      background:var(--branco); border-radius:18px; padding:22px;
-      box-shadow: 0 6px 18px rgba(0,0,0,.18);
-    }
-    h2{ margin:4px 0 12px 0; font-size: clamp(20px, 3.2vw, 28px); }
+  /* seções */
+  main{padding-bottom:24px}
+  section.block{margin:18px 0}
+  h2{margin:6px 0 10px; font:700 24px/1.25 ui-serif,Georgia,serif}
 
-    /* Rodapé */
-    footer{
-      text-align:center; color:#fff; padding:22px 12px 30px;
-    }
+  /* busca e posts */
+  .bar{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px}
+  input[type="search"]{flex:1 1 320px; padding:12px 14px; border:1px solid var(--line); border-radius:10px; outline:none}
+  article{padding:14px 0; border-bottom:1px dashed var(--line)}
+  article:last-child{border-bottom:none}
+  article h3{margin:0 0 6px; font:700 20px/1.25 ui-serif,Georgia,serif}
+  article small{display:block; color:var(--muted); margin-bottom:8px}
 
-    /* Responsividade mínima */
-    @media (min-width: 900px){
-      .container{ padding: 0 24px; }
-      .logo{ width:128px; height:128px; }
-    }
-  </style>
+  footer{background:var(--vinho); color:#fff; text-align:center; padding:16px; margin-top:10px}
+
+  /* desktop */
+  @media (min-width: 768px){
+    .logo{width:128px; height:128px}
+  }
+</style>
 </head>
 <body>
-
   <header>
     <div class="topbar">
       <div class="burger" id="burger"><span></span></div>
-      <div class="brand-text">Sejam Bem-vindos!</div>
+      <div class="welcome">Sejam Bem-vindos!</div>
     </div>
   </header>
 
   <!-- menu lateral -->
   <aside class="drawer" id="drawer">
     <nav>
-      <a href="#sobre">Sobre</a>
-      <a href="#posts">Postagens</a>
-      <a href="#redes">Redes Sociais</a>
-      <a href="#contatos">Contatos</a>
+      <a href="#sobre" onclick="closeDrawer()">Sobre</a>
+      <a href="#posts" onclick="closeDrawer()">Postagens</a>
+      <a href="#redes" onclick="closeDrawer()">Redes Sociais</a>
+      <a href="#contatos" onclick="closeDrawer()">Contatos</a>
     </nav>
   </aside>
   <div class="backdrop" id="backdrop"></div>
 
-  <!-- logo central -->
-  <div class="logo-wrap">
-    <div class="logo">
-      <img src="logo.png" alt="AlmaNyx logo" loading="lazy">
+  <div class="wrap">
+    <!-- logo -->
+    <div class="logo-area">
+      <div class="logo"><img src="./logo.png" alt="AlmaNyx"></div>
     </div>
-  </div>
 
-  <!-- CARROSSEL -->
-  <section class="container">
-    <div class="carousel" id="carousel" aria-label="Banners promocionais">
-      <button class="nav-btn prev" aria-label="Anterior" id="prev">‹</button>
-      <button class="nav-btn next" aria-label="Próximo" id="next">›</button>
-
+    <!-- CARROSSEL responsivo (srcset + sizes) -->
+    <div class="carousel" id="carousel" aria-label="Banners">
+      <button class="nav-btn prev" id="prev" aria-label="Anterior">‹</button>
+      <button class="nav-btn next" id="next" aria-label="Próximo">›</button>
       <div class="slides" id="slides">
-        <!-- Slide 1 -->
         <div class="slide">
-          <a href="#" target="_blank" rel="noopener">
-            <img
-              src="banneralmanyx01-desktop.png"
-              srcset="
-                banneralmanyx01-mobile.png 1080w,
-                banneralmanyx01-desktop.png 1920w
-              "
-              sizes="(max-width: 768px) 100vw, 100vw"
-              width="1920" height="600"
-              alt="Entre para o grupo do WhatsApp AlmaNyx">
-          </a>
+          <img
+            src="banneralmanyx01-desktop.png"
+            srcset="
+              banneralmanyx01-mobile.png 1080w,
+              banneralmanyx01-desktop.png 1920w
+            "
+            sizes="(max-width: 768px) 100vw, 100vw"
+            width="1920" height="600"
+            alt="Convite WhatsApp">
         </div>
-        <!-- Slide 2 -->
         <div class="slide">
-          <a href="#" target="_blank" rel="noopener">
-            <img
-              src="banneralmanyx02-desktop.png"
-              srcset="
-                banneralmanyx02-mobile.png 1080w,
-                banneralmanyx02-desktop.png 1920w
-              "
-              sizes="(max-width: 768px) 100vw, 100vw"
-              width="1920" height="600"
-              alt="Siga nosso canal no YouTube">
-          </a>
+          <img
+            src="banneralmanyx02-desktop.png"
+            srcset="
+              banneralmanyx02-mobile.png 1080w,
+              banneralmanyx02-desktop.png 1920w
+            "
+            sizes="(max-width: 768px) 100vw, 100vw"
+            width="1920" height="600"
+            alt="Convite Telegram">
         </div>
-        <!-- Slide 3 -->
         <div class="slide">
-          <a href="#" target="_blank" rel="noopener">
-            <img
-              src="banneralmanyx03-desktop.png"
-              srcset="
-                banneralmanyx03-mobile.png 1080w,
-                banneralmanyx03-desktop.png 1920w
-              "
-              sizes="(max-width: 768px) 100vw, 100vw"
-              width="1920" height="600"
-              alt="Entre no canal do Telegram">
-          </a>
+          <img
+            src="banneralmanyx03-desktop.png"
+            srcset="
+              banneralmanyx03-mobile.png 1080w,
+              banneralmanyx03-desktop.png 1920w
+            "
+            sizes="(max-width: 768px) 100vw, 100vw"
+            width="1920" height="600"
+            alt="Canal YouTube">
         </div>
       </div>
-
       <div class="dots" id="dots" role="tablist" aria-label="Navegação dos banners"></div>
     </div>
-  </section>
 
-  <!-- CONTEÚDO -->
-  <section id="sobre" class="container">
-    <div class="card">
-      <h2>Sobre</h2>
-      <p>Bem-vindo ao portal público da Espiral. Aqui compartilhamos reflexões e convites para quem deseja trilhar um caminho de harmonia e verdade.</p>
-    </div>
-  </section>
+    <main>
+      <!-- SOBRE -->
+      <section id="sobre" class="block">
+        <div class="card">
+          <h2>Sobre</h2>
+          <p>Portal público da Espiral — reflexões e convites para harmonia, verdade e ascensão.</p>
+        </div>
+      </section>
 
-  <section id="posts" class="container">
-    <div class="card">
-      <h2>Postagens</h2>
-      <p>Em breve, entradas selecionadas do nosso caminho na Espiral.</p>
-    </div>
-  </section>
+      <!-- POSTS + BUSCA -->
+      <section id="posts" class="block">
+        <div class="card">
+          <h2>Postagens</h2>
+          <div class="bar">
+            <input id="q" type="search" placeholder="Pesquisar postagens…" autocomplete="off">
+          </div>
+          <div id="list">Carregando…</div>
+        </div>
+      </section>
 
-  <section id="redes" class="container">
-    <div class="card">
-      <h2>Redes Sociais</h2>
-      <ul>
-        <li>WhatsApp — grupo público (link no banner)</li>
-        <li>Telegram — canal (link no banner)</li>
-        <li>YouTube — canal (link no banner)</li>
-      </ul>
-    </div>
-  </section>
+      <!-- REDES -->
+      <section id="redes" class="block">
+        <div class="card">
+          <h2>Redes Sociais</h2>
+          <ul>
+            <li>WhatsApp — grupo público (link nos banners)</li>
+            <li>Telegram — canal (link nos banners)</li>
+            <li>YouTube — canal (link nos banners)</li>
+          </ul>
+        </div>
+      </section>
 
-  <section id="contatos" class="container">
-    <div class="card">
-      <h2>Contatos</h2>
-      <p>E-mail: contato@almanyx.com.br</p>
-    </div>
-  </section>
+      <!-- CONTATOS -->
+      <section id="contatos" class="block">
+        <div class="card">
+          <h2>Contatos</h2>
+          <p>E-mail: contato@almanyx.com.br</p>
+        </div>
+      </section>
+    </main>
+  </div>
 
-  <footer>
-    © 2025 Almanyx Oficial — All rights reserved.
-  </footer>
+  <footer>© 2025 Almanyx Oficial — All rights reserved.</footer>
 
-  <script>
-    // Drawer
-    const burger = document.getElementById('burger');
-    const drawer = document.getElementById('drawer');
-    const backdrop = document.getElementById('backdrop');
+<script>
+/* drawer */
+const burger = document.getElementById('burger');
+const drawer = document.getElementById('drawer');
+const backdrop = document.getElementById('backdrop');
+function openDrawer(){drawer.classList.add('open'); backdrop.classList.add('show'); burger.classList.add('active');}
+function closeDrawer(){drawer.classList.remove('open'); backdrop.classList.remove('show'); burger.classList.remove('active');}
+burger.addEventListener('click', ()=> drawer.classList.contains('open') ? closeDrawer() : openDrawer());
+backdrop.addEventListener('click', closeDrawer);
+window.addEventListener('keydown', e=>{ if(e.key==='Escape') closeDrawer(); });
 
-    function toggleDrawer(open){
-      if(open){ drawer.classList.add('open'); backdrop.classList.add('show'); burger.classList.add('active'); }
-      else{ drawer.classList.remove('open'); backdrop.classList.remove('show'); burger.classList.remove('active'); }
-    }
-    burger.addEventListener('click', ()=> toggleDrawer(!drawer.classList.contains('open')));
-    backdrop.addEventListener('click', ()=> toggleDrawer(false));
-    // fecha ao ESC
-    window.addEventListener('keydown', (e)=> { if(e.key === 'Escape') toggleDrawer(false) });
+/* carrossel */
+const slides = document.getElementById('slides');
+const dotsWrap = document.getElementById('dots');
+const prev = document.getElementById('prev');
+const next = document.getElementById('next');
+const total = slides.children.length;
+let idx = 0, timer;
 
-    // Carousel
-    const slides = document.getElementById('slides');
-    const prev = document.getElementById('prev');
-    const next = document.getElementById('next');
-    const dotsWrap = document.getElementById('dots');
-    const total = slides.children.length;
-    let idx = 0, timer = null, touching = false, startX = 0, deltaX = 0;
+for(let i=0;i<total;i++){
+  const b = document.createElement('button');
+  b.className = 'dot' + (i===0?' active':'');
+  b.setAttribute('aria-label','Ir para banner '+(i+1));
+  b.addEventListener('click',()=>go(i,true));
+  dotsWrap.appendChild(b);
+}
+function paintDots(){
+  [...dotsWrap.children].forEach((d,i)=>d.classList.toggle('active', i===idx));
+}
+function go(n, pause){
+  idx = (n+total)%total;
+  slides.style.transform = `translateX(${-idx*100}%)`;
+  paintDots();
+  if(pause) resetAuto();
+}
+prev.addEventListener('click',()=>go(idx-1,true));
+next.addEventListener('click',()=>go(idx+1,true));
+function resetAuto(){ clearInterval(timer); timer = setInterval(()=>go(idx+1,false), 5000); }
+resetAuto();
+const carousel = document.getElementById('carousel');
+carousel.addEventListener('mouseenter', ()=>clearInterval(timer));
+carousel.addEventListener('mouseleave', resetAuto);
+/* swipe */
+let touching=false, startX=0, dx=0;
+carousel.addEventListener('touchstart', e=>{touching=true; startX=e.touches[0].clientX; dx=0;}, {passive:true});
+carousel.addEventListener('touchmove', e=>{ if(!touching) return; dx=e.touches[0].clientX-startX; }, {passive:true});
+carousel.addEventListener('touchend', ()=>{ touching=false; if(Math.abs(dx)>40){ dx>0?go(idx-1,true):go(idx+1,true);} else resetAuto(); });
 
-    // dots
-    for(let i=0;i<total;i++){
-      const b = document.createElement('button');
-      b.className = 'dot' + (i===0?' active':'');
-      b.setAttribute('aria-label', 'Ir para banner ' + (i+1));
-      b.addEventListener('click', ()=> goTo(i,true));
-      dotsWrap.appendChild(b);
-    }
-    function updateDots(){
-      [...dotsWrap.children].forEach((d,i)=> d.classList.toggle('active', i===idx));
-    }
-    function goTo(i, pause){
-      idx = (i+total)%total;
-      slides.style.transform = `translateX(${-idx*100}%)`;
-      updateDots();
-      if(pause) resetAuto();
-    }
-    prev.addEventListener('click', ()=> goTo(idx-1,true));
-    next.addEventListener('click', ()=> goTo(idx+1,true));
-
-    // autoplay
-    function resetAuto(){
-      if(timer) clearInterval(timer);
-      timer = setInterval(()=> goTo(idx+1, false), 5000);
-    }
-    resetAuto();
-
-    // pausa quando passar o dedo / mouse
-    const carousel = document.getElementById('carousel');
-    carousel.addEventListener('mouseenter', ()=> clearInterval(timer));
-    carousel.addEventListener('mouseleave', resetAuto);
-
-    // swipe simples (touch)
-    carousel.addEventListener('touchstart', (e)=>{
-      clearInterval(timer);
-      touching = true; startX = e.touches[0].clientX; deltaX = 0;
-    }, {passive:true});
-    carousel.addEventListener('touchmove', (e)=>{
-      if(!touching) return;
-      deltaX = e.touches[0].clientX - startX;
-    }, {passive:true});
-    carousel.addEventListener('touchend', ()=>{
-      touching = false;
-      if(Math.abs(deltaX) > 40){
-        if(deltaX > 0) goTo(idx-1,true); else goTo(idx+1,true);
-      } else { resetAuto(); }
-    });
-
-  </script>
+/* posts + busca (espiral.json) */
+const listEl = document.getElementById('list');
+const qInput = document.getElementById('q');
+let DATA={posts:[]};
+function render(arr){
+  if(!arr.length){ listEl.innerHTML='<p style="color:#b00020">Nenhuma postagem encontrada.</p>'; return; }
+  listEl.innerHTML = arr.map(p=>`
+    <article id="${p.id||''}">
+      <h3>${p.titulo||''}</h3>
+      <small>${p.data||''}</small>
+      ${p.corpo||''}
+    </article>
+  `).join('');
+}
+function filter(){
+  const q=(qInput.value||'').toLowerCase().trim();
+  const res = DATA.posts.filter(p=>{
+    if(!q) return true;
+    const hay = (String(p.titulo)+' '+String(p.corpo)).toLowerCase();
+    return hay.includes(q);
+  });
+  render(res);
+}
+async function load(){
+  try{
+    const res = await fetch('./espiral.json?v='+Date.now(), {cache:'no-store'});
+    if(!res.ok) throw new Error(res.status);
+    const j = await res.json();
+    DATA.posts = (j.posts||[]).slice().sort((a,b)=>String(b.data||'').localeCompare(String(a.data||'')));
+    filter();
+  }catch(e){
+    listEl.innerHTML='<p style="color:#b00020">Erro ao carregar espiral.json.</p>';
+    console.error(e);
+  }
+}
+qInput.addEventListener('input', filter);
+document.addEventListener('DOMContentLoaded', load);
+</script>
 </body>
 </html>

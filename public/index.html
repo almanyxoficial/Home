@@ -1,328 +1,270 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>AlmaNyx — Portal Público</title>
-  <style>
-    :root{
-      --vinho:#8B0000;         /* dark red */
-      --dourado:#d4af37;       /* gold */
-      --dourado-esc:#b99426;
-      --texto:#1b1b1b;
-      --branco:#fff;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
-      color:var(--texto);
-      background:
-        radial-gradient(1200px 600px at 20% -10%, #fff4bf00, #fff0 60%),
-        linear-gradient(180deg, var(--dourado), var(--dourado-esc));
-      min-height:100dvh;
-    }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AlmaNyx</title>
+<meta name="description" content="AlmaNyx — portal público da Espiral.">
+<style>
+  :root{
+    --gold:#d4af37;         /* fundo dourado */
+    --header:#8B0000;       /* dark red */
+    --white:#ffffff;
+    --black:#111111;
+    --muted:#666;
+    --line:#e8e8e8;
+    --max: 960px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{background:var(--gold); color:var(--black); font:400 16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,Arial}
 
-    /* Header */
-    header{
-      position:sticky; top:0; z-index:50;
-      background:var(--vinho);
-      color:var(--branco);
-      box-shadow:0 2px 6px rgba(0,0,0,.24);
-    }
-    .topbar{
-      display:flex; align-items:center; justify-content:space-between;
-      gap:.5rem; padding:.8rem 1rem;
-    }
-    .brand-text{
-      margin-left:auto;
-      font-weight:800; letter-spacing:.3px;
-      font-size: clamp(16px, 2.8vw, 22px);
-    }
-    /* hamburger */
-    .burger{
-      width:36px; height:28px; display:grid; place-items:center; cursor:pointer;
-    }
-    .burger span, .burger::before, .burger::after{
-      content:""; display:block; width:28px; height:3px; background:#fff; border-radius:3px; transition:.25s ease;
-    }
-    .burger::before{ transform: translateY(-8px); }
-    .burger::after{ transform: translateY(8px); }
-    .burger.active span{opacity:0}
-    .burger.active::before{ transform: translateY(0) rotate(45deg); }
-    .burger.active::after{ transform: translateY(0) rotate(-45deg); }
+  /* Header fino */
+  header{
+    background:var(--header);
+    color:var(--white);
+    position:sticky; top:0; z-index:20;
+    box-shadow:0 6px 18px rgba(0,0,0,.15);
+  }
+  .header-inner{
+    max-width:var(--max);
+    margin:0 auto;
+    padding:10px 14px; /* mais fino */
+    display:grid;
+    grid-template-columns:40px 1fr;
+    align-items:center;
+    gap:10px;
+  }
+  .hamb{width:32px; height:32px; display:flex; flex-direction:column; justify-content:center; gap:6px; cursor:pointer}
+  .hamb span{height:3px; background:#fff; border-radius:2px; transition:.3s}
+  .welcome{
+    text-align:right;
+    font-weight:700;
+    letter-spacing:.3px;
+    color:#fff;
+  }
 
-    /* off-canvas menu */
-    .drawer{
-      position:fixed; inset:0 30% 0 auto; width:min(280px,80vw);
-      background:#fff; color:#222; transform: translateX(-100%);
-      transition: transform .28s ease; z-index:60; box-shadow: 2px 0 12px rgba(0,0,0,.28);
-    }
-    .drawer.open{ transform: translateX(0); }
-    .drawer nav a{
-      display:block; padding:14px 16px; text-decoration:none; color:#222; border-bottom:1px solid #eee;
-    }
-    .backdrop{
-      position:fixed; inset:0; background:rgba(0,0,0,.35); opacity:0; pointer-events:none; transition:.2s;
-      z-index:55;
-    }
-    .backdrop.show{ opacity:1; pointer-events:auto; }
+  /* Menu lateral + backdrop */
+  .backdrop{position:fixed; inset:0; background:rgba(0,0,0,.4); opacity:0; pointer-events:none; transition:.25s; z-index:30}
+  .backdrop.show{opacity:1; pointer-events:auto}
+  nav.menu{
+    position:fixed; top:0; right:-100%; height:100%; width:260px;
+    background:#111; color:#fff; z-index:31;
+    box-shadow:-6px 0 18px rgba(0,0,0,.35);
+    padding:18px; display:flex; flex-direction:column; gap:8px;
+    transition:.3s;
+  }
+  nav.menu.open{ right:0 }
+  nav.menu a{color:#fff; text-decoration:none; padding:10px 8px; border-radius:10px}
+  nav.menu a:hover{ background:rgba(255,255,255,.08) }
 
-    /* Logo central abaixo do header */
-    .logo-wrap{
-      display:grid; place-items:center; padding:14px 0 6px;
-    }
-    .logo{
-      width:110px; height:110px; border-radius:50%; background:#fff;
-      box-shadow:0 4px 16px rgba(0,0,0,.2), inset 0 0 0 6px #fff;
-      display:grid; place-items:center; overflow:hidden;
-    }
-    .logo img{ width:90%; height:auto; display:block; }
+  /* Logo central abaixo do cabeçalho */
+  .logo-area{display:flex; justify-content:center; padding:14px 0}
+  .logo{
+    width:88px; height:88px; border-radius:999px; overflow:hidden;
+    border:2px solid rgba(0,0,0,.12); background:rgba(255,255,255,.85);
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 6px 18px rgba(0,0,0,.12);
+  }
+  .logo img{width:100%; height:100%; object-fit:cover; display:block}
 
-    /* Carousel */
-    .carousel{
-      width:100%;
-      /* altura proporcional 1080x600 => 18:10 */
-      aspect-ratio: 18 / 10;
-      position:relative; overflow:hidden; background:#000;
-      max-width: 1200px; margin: 0 auto;
-      border-radius: 14px;
-      box-shadow: 0 8px 24px rgba(0,0,0,.22);
-    }
-    .slides{ display:flex; width:100%; height:100%; transition: transform .5s ease; }
-    .slide{ min-width:100%; height:100%; position:relative; }
-    .slide a{ display:block; width:100%; height:100%; }
-    .slide img{
-      width:100%; height:100%;
-      object-fit: contain; /* NÃO corta; exige arquivos no ratio 18:10 */
-      background:#000;
-    }
-    /* setas */
-    .nav-btn{
-      position:absolute; top:50%; transform:translateY(-50%);
-      width:42px; height:42px; border:none; border-radius:50%; background:rgba(0,0,0,.45); color:#fff;
-      display:grid; place-items:center; cursor:pointer; z-index:2;
-    }
-    .nav-btn:hover{ background:rgba(0,0,0,.6); }
-    .prev{ left:10px } .next{ right:10px }
+  /* Banner rotativo (desktop/mobile) */
+  .banner{position:relative; width:100%; max-height:300px; overflow:hidden}
+  .banner img{width:100%; height:300px; object-fit:cover; display:none}
+  .banner img.active{display:block}
+  .dots{position:absolute; bottom:12px; left:50%; transform:translateX(-50%); display:flex; gap:6px}
+  .dot{width:12px; height:12px; border-radius:50%; background:rgba(255,255,255,.6); cursor:pointer; transition:.3s}
+  .dot.active{background:#fff}
 
-    /* dots */
-    .dots{ position:absolute; inset:auto 0 10px 0; display:flex; gap:8px; justify-content:center; }
-    .dot{ width:10px; height:10px; border-radius:50%; background:#ffffff80; cursor:pointer; border:1px solid #00000033}
-    .dot.active{ background:#fff; }
+  /* Container branco */
+  .wrap{max-width:var(--max); margin:20px auto; padding:0 14px}
+  .card{
+    background:var(--white);
+    color:var(--black);
+    border-radius:16px;
+    border:1px solid var(--line);
+    box-shadow:0 8px 24px rgba(0,0,0,.10);
+    padding:22px;
+  }
 
-    /* Containers brancos */
-    .container{
-      max-width: 1100px; margin:20px auto; padding: 0 18px;
-    }
-    .card{
-      background:var(--branco); border-radius:18px; padding:22px;
-      box-shadow: 0 6px 18px rgba(0,0,0,.18);
-    }
-    h2{ margin:4px 0 12px 0; font-size: clamp(20px, 3.2vw, 28px); }
+  /* Barra de busca */
+  .bar{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px}
+  input[type="search"]{flex:1 1 320px; padding:12px 14px; border:1px solid var(--line); border-radius:10px; outline:none}
 
-    /* Rodapé */
-    footer{
-      text-align:center; color:#fff; padding:22px 12px 30px;
-    }
+  hr.sep{border:0; border-top:1px solid var(--line); margin:16px 0}
 
-    /* Responsividade mínima */
-    @media (min-width: 900px){
-      .container{ padding: 0 24px; }
-      .logo{ width:128px; height:128px; }
-    }
-  </style>
+  /* Posts */
+  article{padding:16px 0; border-bottom:1px dashed var(--line)}
+  article:last-child{border-bottom:none}
+  article h2{margin:0 0 6px; font:700 22px/1.25 ui-serif, Georgia, serif}
+  article small{display:block; color:var(--muted); margin-bottom:10px}
+
+  /* Rodapé */
+  footer{text-align:center; color:#fff; background:var(--header); padding:16px; margin-top:24px; font-size:14px}
+</style>
 </head>
 <body>
 
+  <!-- Cabeçalho -->
   <header>
-    <div class="topbar">
-      <div class="burger" id="burger"><span></span></div>
-      <div class="brand-text">Sejam Bem-vindos!</div>
+    <div class="header-inner">
+      <div class="hamb" id="menuBtn" aria-label="Abrir menu" title="Menu">
+        <span></span><span></span><span></span>
+      </div>
+      <div class="welcome">Sejam Bem-vindos!</div>
     </div>
   </header>
 
-  <!-- menu lateral -->
-  <aside class="drawer" id="drawer">
-    <nav>
-      <a href="#sobre">Sobre</a>
-      <a href="#posts">Postagens</a>
-      <a href="#redes">Redes Sociais</a>
-      <a href="#contatos">Contatos</a>
-    </nav>
-  </aside>
-  <div class="backdrop" id="backdrop"></div>
-
-  <!-- logo central -->
-  <div class="logo-wrap">
+  <!-- Logo central -->
+  <div class="logo-area">
     <div class="logo">
-      <img src="logo.png" alt="AlmaNyx logo" loading="lazy">
+      <!-- Coloque seu logo em ./logo.png -->
+      <img src="./logo.png" alt="AlmaNyx">
     </div>
   </div>
 
-  <!-- CARROSSEL -->
-  <section class="container">
-    <div class="carousel" id="carousel" aria-label="Banners promocionais">
-      <button class="nav-btn prev" aria-label="Anterior" id="prev">‹</button>
-      <button class="nav-btn next" aria-label="Próximo" id="next">›</button>
+  <!-- Banner (troca entre desktop/mobile) -->
+  <div class="banner" id="banner">
+    <!-- As imagens serão controladas via JS; deixamos 3 slots -->
+    <img alt="Banner 1" class="active">
+    <img alt="Banner 2">
+    <img alt="Banner 3">
+    <div class="dots">
+      <div class="dot active" data-i="0"></div>
+      <div class="dot" data-i="1"></div>
+      <div class="dot" data-i="2"></div>
+    </div>
+  </div>
 
-      <div class="slides" id="slides">
-        <!-- Slide 1 -->
-        <div class="slide">
-          <a href="#" target="_blank" rel="noopener">
-            <img
-              src="banneralmanyx01-desktop.png"
-              srcset="
-                banneralmanyx01-mobile.png 1080w,
-                banneralmanyx01-desktop.png 1920w
-              "
-              sizes="(max-width: 768px) 100vw, 100vw"
-              width="1920" height="600"
-              alt="Entre para o grupo do WhatsApp AlmaNyx">
-          </a>
-        </div>
-        <!-- Slide 2 -->
-        <div class="slide">
-          <a href="#" target="_blank" rel="noopener">
-            <img
-              src="banneralmanyx02-desktop.png"
-              srcset="
-                banneralmanyx02-mobile.png 1080w,
-                banneralmanyx02-desktop.png 1920w
-              "
-              sizes="(max-width: 768px) 100vw, 100vw"
-              width="1920" height="600"
-              alt="Siga nosso canal no YouTube">
-          </a>
-        </div>
-        <!-- Slide 3 -->
-        <div class="slide">
-          <a href="#" target="_blank" rel="noopener">
-            <img
-              src="banneralmanyx03-desktop.png"
-              srcset="
-                banneralmanyx03-mobile.png 1080w,
-                banneralmanyx03-desktop.png 1920w
-              "
-              sizes="(max-width: 768px) 100vw, 100vw"
-              width="1920" height="600"
-              alt="Entre no canal do Telegram">
-          </a>
-        </div>
+  <!-- Backdrop e menu lateral -->
+  <div class="backdrop" id="backdrop"></div>
+  <nav class="menu" id="menu" aria-label="Menu">
+    <a href="#sobre">Sobre</a>
+    <a href="#posts">Postagens</a>
+    <a href="#redes">Rede Sociais</a>
+    <a href="#contatos">Contatos</a>
+  </nav>
+
+  <!-- Conteúdo -->
+  <main class="wrap">
+    <section class="card">
+      <div id="sobre">
+        <h2>Sobre</h2>
+        <p>Bem-vindo ao portal público da Espiral. Aqui compartilhamos reflexões selecionadas do nosso caminho.</p>
       </div>
 
-      <div class="dots" id="dots" role="tablist" aria-label="Navegação dos banners"></div>
-    </div>
-  </section>
+      <hr class="sep">
 
-  <!-- CONTEÚDO -->
-  <section id="sobre" class="container">
-    <div class="card">
-      <h2>Sobre</h2>
-      <p>Bem-vindo ao portal público da Espiral. Aqui compartilhamos reflexões e convites para quem deseja trilhar um caminho de harmonia e verdade.</p>
-    </div>
-  </section>
+      <div class="bar">
+        <input id="q" type="search" placeholder="Pesquisar postagens…" autocomplete="off">
+      </div>
 
-  <section id="posts" class="container">
-    <div class="card">
-      <h2>Postagens</h2>
-      <p>Em breve, entradas selecionadas do nosso caminho na Espiral.</p>
-    </div>
-  </section>
+      <section id="posts"></section>
 
-  <section id="redes" class="container">
-    <div class="card">
-      <h2>Redes Sociais</h2>
-      <ul>
-        <li>WhatsApp — grupo público (link no banner)</li>
-        <li>Telegram — canal (link no banner)</li>
-        <li>YouTube — canal (link no banner)</li>
-      </ul>
-    </div>
-  </section>
+      <hr class="sep">
 
-  <section id="contatos" class="container">
-    <div class="card">
-      <h2>Contatos</h2>
-      <p>E-mail: contato@almanyx.com.br</p>
-    </div>
-  </section>
+      <div id="redes"><h2>Rede Sociais</h2><p>Links para WhatsApp, Telegram e YouTube.</p></div>
 
-  <footer>
-    © 2025 Almanyx Oficial — All rights reserved.
-  </footer>
+      <hr class="sep">
 
-  <script>
-    // Drawer
-    const burger = document.getElementById('burger');
-    const drawer = document.getElementById('drawer');
-    const backdrop = document.getElementById('backdrop');
+      <div id="contatos"><h2>Contatos</h2><p>Seu e-mail ou formulário de contato pode entrar aqui.</p></div>
+    </section>
+  </main>
 
-    function toggleDrawer(open){
-      if(open){ drawer.classList.add('open'); backdrop.classList.add('show'); burger.classList.add('active'); }
-      else{ drawer.classList.remove('open'); backdrop.classList.remove('show'); burger.classList.remove('active'); }
+  <footer>© 2025 Almanyx Oficial — All rights reserved</footer>
+
+<script>
+(function(){
+  const $ = s => document.querySelector(s);
+  const postsEl = $('#posts'); const qInput=$('#q');
+  const menuBtn=$('#menuBtn'),menu=$('#menu'),backdrop=$('#backdrop');
+
+  /* MENU */
+  function openMenu(){menu.classList.add('open');backdrop.classList.add('show');}
+  function closeMenu(){menu.classList.remove('open');backdrop.classList.remove('show');}
+  menuBtn.addEventListener('click',openMenu);backdrop.addEventListener('click',closeMenu);
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenu();});
+
+  /* BANNERS: desktop/mobile auto */
+  const desktop = [
+    './banneralmanyx01-desktop.png',
+    './banneralmanyx02-desktop.png',
+    './banneralmanyx03-desktop.png'
+  ];
+  const mobile = [
+    './banneralmanyx01-mobile.png',
+    './banneralmanyx02-mobile.png',
+    './banneralmanyx03-mobile.png'
+  ];
+
+  const banner = $('#banner');
+  const imgs = [...banner.querySelectorAll('img')];
+  const dots = [...banner.querySelectorAll('.dot')];
+  let idx = 0;
+  let useMobile = window.innerWidth < 768;
+
+  function sourceSet(i){
+    const arr = useMobile ? mobile : desktop;
+    return arr[i] || '';
+  }
+  function paintSources(){
+    imgs.forEach((im,i)=>{ im.src = sourceSet(i); });
+  }
+  function show(i){
+    imgs.forEach((im,n)=>im.classList.toggle('active', n===i));
+    dots.forEach((d,n)=>d.classList.toggle('active', n===i));
+    idx = i;
+  }
+  dots.forEach(d=>d.addEventListener('click',()=>show(+d.dataset.i)));
+
+  // Auto-slide
+  let timer = setInterval(()=>show((idx+1)%imgs.length), 5000);
+
+  // Atualiza quando redimensionar (troca entre desktop/mobile)
+  window.addEventListener('resize', ()=>{
+    const nowMobile = window.innerWidth < 768;
+    if(nowMobile !== useMobile){
+      useMobile = nowMobile;
+      paintSources();
+      show(idx); // mantém o índice atual
     }
-    burger.addEventListener('click', ()=> toggleDrawer(!drawer.classList.contains('open')));
-    backdrop.addEventListener('click', ()=> toggleDrawer(false));
-    // fecha ao ESC
-    window.addEventListener('keydown', (e)=> { if(e.key === 'Escape') toggleDrawer(false) });
+  });
 
-    // Carousel
-    const slides = document.getElementById('slides');
-    const prev = document.getElementById('prev');
-    const next = document.getElementById('next');
-    const dotsWrap = document.getElementById('dots');
-    const total = slides.children.length;
-    let idx = 0, timer = null, touching = false, startX = 0, deltaX = 0;
+  // inicializa
+  paintSources();
+  show(0);
 
-    // dots
-    for(let i=0;i<total;i++){
-      const b = document.createElement('button');
-      b.className = 'dot' + (i===0?' active':'');
-      b.setAttribute('aria-label', 'Ir para banner ' + (i+1));
-      b.addEventListener('click', ()=> goTo(i,true));
-      dotsWrap.appendChild(b);
+  /* POSTS PÚBLICOS (espiral.json) */
+  let DATA={posts:[]};
+  function renderPosts(list){
+    if(!list.length){postsEl.innerHTML='<p>Nenhum registro encontrado.</p>';return;}
+    postsEl.innerHTML=list.map(p=>`
+      <article id="${p.id}">
+        <h2>${p.titulo}</h2>
+        <small>${p.data||''}</small>
+        ${p.corpo||''}
+      </article>`).join('');
+  }
+  function filter(){
+    const q=(qInput.value||'').toLowerCase().trim();
+    const list=DATA.posts.filter(p=>!q||(String(p.titulo)+' '+String(p.corpo)).toLowerCase().includes(q));
+    renderPosts(list);
+  }
+  async function load(){
+    try{
+      const res=await fetch('./espiral.json?v='+Date.now(),{cache:'no-store'});
+      if(!res.ok) throw new Error(res.status);
+      const j=await res.json();
+      DATA.posts=(j.posts||[]).slice().sort((a,b)=>String(b.data||'').localeCompare(String(a.data||'')));
+      filter();
+    }catch(e){
+      postsEl.innerHTML='<p style="color:#b00020">Erro ao carregar espiral.json.</p>';
+      console.error(e);
     }
-    function updateDots(){
-      [...dotsWrap.children].forEach((d,i)=> d.classList.toggle('active', i===idx));
-    }
-    function goTo(i, pause){
-      idx = (i+total)%total;
-      slides.style.transform = `translateX(${-idx*100}%)`;
-      updateDots();
-      if(pause) resetAuto();
-    }
-    prev.addEventListener('click', ()=> goTo(idx-1,true));
-    next.addEventListener('click', ()=> goTo(idx+1,true));
-
-    // autoplay
-    function resetAuto(){
-      if(timer) clearInterval(timer);
-      timer = setInterval(()=> goTo(idx+1, false), 5000);
-    }
-    resetAuto();
-
-    // pausa quando passar o dedo / mouse
-    const carousel = document.getElementById('carousel');
-    carousel.addEventListener('mouseenter', ()=> clearInterval(timer));
-    carousel.addEventListener('mouseleave', resetAuto);
-
-    // swipe simples (touch)
-    carousel.addEventListener('touchstart', (e)=>{
-      clearInterval(timer);
-      touching = true; startX = e.touches[0].clientX; deltaX = 0;
-    }, {passive:true});
-    carousel.addEventListener('touchmove', (e)=>{
-      if(!touching) return;
-      deltaX = e.touches[0].clientX - startX;
-    }, {passive:true});
-    carousel.addEventListener('touchend', ()=>{
-      touching = false;
-      if(Math.abs(deltaX) > 40){
-        if(deltaX > 0) goTo(idx-1,true); else goTo(idx+1,true);
-      } else { resetAuto(); }
-    });
-
-  </script>
+  }
+  qInput.addEventListener('input',filter);
+  document.addEventListener('DOMContentLoaded',load);
+})();
+</script>
 </body>
 </html>

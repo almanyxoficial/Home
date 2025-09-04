@@ -4,26 +4,22 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>AlmaNyx — Portal Público</title>
-<meta name="description" content="AlmaNyx — portal público da Espiral.">
 <style>
   :root{
-    --vinho:#8B0000; --gold:#d4af37; --gold2:#c39a2d; --bg:#f7f7f7;
+    --vinho:#8B0000; --gold:#d4af37; --bg:#fafafa;
     --fg:#171717; --muted:#666; --line:#e8e8e8; --white:#fff;
-    --wrap: 1000px;
+    --wrap:1000px;
   }
   *{box-sizing:border-box}
   html,body{margin:0}
   body{
     font:400 16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,Arial;
     color:var(--fg);
-    background:linear-gradient(180deg,var(--gold),var(--gold2));
+    background:linear-gradient(180deg,var(--gold),#c39a2d);
   }
 
-  /* topo */
-  header{
-    position:sticky; top:0; z-index:50; background:var(--vinho); color:#fff;
-    box-shadow:0 2px 8px rgba(0,0,0,.25);
-  }
+  /* HEADER (igual vibe do primeiro) */
+  header{position:sticky; top:0; z-index:50; background:var(--vinho); color:#fff; box-shadow:0 2px 8px rgba(0,0,0,.25)}
   .topbar{
     max-width:var(--wrap); margin:0 auto; padding:10px 14px;
     display:grid; grid-template-columns:40px 1fr; align-items:center; gap:10px;
@@ -34,7 +30,7 @@
   .burger.active span{opacity:0} .burger.active::before{transform:translateY(0) rotate(45deg)} .burger.active::after{transform:translateY(0) rotate(-45deg)}
   .welcome{text-align:right; font-weight:800; letter-spacing:.3px}
 
-  /* menu lateral */
+  /* DRAWER */
   .backdrop{position:fixed; inset:0; background:rgba(0,0,0,.35); opacity:0; pointer-events:none; transition:.2s; z-index:55}
   .backdrop.show{opacity:1; pointer-events:auto}
   .drawer{
@@ -45,26 +41,20 @@
   .drawer.open{transform:translateX(0)}
   .drawer nav a{display:block; padding:14px 16px; text-decoration:none; color:#111; border-bottom:1px solid #eee}
 
-  /* logo e carrossel */
+  /* WRAP + LOGO */
   .wrap{max-width:var(--wrap); margin:0 auto; padding:0 14px}
-  .logo-area{display:flex; justify-content:center; padding:14px 0 6px}
-  .logo{width:110px; height:110px; border-radius:999px; background:#fff; display:grid; place-items:center; overflow:hidden; box-shadow:0 6px 18px rgba(0,0,0,.2)}
+  .logo-area{display:flex; justify-content:center; padding:14px 0 8px}
+  .logo{width:112px; height:112px; border-radius:999px; background:#fff; display:grid; place-items:center; overflow:hidden; box-shadow:0 6px 18px rgba(0,0,0,.2)}
   .logo img{width:90%; height:auto; display:block}
 
-  .card{
-    background:var(--white); border-radius:16px; padding:18px;
-    border:1px solid var(--line); box-shadow:0 8px 24px rgba(0,0,0,.12);
-  }
-
-  /* carrossel RESPONSIVO (sem esticar) */
-  .carousel{position:relative; width:100%; margin:6px auto 18px; border-radius:14px; overflow:hidden; background:#000}
-  /* 1080x600 => 18:10. usamos aspect-ratio e as imagens mantêm proporção */
-  .carousel{aspect-ratio:18/10}
+  /* CARROSSEL — dimensão definida 16:5 (serve 1920x600 e 1080x600) */
+  .carousel{position:relative; width:100%; border-radius:14px; overflow:hidden; background:#000; box-shadow:0 8px 22px rgba(0,0,0,.18)}
+  .carousel .viewport{aspect-ratio:16/5; width:100%}            /* <- dimensões exatas */
   .slides{display:flex; width:100%; height:100%; transition:transform .5s ease}
   .slide{min-width:100%; height:100%}
   .slide img{
     width:100%; height:100%;
-    object-fit:contain;           /* NÃO corta; nada esticado */
+    object-fit:contain; /* não corta; ajuste seus banners já no ratio 16:5 */
     background:#000;
   }
   .nav-btn{
@@ -78,12 +68,13 @@
   .dot{width:10px; height:10px; border-radius:50%; background:#ffffff80; border:1px solid #00000033; cursor:pointer}
   .dot.active{background:#fff}
 
-  /* seções */
-  main{padding-bottom:24px}
+  /* CONTEÚDO */
+  main{padding-bottom:26px}
   section.block{margin:18px 0}
+  .card{background:#fff; border-radius:16px; padding:18px; border:1px solid var(--line); box-shadow:0 8px 24px rgba(0,0,0,.12)}
   h2{margin:6px 0 10px; font:700 24px/1.25 ui-serif,Georgia,serif}
 
-  /* busca e posts */
+  /* BUSCA + POSTS (espiral.json) */
   .bar{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px}
   input[type="search"]{flex:1 1 320px; padding:12px 14px; border:1px solid var(--line); border-radius:10px; outline:none}
   article{padding:14px 0; border-bottom:1px dashed var(--line)}
@@ -91,10 +82,9 @@
   article h3{margin:0 0 6px; font:700 20px/1.25 ui-serif,Georgia,serif}
   article small{display:block; color:var(--muted); margin-bottom:8px}
 
-  footer{background:var(--vinho); color:#fff; text-align:center; padding:16px; margin-top:10px}
+  footer{background:var(--vinho); color:#fff; text-align:center; padding:16px; margin-top:12px}
 
-  /* desktop */
-  @media (min-width: 768px){
+  @media (min-width:768px){
     .logo{width:128px; height:128px}
   }
 </style>
@@ -107,7 +97,7 @@
     </div>
   </header>
 
-  <!-- menu lateral -->
+  <!-- Drawer -->
   <aside class="drawer" id="drawer">
     <nav>
       <a href="#sobre" onclick="closeDrawer()">Sobre</a>
@@ -119,51 +109,53 @@
   <div class="backdrop" id="backdrop"></div>
 
   <div class="wrap">
-    <!-- logo -->
+    <!-- LOGO -->
     <div class="logo-area">
       <div class="logo"><img src="./logo.png" alt="AlmaNyx"></div>
     </div>
 
-    <!-- CARROSSEL responsivo (srcset + sizes) -->
+    <!-- CARROSSEL (srcset + sizes; 1080 mobile, 1920 desktop) -->
     <div class="carousel" id="carousel" aria-label="Banners">
-      <button class="nav-btn prev" id="prev" aria-label="Anterior">‹</button>
-      <button class="nav-btn next" id="next" aria-label="Próximo">›</button>
-      <div class="slides" id="slides">
-        <div class="slide">
-          <img
-            src="banneralmanyx01-desktop.png"
-            srcset="
-              banneralmanyx01-mobile.png 1080w,
-              banneralmanyx01-desktop.png 1920w
-            "
-            sizes="(max-width: 768px) 100vw, 100vw"
-            width="1920" height="600"
-            alt="Convite WhatsApp">
+      <div class="viewport">
+        <button class="nav-btn prev" id="prev" aria-label="Anterior">‹</button>
+        <button class="nav-btn next" id="next" aria-label="Próximo">›</button>
+        <div class="slides" id="slides">
+          <div class="slide">
+            <img
+              src="banneralmanyx01-desktop.png"
+              srcset="
+                banneralmanyx01-mobile.png 1080w,
+                banneralmanyx01-desktop.png 1920w
+              "
+              sizes="(max-width: 768px) 100vw, 100vw"
+              width="1920" height="600"
+              alt="Convite WhatsApp">
+          </div>
+          <div class="slide">
+            <img
+              src="banneralmanyx02-desktop.png"
+              srcset="
+                banneralmanyx02-mobile.png 1080w,
+                banneralmanyx02-desktop.png 1920w
+              "
+              sizes="(max-width: 768px) 100vw, 100vw"
+              width="1920" height="600"
+              alt="Convite Telegram">
+          </div>
+          <div class="slide">
+            <img
+              src="banneralmanyx03-desktop.png"
+              srcset="
+                banneralmanyx03-mobile.png 1080w,
+                banneralmanyx03-desktop.png 1920w
+              "
+              sizes="(max-width: 768px) 100vw, 100vw"
+              width="1920" height="600"
+              alt="Canal YouTube">
+          </div>
         </div>
-        <div class="slide">
-          <img
-            src="banneralmanyx02-desktop.png"
-            srcset="
-              banneralmanyx02-mobile.png 1080w,
-              banneralmanyx02-desktop.png 1920w
-            "
-            sizes="(max-width: 768px) 100vw, 100vw"
-            width="1920" height="600"
-            alt="Convite Telegram">
-        </div>
-        <div class="slide">
-          <img
-            src="banneralmanyx03-desktop.png"
-            srcset="
-              banneralmanyx03-mobile.png 1080w,
-              banneralmanyx03-desktop.png 1920w
-            "
-            sizes="(max-width: 768px) 100vw, 100vw"
-            width="1920" height="600"
-            alt="Canal YouTube">
-        </div>
+        <div class="dots" id="dots" role="tablist" aria-label="Navegação dos banners"></div>
       </div>
-      <div class="dots" id="dots" role="tablist" aria-label="Navegação dos banners"></div>
     </div>
 
     <main>
@@ -211,7 +203,7 @@
   <footer>© 2025 Almanyx Oficial — All rights reserved.</footer>
 
 <script>
-/* drawer */
+/* Drawer */
 const burger = document.getElementById('burger');
 const drawer = document.getElementById('drawer');
 const backdrop = document.getElementById('backdrop');
@@ -221,7 +213,7 @@ burger.addEventListener('click', ()=> drawer.classList.contains('open') ? closeD
 backdrop.addEventListener('click', closeDrawer);
 window.addEventListener('keydown', e=>{ if(e.key==='Escape') closeDrawer(); });
 
-/* carrossel */
+/* Carrossel */
 const slides = document.getElementById('slides');
 const dotsWrap = document.getElementById('dots');
 const prev = document.getElementById('prev');
@@ -249,6 +241,7 @@ prev.addEventListener('click',()=>go(idx-1,true));
 next.addEventListener('click',()=>go(idx+1,true));
 function resetAuto(){ clearInterval(timer); timer = setInterval(()=>go(idx+1,false), 5000); }
 resetAuto();
+/* pausa on hover */
 const carousel = document.getElementById('carousel');
 carousel.addEventListener('mouseenter', ()=>clearInterval(timer));
 carousel.addEventListener('mouseleave', resetAuto);
@@ -258,7 +251,7 @@ carousel.addEventListener('touchstart', e=>{touching=true; startX=e.touches[0].c
 carousel.addEventListener('touchmove', e=>{ if(!touching) return; dx=e.touches[0].clientX-startX; }, {passive:true});
 carousel.addEventListener('touchend', ()=>{ touching=false; if(Math.abs(dx)>40){ dx>0?go(idx-1,true):go(idx+1,true);} else resetAuto(); });
 
-/* posts + busca (espiral.json) */
+/* Posts (espiral.json) + busca */
 const listEl = document.getElementById('list');
 const qInput = document.getElementById('q');
 let DATA={posts:[]};
@@ -293,8 +286,8 @@ async function load(){
     console.error(e);
   }
 }
-qInput.addEventListener('input', filter);
 document.addEventListener('DOMContentLoaded', load);
+qInput.addEventListener('input', filter);
 </script>
 </body>
 </html>

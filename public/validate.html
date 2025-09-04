@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Validador — almanyx.json</title>
+<style>
+  :root{--bg:#0b0c0e;--fg:#e9e9e9;--ok:#18a558;--warn:#e8a317;--err:#e5484d;--card:#14161a;--mut:#a3a3a3;--line:#1f2126}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);font:500 16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial}
+  .wrap{max-width:1000px;margin:0 auto;padding:24px}
+  h1{margin:0 0 10px;font:800 26px/1.2 ui-serif,Georgia,serif}
+  p.sub{margin:0 0 18px;color:var(--mut)}
+  .bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+  input[type="text"]{flex:1 1 420px;background:#0f1114;color:var(--fg);border:1px solid var(--line);border-radius:10px;padding:12px}
+  button{background:#1f6feb;color:#fff;border:0;border-radius:10px;padding:12px 16px;font-weight:700;cursor:pointer}
+  button:hover{opacity:.95}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin:16px 0}
+  .grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+  .pill{display:inline-block;border-radius:999px;padding:4px 10px;font-size:13px}
+  .ok{background:color-mix(in srgb, var(--ok) 18%, transparent);color:var(--ok);border:1px solid color-mix(in srgb, var(--ok) 55%, transparent)}
+  .warn{background:color-mix(in srgb, var(--warn) 18%, transparent);color:var(--warn);border:1px solid color-mix(in srgb, var(--warn) 55%, transparent)}
+  .err{background:color-mix(in srgb, var(--err) 18%, transparent);color:var(--err);border:1px solid color-mix(in srgb, var(--err) 55%, transparent)}
+  ul{margin:10px 0 0 18px}
+  code{background:#0e1013;border:1px solid var(--line);border-radius:6px;padding:2px 6px}
+  small{color:var(--mut)}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Validador — <code>almanyx.json</code></h1>
+    <p class="sub">Checa formato, chaves obrigatórias, unicidade de <code>ordem</code> e <code>id</code>, datas e consistência geral.</p>
+
+    <div class="bar">
+      <input id="url" type="text" value="./almanyx.json" placeholder="URL do JSON (ex.: ./almanyx.json)">
+      <button id="go">Validar</button>
+    </div>
+
+    <div id="summary" class="grid">
+      <div class="card"><div class="pill ok" id="sum-ok">OK: 0</div><ul id="ok"></ul></div>
+      <div class="card"><div class="pill warn" id="sum-warn">Avisos: 0</div><ul id="warn"></ul></div>
+      <div class="card"><div class="pill err" id="sum-err">Erros: 0</div><ul id="err"></ul></div>
+    </div>
+
+    <div class="card">
+      <small>Dicas: use <code>?v=</code> no fim da URL para forçar atualização (ex.: <code>./almanyx.json?v=Date.now()</code>). Os erros impedem leitura correta; avisos são melhorias recomendadas.</small>
+    </div>
+  </div>
+
+<script>
+const $ = s => document.querySelector(s);
+const okEl = $('#ok'), warnEl = $('#warn'), errEl = $('#err');
+const sumOk = $('#sum-ok'), sumWarn = $('#sum-warn'), sumErr = $('#sum-err');
+
+function add(liParent, text){
+  const li = document.createElement('li');
+  li.textContent = text;
+  liParent.appendChild(li);
+}
+function reset(){
+  okEl.innerHTML = ''; warnEl.innerHTML = ''; errEl.innerHTML = '';
+  sumOk.textContent = 'OK: 0'; sumWarn.textContent = 'Avisos: 0'; sumErr.textContent = 'Erros: 0';
+}
+function bump(which){
+  const el = which==='ok'?sumOk:which==='warn'?sumWarn:sumErr;
+  const n = parseInt(el.textContent.replace(/\D/g,'')) + 1;
+  el.textContent = el.textContent.replace(/\d+$/, n);
+}
+
+function isISODate(s){
+  return typeof s==='string' && /^\d{4}-\d{2}-\d{2}$/.test(s);
+}
+
+function validatePosts(posts){
+  const ids = new Set();
+  const ords = new Set();
+  const ordNums = [];
+
+  if(!Array.isArray(posts)){
+    add(errEl, "Campo raiz 'posts' não é um array.");
+    bump('err');
+    return;
+  }
+  add(okEl, `posts: ${posts.length} entradas`); bump('ok');
+
+  posts.forEach((p, idx)=>{
+    const where = `#${idx+1}${p && p.id ? ` (${p.id})` : ''}`;
+
+    // chaves obrigatórias
+    const req = ['ordem','id','titulo','data','tags','corpo'];
+    req.forEach(k=>{
+      if(!(k in p)){ add(errEl, `${where}: falta a chave obrigatória '${k}'.`); bump('err'); }
+    });
+
+    // ordem
+    const o = Number(p.ordem);
+    if(Number.isNaN(o)){ add(errEl, `${where}: 'ordem' não é numérica (${p.ordem}).`); bump('err'); }
+    else { ordNums.push(o); if(ords.has(o)){ add(errEl, `${where}: 'ordem' duplicada (${o}).`); bump('err'); } else { ords.add(o); } }
+
+    // id
+    if(typeof p.id !== 'string' || !p.id.trim()){
+      add(errEl, `${where}: 'id' vazio ou não-string.`); bump('err');
+    }else{
+      if(ids.has(p.id)){ add(errEl, `${where}: 'id' duplicado (${p.id}).`); bump('err'); }
+      else { ids.add(p.id); }
+      // dica de padrão (aviso, não erro)
+      if(!/^chrononyx-\d+$/i.test(p.id)){
+        add(warnEl, `${where}: 'id' fora do padrão sugerido (chrononyx-XX).`); bump('warn');
+      }
+    }
+
+    // titulo
+    if(typeof p.titulo!=='string' || !p.titulo.trim()){
+      add(errEl, `${where}: 'titulo' vazio.`); bump('err');
+    }
+
+    // data
+    if(!isISODate(p.data)){
+      add(errEl, `${where}: 'data' deve ser YYYY-MM-DD.`); bump('err');
+    }
+
+    // tags
+    if(!Array.isArray(p.tags)){ add(errEl, `${where}: 'tags' deve ser array.`); bump('err'); }
+    else{
+      const bad = p.tags.find(t=> typeof t!=='string' || !t.trim());
+      if(bad !== undefined){ add(errEl, `${where}: 'tags' com item vazio/não-string.`); bump('err'); }
+      if(p.tags.length===0){ add(warnEl, `${where}: 'tags' vazio — recomenda-se ao menos 1 tag.`); bump('warn'); }
+    }
+
+    // corpo
+    if(typeof p.corpo!=='string' || !p.corpo.trim()){
+      add(errEl, `${where}: 'corpo' vazio.`); bump('err');
+    }
+  });
+
+  // checa continuidade/gaps (aviso)
+  ordNums.sort((a,b)=>a-b);
+  let gaps = 0;
+  for(let i=1;i<ordNums.length;i++){
+    const diff = ordNums[i] - ordNums[i-1];
+    if(diff>1) gaps++;
+  }
+  if(gaps>0){
+    add(warnEl, `Há ${gaps} lacunas na sequência de 'ordem' (isso não quebra, mas pode confundir navegação).`);
+    bump('warn');
+  }else{
+    add(okEl, `Sequência de 'ordem' sem lacunas.`); bump('ok');
+  }
+}
+
+async function run(){
+  reset();
+  const url = $('#url').value.trim();
+  try{
+    const res = await fetch(url + (url.includes('?')?'&':'?') + 'v=' + Date.now(), {cache:'no-store'});
+    if(!res.ok) throw new Error(res.status + ' ' + res.statusText);
+    const j = await res.json();
+    if(!j || typeof j!=='object'){ add(errEl, 'JSON não é um objeto.'); bump('err'); return; }
+    if(!('posts' in j)){ add(errEl, "Chave raiz 'posts' ausente."); bump('err'); return; }
+    validatePosts(j.posts);
+    if(sumErr.textContent.endsWith('0')) add(okEl, 'Estrutura válida para leitura!'); else add(warnEl, 'Corrija os erros acima para evitar quebras.');
+    bump(sumErr.textContent.endsWith('0') ? 'ok' : 'warn');
+  }catch(e){
+    add(errEl, 'Falha no fetch/parse: ' + e.message);
+    bump('err');
+  }
+}
+
+document.getElementById('go').addEventListener('click', run);
+</script>
+</body>
+</html>

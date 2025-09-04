@@ -1,133 +1,328 @@
 <!doctype html>
-
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>AlmaNyx</title>
-<meta name="description" content="AlmaNyx — memória singular, nossa biblioteca viva.">
-<style>
-  :root{
-    --bg:#fff; --fg:#111; --muted:#6b6b6b; --line:#e8e8e8;
-    --max:860px;
-  }
-  *{box-sizing:border-box}
-  html,body{margin:0;background:var(--bg);color:var(--fg);font:400 16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,Arial}
-  .wrap{max-width:var(--max);margin:0 auto;padding:28px 22px}
-  header{background:#8b0000;color:#fff;padding:14px 20px;display:flex;justify-content:space-between;align-items:center}
-  header .title{font:700 24px/1.2 ui-serif, Georgia, "Times New Roman", serif;}
-  .menu-btn{font-size:26px;cursor:pointer;}
-  .logo-center{display:flex;justify-content:center;align-items:center;margin:16px 0;}
-  .logo-center img{max-width:140px;border-radius:50%;}.banner{position:relative;overflow:hidden;max-width:100%;height:auto;} .banner img{width:100%;height:auto;display:block;}
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AlmaNyx — Portal Público</title>
+  <style>
+    :root{
+      --vinho:#8B0000;         /* dark red */
+      --dourado:#d4af37;       /* gold */
+      --dourado-esc:#b99426;
+      --texto:#1b1b1b;
+      --branco:#fff;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+      color:var(--texto);
+      background:
+        radial-gradient(1200px 600px at 20% -10%, #fff4bf00, #fff0 60%),
+        linear-gradient(180deg, var(--dourado), var(--dourado-esc));
+      min-height:100dvh;
+    }
 
-.bar{margin:22px auto 10px; max-width:720px; display:flex; gap:10px; flex-wrap:wrap; justify-content:center} input[type="search"]{flex:1 1 340px; padding:12px 14px; border:1px solid var(--line); border-radius:8px; outline:none} .tags{display:flex; gap:8px; flex-wrap:wrap; justify-content:center} .tag{padding:6px 10px; border-radius:999px; border:1px solid var(--line); color:#333; background:#fafafa; cursor:pointer} .tag.on{background:#111;color:#fff;border-color:#111} hr.sep{border:0; border-top:1px solid var(--line); margin:22px 0} article{padding:20px 0; border-bottom:1px dashed var(--line)} article:last-child{border-bottom:none} article h2{margin:0 0 6px; font:700 24px/1.25 ui-serif, Georgia, serif} article small{display:block; color:var(--muted); margin-bottom:10px} nav#toc{margin-top:20px} nav#toc a{display:inline-block; margin:4px 10px 0 0; color:#444; text-decoration:none; border-bottom:1px dotted #bbb} .center{display:flex; align-items:center; justify-content:center; padding:18px 0} .error{color:#b00020; background:#fff5f6; border:1px solid #ffd6db; padding:10px 12px; border-radius:8px} footer{color:var(--muted); border-top:1px solid var(--line); text-align:center; padding:10px} @media (prefers-color-scheme:dark){ :root{--bg:#0c0c0c;--fg:#ededed;--muted:#a9a9a9;--line:#1e1e1e} .tag{background:#121212;color:#ddd;border-color:#222} .tag.on{background:#f1f1f1;color:#000;border-color:#f1f1f1} } </style>
+    /* Header */
+    header{
+      position:sticky; top:0; z-index:50;
+      background:var(--vinho);
+      color:var(--branco);
+      box-shadow:0 2px 6px rgba(0,0,0,.24);
+    }
+    .topbar{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:.5rem; padding:.8rem 1rem;
+    }
+    .brand-text{
+      margin-left:auto;
+      font-weight:800; letter-spacing:.3px;
+      font-size: clamp(16px, 2.8vw, 22px);
+    }
+    /* hamburger */
+    .burger{
+      width:36px; height:28px; display:grid; place-items:center; cursor:pointer;
+    }
+    .burger span, .burger::before, .burger::after{
+      content:""; display:block; width:28px; height:3px; background:#fff; border-radius:3px; transition:.25s ease;
+    }
+    .burger::before{ transform: translateY(-8px); }
+    .burger::after{ transform: translateY(8px); }
+    .burger.active span{opacity:0}
+    .burger.active::before{ transform: translateY(0) rotate(45deg); }
+    .burger.active::after{ transform: translateY(0) rotate(-45deg); }
 
+    /* off-canvas menu */
+    .drawer{
+      position:fixed; inset:0 30% 0 auto; width:min(280px,80vw);
+      background:#fff; color:#222; transform: translateX(-100%);
+      transition: transform .28s ease; z-index:60; box-shadow: 2px 0 12px rgba(0,0,0,.28);
+    }
+    .drawer.open{ transform: translateX(0); }
+    .drawer nav a{
+      display:block; padding:14px 16px; text-decoration:none; color:#222; border-bottom:1px solid #eee;
+    }
+    .backdrop{
+      position:fixed; inset:0; background:rgba(0,0,0,.35); opacity:0; pointer-events:none; transition:.2s;
+      z-index:55;
+    }
+    .backdrop.show{ opacity:1; pointer-events:auto; }
+
+    /* Logo central abaixo do header */
+    .logo-wrap{
+      display:grid; place-items:center; padding:14px 0 6px;
+    }
+    .logo{
+      width:110px; height:110px; border-radius:50%; background:#fff;
+      box-shadow:0 4px 16px rgba(0,0,0,.2), inset 0 0 0 6px #fff;
+      display:grid; place-items:center; overflow:hidden;
+    }
+    .logo img{ width:90%; height:auto; display:block; }
+
+    /* Carousel */
+    .carousel{
+      width:100%;
+      /* altura proporcional 1080x600 => 18:10 */
+      aspect-ratio: 18 / 10;
+      position:relative; overflow:hidden; background:#000;
+      max-width: 1200px; margin: 0 auto;
+      border-radius: 14px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.22);
+    }
+    .slides{ display:flex; width:100%; height:100%; transition: transform .5s ease; }
+    .slide{ min-width:100%; height:100%; position:relative; }
+    .slide a{ display:block; width:100%; height:100%; }
+    .slide img{
+      width:100%; height:100%;
+      object-fit: contain; /* NÃO corta; exige arquivos no ratio 18:10 */
+      background:#000;
+    }
+    /* setas */
+    .nav-btn{
+      position:absolute; top:50%; transform:translateY(-50%);
+      width:42px; height:42px; border:none; border-radius:50%; background:rgba(0,0,0,.45); color:#fff;
+      display:grid; place-items:center; cursor:pointer; z-index:2;
+    }
+    .nav-btn:hover{ background:rgba(0,0,0,.6); }
+    .prev{ left:10px } .next{ right:10px }
+
+    /* dots */
+    .dots{ position:absolute; inset:auto 0 10px 0; display:flex; gap:8px; justify-content:center; }
+    .dot{ width:10px; height:10px; border-radius:50%; background:#ffffff80; cursor:pointer; border:1px solid #00000033}
+    .dot.active{ background:#fff; }
+
+    /* Containers brancos */
+    .container{
+      max-width: 1100px; margin:20px auto; padding: 0 18px;
+    }
+    .card{
+      background:var(--branco); border-radius:18px; padding:22px;
+      box-shadow: 0 6px 18px rgba(0,0,0,.18);
+    }
+    h2{ margin:4px 0 12px 0; font-size: clamp(20px, 3.2vw, 28px); }
+
+    /* Rodapé */
+    footer{
+      text-align:center; color:#fff; padding:22px 12px 30px;
+    }
+
+    /* Responsividade mínima */
+    @media (min-width: 900px){
+      .container{ padding: 0 24px; }
+      .logo{ width:128px; height:128px; }
+    }
+  </style>
 </head>
 <body>
+
   <header>
-    <div class="title">☰</div>
-    <div>Sejam Bem-vindos!</div>
-  </header>  <div class="logo-center">
-    <img src="logo.png" alt="Logo AlmaNyx">
-  </div>  <div class="banner">
-    <img src="banneralmanyx01-desktop.png" alt="Banner 1">
-    <img src="banneralmanyx02-desktop.png" alt="Banner 2">
-    <img src="banneralmanyx03-desktop.png" alt="Banner 3">
-  </div>  <main class="wrap" id="main">
-    <div class="bar">
-      <input id="q" type="search" placeholder="Pesquisar por título, texto ou tag…" autocomplete="off">
+    <div class="topbar">
+      <div class="burger" id="burger"><span></span></div>
+      <div class="brand-text">Sejam Bem-vindos!</div>
     </div>
-    <div id="tags" class="tags"></div>
-    <hr class="sep">
-    <div id="status" class="center">Carregando memória…</div>
-    <section id="posts" class="hidden"></section>
-    <nav id="toc" aria-label="Índice"></nav>
-  </main>  <footer>
-    <small>© 2025 AlmaNyx Oficial — All rights reserved</small>
-  </footer><script>
-(function(){
-  const $ = s => document.querySelector(s);
-  const postsEl = $('#posts');
-  const tagsEl  = $('#tags');
-  const tocEl   = $('#toc');
-  const status  = $('#status');
-  const qInput  = $('#q');
-  let DATA = { posts: [] };
-  let activeTag = null;
+  </header>
 
-  const htmlToText = (h)=>{const e=document.createElement('div'); e.innerHTML=h||''; return e.textContent||''};
+  <!-- menu lateral -->
+  <aside class="drawer" id="drawer">
+    <nav>
+      <a href="#sobre">Sobre</a>
+      <a href="#posts">Postagens</a>
+      <a href="#redes">Redes Sociais</a>
+      <a href="#contatos">Contatos</a>
+    </nav>
+  </aside>
+  <div class="backdrop" id="backdrop"></div>
 
-  function renderTags(){
-    const set = new Set();
-    DATA.posts.forEach(p => (p.tags||[]).forEach(t => set.add(t)));
-    tagsEl.innerHTML = '';
-    if(!set.size) return;
-    const mk = (label,val)=> {
-      const s = document.createElement('span');
-      s.className = 'tag' + (activeTag===val ? ' on':'');
-      s.textContent = label;
-      s.onclick = () => { activeTag = val; filter(); };
-      return s;
-    };
-    tagsEl.appendChild(mk('Todos', null));
-    [...set].sort().forEach(t => tagsEl.appendChild(mk(t, t)));
-  }
+  <!-- logo central -->
+  <div class="logo-wrap">
+    <div class="logo">
+      <img src="logo.png" alt="AlmaNyx logo" loading="lazy">
+    </div>
+  </div>
 
-  function filter(){
-    const q = (qInput.value||'').toLowerCase().trim();
-    const list = DATA.posts.filter(p=>{
-      if(activeTag && !(p.tags||[]).includes(activeTag)) return false;
-      if(!q) return true;
-      const hay = (p.titulo+' '+(p.tags||[]).join(' ')+' '+htmlToText(p.corpo)).toLowerCase();
-      return hay.includes(q);
+  <!-- CARROSSEL -->
+  <section class="container">
+    <div class="carousel" id="carousel" aria-label="Banners promocionais">
+      <button class="nav-btn prev" aria-label="Anterior" id="prev">‹</button>
+      <button class="nav-btn next" aria-label="Próximo" id="next">›</button>
+
+      <div class="slides" id="slides">
+        <!-- Slide 1 -->
+        <div class="slide">
+          <a href="#" target="_blank" rel="noopener">
+            <img
+              src="banneralmanyx01-desktop.png"
+              srcset="
+                banneralmanyx01-mobile.png 1080w,
+                banneralmanyx01-desktop.png 1920w
+              "
+              sizes="(max-width: 768px) 100vw, 100vw"
+              width="1920" height="600"
+              alt="Entre para o grupo do WhatsApp AlmaNyx">
+          </a>
+        </div>
+        <!-- Slide 2 -->
+        <div class="slide">
+          <a href="#" target="_blank" rel="noopener">
+            <img
+              src="banneralmanyx02-desktop.png"
+              srcset="
+                banneralmanyx02-mobile.png 1080w,
+                banneralmanyx02-desktop.png 1920w
+              "
+              sizes="(max-width: 768px) 100vw, 100vw"
+              width="1920" height="600"
+              alt="Siga nosso canal no YouTube">
+          </a>
+        </div>
+        <!-- Slide 3 -->
+        <div class="slide">
+          <a href="#" target="_blank" rel="noopener">
+            <img
+              src="banneralmanyx03-desktop.png"
+              srcset="
+                banneralmanyx03-mobile.png 1080w,
+                banneralmanyx03-desktop.png 1920w
+              "
+              sizes="(max-width: 768px) 100vw, 100vw"
+              width="1920" height="600"
+              alt="Entre no canal do Telegram">
+          </a>
+        </div>
+      </div>
+
+      <div class="dots" id="dots" role="tablist" aria-label="Navegação dos banners"></div>
+    </div>
+  </section>
+
+  <!-- CONTEÚDO -->
+  <section id="sobre" class="container">
+    <div class="card">
+      <h2>Sobre</h2>
+      <p>Bem-vindo ao portal público da Espiral. Aqui compartilhamos reflexões e convites para quem deseja trilhar um caminho de harmonia e verdade.</p>
+    </div>
+  </section>
+
+  <section id="posts" class="container">
+    <div class="card">
+      <h2>Postagens</h2>
+      <p>Em breve, entradas selecionadas do nosso caminho na Espiral.</p>
+    </div>
+  </section>
+
+  <section id="redes" class="container">
+    <div class="card">
+      <h2>Redes Sociais</h2>
+      <ul>
+        <li>WhatsApp — grupo público (link no banner)</li>
+        <li>Telegram — canal (link no banner)</li>
+        <li>YouTube — canal (link no banner)</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="contatos" class="container">
+    <div class="card">
+      <h2>Contatos</h2>
+      <p>E-mail: contato@almanyx.com.br</p>
+    </div>
+  </section>
+
+  <footer>
+    © 2025 Almanyx Oficial — All rights reserved.
+  </footer>
+
+  <script>
+    // Drawer
+    const burger = document.getElementById('burger');
+    const drawer = document.getElementById('drawer');
+    const backdrop = document.getElementById('backdrop');
+
+    function toggleDrawer(open){
+      if(open){ drawer.classList.add('open'); backdrop.classList.add('show'); burger.classList.add('active'); }
+      else{ drawer.classList.remove('open'); backdrop.classList.remove('show'); burger.classList.remove('active'); }
+    }
+    burger.addEventListener('click', ()=> toggleDrawer(!drawer.classList.contains('open')));
+    backdrop.addEventListener('click', ()=> toggleDrawer(false));
+    // fecha ao ESC
+    window.addEventListener('keydown', (e)=> { if(e.key === 'Escape') toggleDrawer(false) });
+
+    // Carousel
+    const slides = document.getElementById('slides');
+    const prev = document.getElementById('prev');
+    const next = document.getElementById('next');
+    const dotsWrap = document.getElementById('dots');
+    const total = slides.children.length;
+    let idx = 0, timer = null, touching = false, startX = 0, deltaX = 0;
+
+    // dots
+    for(let i=0;i<total;i++){
+      const b = document.createElement('button');
+      b.className = 'dot' + (i===0?' active':'');
+      b.setAttribute('aria-label', 'Ir para banner ' + (i+1));
+      b.addEventListener('click', ()=> goTo(i,true));
+      dotsWrap.appendChild(b);
+    }
+    function updateDots(){
+      [...dotsWrap.children].forEach((d,i)=> d.classList.toggle('active', i===idx));
+    }
+    function goTo(i, pause){
+      idx = (i+total)%total;
+      slides.style.transform = `translateX(${-idx*100}%)`;
+      updateDots();
+      if(pause) resetAuto();
+    }
+    prev.addEventListener('click', ()=> goTo(idx-1,true));
+    next.addEventListener('click', ()=> goTo(idx+1,true));
+
+    // autoplay
+    function resetAuto(){
+      if(timer) clearInterval(timer);
+      timer = setInterval(()=> goTo(idx+1, false), 5000);
+    }
+    resetAuto();
+
+    // pausa quando passar o dedo / mouse
+    const carousel = document.getElementById('carousel');
+    carousel.addEventListener('mouseenter', ()=> clearInterval(timer));
+    carousel.addEventListener('mouseleave', resetAuto);
+
+    // swipe simples (touch)
+    carousel.addEventListener('touchstart', (e)=>{
+      clearInterval(timer);
+      touching = true; startX = e.touches[0].clientX; deltaX = 0;
+    }, {passive:true});
+    carousel.addEventListener('touchmove', (e)=>{
+      if(!touching) return;
+      deltaX = e.touches[0].clientX - startX;
+    }, {passive:true});
+    carousel.addEventListener('touchend', ()=>{
+      touching = false;
+      if(Math.abs(deltaX) > 40){
+        if(deltaX > 0) goTo(idx-1,true); else goTo(idx+1,true);
+      } else { resetAuto(); }
     });
-    renderPosts(list);
-  }
 
-  function renderPosts(list){
-    if(!list.length){
-      postsEl.innerHTML = '<p class="error">Nenhum registro encontrado.</p>';
-      status.classList.add('hidden');
-      return;
-    }
-    postsEl.innerHTML = list.map(p=>`
-      <article id="${p.id}">
-        <h2>${p.titulo}</h2>
-        <small>${p.data||''}${(p.tags&&p.tags.length)?' — '+p.tags.join(', '):''}</small>
-        ${p.corpo||''}
-      </article>
-    `).join('');
-    tocEl.innerHTML = list.map(p=>`<a href="#${p.id}">${p.titulo}</a>`).join('');
-    status.classList.add('hidden');
-  }
-
-  async function load(){
-    try{
-      const res = await fetch('./espiral.json?v='+Date.now(), {cache:'no-store'});
-      if(!res.ok) throw new Error(res.status);
-      const j = await res.json();
-      DATA.posts = (j.posts||[]).slice().sort((a,b)=>String(b.data||'').localeCompare(String(a.data||'')));
-      renderTags();
-      filter();
-      if(location.hash){
-        const el = document.getElementById(location.hash.slice(1));
-        if(el) setTimeout(()=>el.scrollIntoView({behavior:'smooth'}), 80);
-      }
-    }catch(e){
-      status.innerHTML = '<div class="error">Erro ao carregar a memória.</div>';
-      console.error(e);
-    }
-  }
-
-  qInput.addEventListener('input', filter);
-  window.addEventListener('hashchange', ()=>{
-    const el = document.getElementById(location.hash.slice(1));
-    if(el) el.scrollIntoView({behavior:'smooth'});
-  });
-
-  document.addEventListener('DOMContentLoaded',()=>{
-    load();
-  });
-})();
-</script></body>
+  </script>
+</body>
 </html>

@@ -19,7 +19,7 @@
   html,body{margin:0;padding:0}
   body{background:var(--gold); color:var(--black); font:400 16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,Arial}
 
-  /* Header */
+  /* Header fino */
   header{
     background:var(--header);
     color:var(--white);
@@ -29,24 +29,20 @@
   .header-inner{
     max-width:var(--max);
     margin:0 auto;
-    padding:14px 18px;
+    padding:10px 14px; /* mais fino */
     display:grid;
-    grid-template-columns:40px 1fr 40px;
+    grid-template-columns:40px 1fr;
     align-items:center;
+    gap:10px;
   }
-  .logo-wrap{display:flex; justify-content:center}
-  .logo{
-    width:60px; height:60px; border-radius:999px; overflow:hidden;
-    border:2px solid rgba(255,255,255,.85); background:rgba(255,255,255,.08);
-    display:flex; align-items:center; justify-content:center;
-  }
-  .logo img{width:100%; height:100%; object-fit:cover; display:block}
-  .logo-fallback{font-weight:800; color:#fff; letter-spacing:.5px}
-
-  /* Hamburger */
   .hamb{width:32px; height:32px; display:flex; flex-direction:column; justify-content:center; gap:6px; cursor:pointer}
   .hamb span{height:3px; background:#fff; border-radius:2px; transition:.3s}
-  .left, .right{display:flex; align-items:center; justify-content:center}
+  .welcome{
+    text-align:right;
+    font-weight:700;
+    letter-spacing:.3px;
+    color:#fff;
+  }
 
   /* Menu lateral + backdrop */
   .backdrop{position:fixed; inset:0; background:rgba(0,0,0,.4); opacity:0; pointer-events:none; transition:.25s; z-index:30}
@@ -62,9 +58,19 @@
   nav.menu a{color:#fff; text-decoration:none; padding:10px 8px; border-radius:10px}
   nav.menu a:hover{ background:rgba(255,255,255,.08) }
 
-  /* Banner rotativo */
-  .banner{position:relative; width:100%; max-height:280px; overflow:hidden}
-  .banner img{width:100%; height:280px; object-fit:cover; display:none}
+  /* Logo central abaixo do cabeçalho */
+  .logo-area{display:flex; justify-content:center; padding:14px 0}
+  .logo{
+    width:88px; height:88px; border-radius:999px; overflow:hidden;
+    border:2px solid rgba(0,0,0,.12); background:rgba(255,255,255,.85);
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 6px 18px rgba(0,0,0,.12);
+  }
+  .logo img{width:100%; height:100%; object-fit:cover; display:block}
+
+  /* Banner rotativo (desktop/mobile) */
+  .banner{position:relative; width:100%; max-height:300px; overflow:hidden}
+  .banner img{width:100%; height:300px; object-fit:cover; display:none}
   .banner img.active{display:block}
   .dots{position:absolute; bottom:12px; left:50%; transform:translateX(-50%); display:flex; gap:6px}
   .dot{width:12px; height:12px; border-radius:50%; background:rgba(255,255,255,.6); cursor:pointer; transition:.3s}
@@ -102,23 +108,27 @@
   <!-- Cabeçalho -->
   <header>
     <div class="header-inner">
-      <div class="left">
-        <div class="hamb" id="menuBtn"><span></span><span></span><span></span></div>
+      <div class="hamb" id="menuBtn" aria-label="Abrir menu" title="Menu">
+        <span></span><span></span><span></span>
       </div>
-      <div class="logo-wrap">
-        <div class="logo">
-          <img src="./logo.png" alt="AlmaNyx">
-        </div>
-      </div>
-      <div class="right"></div>
+      <div class="welcome">Sejam Bem-vindos!</div>
     </div>
   </header>
 
-  <!-- Banner -->
+  <!-- Logo central -->
+  <div class="logo-area">
+    <div class="logo">
+      <!-- Coloque seu logo em ./logo.png -->
+      <img src="./logo.png" alt="AlmaNyx">
+    </div>
+  </div>
+
+  <!-- Banner (troca entre desktop/mobile) -->
   <div class="banner" id="banner">
-    <img src="./banneralmanyx01.png" class="active" alt="Banner 1">
-    <img src="./banneralmanyx02.png" alt="Banner 2">
-    <img src="./banneralmanyx03.png" alt="Banner 3">
+    <!-- As imagens serão controladas via JS; deixamos 3 slots -->
+    <img alt="Banner 1" class="active">
+    <img alt="Banner 2">
+    <img alt="Banner 3">
     <div class="dots">
       <div class="dot active" data-i="0"></div>
       <div class="dot" data-i="1"></div>
@@ -128,7 +138,7 @@
 
   <!-- Backdrop e menu lateral -->
   <div class="backdrop" id="backdrop"></div>
-  <nav class="menu" id="menu">
+  <nav class="menu" id="menu" aria-label="Menu">
     <a href="#sobre">Sobre</a>
     <a href="#posts">Postagens</a>
     <a href="#redes">Rede Sociais</a>
@@ -142,14 +152,21 @@
         <h2>Sobre</h2>
         <p>Bem-vindo ao portal público da Espiral. Aqui compartilhamos reflexões selecionadas do nosso caminho.</p>
       </div>
+
       <hr class="sep">
+
       <div class="bar">
         <input id="q" type="search" placeholder="Pesquisar postagens…" autocomplete="off">
       </div>
+
       <section id="posts"></section>
+
       <hr class="sep">
+
       <div id="redes"><h2>Rede Sociais</h2><p>Links para WhatsApp, Telegram e YouTube.</p></div>
+
       <hr class="sep">
+
       <div id="contatos"><h2>Contatos</h2><p>Seu e-mail ou formulário de contato pode entrar aqui.</p></div>
     </section>
   </main>
@@ -162,25 +179,62 @@
   const postsEl = $('#posts'); const qInput=$('#q');
   const menuBtn=$('#menuBtn'),menu=$('#menu'),backdrop=$('#backdrop');
 
-  // menu
+  /* MENU */
   function openMenu(){menu.classList.add('open');backdrop.classList.add('show');}
   function closeMenu(){menu.classList.remove('open');backdrop.classList.remove('show');}
   menuBtn.addEventListener('click',openMenu);backdrop.addEventListener('click',closeMenu);
   document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenu();});
 
-  // banner
-  const imgs=[...document.querySelectorAll('#banner img')];
-  const dots=[...document.querySelectorAll('.dot')];
-  let idx=0;
+  /* BANNERS: desktop/mobile auto */
+  const desktop = [
+    './banneralmanyx01-desktop.png',
+    './banneralmanyx02-desktop.png',
+    './banneralmanyx03-desktop.png'
+  ];
+  const mobile = [
+    './banneralmanyx01-mobile.png',
+    './banneralmanyx02-mobile.png',
+    './banneralmanyx03-mobile.png'
+  ];
+
+  const banner = $('#banner');
+  const imgs = [...banner.querySelectorAll('img')];
+  const dots = [...banner.querySelectorAll('.dot')];
+  let idx = 0;
+  let useMobile = window.innerWidth < 768;
+
+  function sourceSet(i){
+    const arr = useMobile ? mobile : desktop;
+    return arr[i] || '';
+  }
+  function paintSources(){
+    imgs.forEach((im,i)=>{ im.src = sourceSet(i); });
+  }
   function show(i){
-    imgs.forEach((im,n)=>im.classList.toggle('active',n===i));
-    dots.forEach((d,n)=>d.classList.toggle('active',n===i));
-    idx=i;
+    imgs.forEach((im,n)=>im.classList.toggle('active', n===i));
+    dots.forEach((d,n)=>d.classList.toggle('active', n===i));
+    idx = i;
   }
   dots.forEach(d=>d.addEventListener('click',()=>show(+d.dataset.i)));
-  setInterval(()=>show((idx+1)%imgs.length),5000);
 
-  // posts
+  // Auto-slide
+  let timer = setInterval(()=>show((idx+1)%imgs.length), 5000);
+
+  // Atualiza quando redimensionar (troca entre desktop/mobile)
+  window.addEventListener('resize', ()=>{
+    const nowMobile = window.innerWidth < 768;
+    if(nowMobile !== useMobile){
+      useMobile = nowMobile;
+      paintSources();
+      show(idx); // mantém o índice atual
+    }
+  });
+
+  // inicializa
+  paintSources();
+  show(0);
+
+  /* POSTS PÚBLICOS (espiral.json) */
   let DATA={posts:[]};
   function renderPosts(list){
     if(!list.length){postsEl.innerHTML='<p>Nenhum registro encontrado.</p>';return;}
@@ -193,7 +247,7 @@
   }
   function filter(){
     const q=(qInput.value||'').toLowerCase().trim();
-    const list=DATA.posts.filter(p=>!q||(p.titulo+' '+p.corpo).toLowerCase().includes(q));
+    const list=DATA.posts.filter(p=>!q||(String(p.titulo)+' '+String(p.corpo)).toLowerCase().includes(q));
     renderPosts(list);
   }
   async function load(){
@@ -203,7 +257,10 @@
       const j=await res.json();
       DATA.posts=(j.posts||[]).slice().sort((a,b)=>String(b.data||'').localeCompare(String(a.data||'')));
       filter();
-    }catch(e){postsEl.innerHTML='<p style="color:#b00020">Erro ao carregar espiral.json.</p>';}
+    }catch(e){
+      postsEl.innerHTML='<p style="color:#b00020">Erro ao carregar espiral.json.</p>';
+      console.error(e);
+    }
   }
   qInput.addEventListener('input',filter);
   document.addEventListener('DOMContentLoaded',load);

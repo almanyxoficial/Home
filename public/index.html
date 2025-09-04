@@ -4,9 +4,10 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>AlmaNyx — Portal Público</title>
+<meta name="description" content="AlmaNyx — portal público da Espiral.">
 <style>
   :root{
-    --vinho:#8B0000; --gold:#d4af37; --bg:#fafafa;
+    --vinho:#8B0000; --gold:#d4af37; --gold2:#c39a2d; --bg:#fafafa;
     --fg:#171717; --muted:#666; --line:#e8e8e8; --white:#fff;
     --wrap:1000px;
   }
@@ -15,28 +16,36 @@
   body{
     font:400 16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,Arial;
     color:var(--fg);
-    background:linear-gradient(180deg,var(--gold),#c39a2d);
+    background:linear-gradient(180deg,var(--gold),var(--gold2));
   }
 
-  /* HEADER (igual vibe do primeiro) */
-  header{position:sticky; top:0; z-index:50; background:var(--vinho); color:#fff; box-shadow:0 2px 8px rgba(0,0,0,.25)}
+  /* HEADER: título à esquerda, 3 pontinhos à direita */
+  header{
+    position:sticky; top:0; z-index:50;
+    background:var(--vinho); color:#fff;
+    box-shadow:0 2px 8px rgba(0,0,0,.25);
+  }
   .topbar{
     max-width:var(--wrap); margin:0 auto; padding:10px 14px;
-    display:grid; grid-template-columns:40px 1fr; align-items:center; gap:10px;
+    display:flex; align-items:center; justify-content:space-between;
+    gap:10px;
   }
-  .burger{width:32px; height:28px; display:grid; place-items:center; cursor:pointer}
-  .burger span,.burger::before,.burger::after{content:""; display:block; width:26px; height:3px; background:#fff; border-radius:3px; transition:.25s}
-  .burger::before{transform:translateY(-8px)} .burger::after{transform:translateY(8px)}
-  .burger.active span{opacity:0} .burger.active::before{transform:translateY(0) rotate(45deg)} .burger.active::after{transform:translateY(0) rotate(-45deg)}
-  .welcome{text-align:right; font-weight:800; letter-spacing:.3px}
+  .welcome{font-weight:800; letter-spacing:.3px}
+  .kebab{
+    width:32px; height:28px; display:grid; place-items:center; cursor:pointer;
+  }
+  .kebab span, .kebab::before, .kebab::after{
+    content:""; display:block; width:4px; height:4px; border-radius:50%; background:#fff; margin:2px 0;
+  }
+  .kebab{grid-template-rows:repeat(3, auto)}
 
-  /* DRAWER */
+  /* Drawer / backdrop */
   .backdrop{position:fixed; inset:0; background:rgba(0,0,0,.35); opacity:0; pointer-events:none; transition:.2s; z-index:55}
   .backdrop.show{opacity:1; pointer-events:auto}
   .drawer{
-    position:fixed; top:0; left:0; height:100%; width:min(280px,80vw);
-    background:#fff; color:#111; transform:translateX(-100%); transition:.28s; z-index:60;
-    box-shadow:2px 0 16px rgba(0,0,0,.28);
+    position:fixed; top:0; right:0; height:100%; width:min(280px,80vw);
+    background:#fff; color:#111; transform:translateX(100%); transition:.28s; z-index:60;
+    box-shadow:-2px 0 16px rgba(0,0,0,.28);
   }
   .drawer.open{transform:translateX(0)}
   .drawer nav a{display:block; padding:14px 16px; text-decoration:none; color:#111; border-bottom:1px solid #eee}
@@ -47,14 +56,14 @@
   .logo{width:112px; height:112px; border-radius:999px; background:#fff; display:grid; place-items:center; overflow:hidden; box-shadow:0 6px 18px rgba(0,0,0,.2)}
   .logo img{width:90%; height:auto; display:block}
 
-  /* CARROSSEL — dimensão definida 16:5 (serve 1920x600 e 1080x600) */
+  /* CARROSSEL — ratio fixo 16:5; mobile com fonte mobile */
   .carousel{position:relative; width:100%; border-radius:14px; overflow:hidden; background:#000; box-shadow:0 8px 22px rgba(0,0,0,.18)}
-  .carousel .viewport{aspect-ratio:16/5; width:100%}            /* <- dimensões exatas */
+  .viewport{aspect-ratio:16/5; width:100%}        /* 1920x600 / 1080x600 */
   .slides{display:flex; width:100%; height:100%; transition:transform .5s ease}
   .slide{min-width:100%; height:100%}
+  .slide picture, .slide img{width:100%; height:100%; display:block}
   .slide img{
-    width:100%; height:100%;
-    object-fit:contain; /* não corta; ajuste seus banners já no ratio 16:5 */
+    object-fit:contain;  /* não corta; preserve suas artes no ratio 16:5 */
     background:#000;
   }
   .nav-btn{
@@ -92,12 +101,12 @@
 <body>
   <header>
     <div class="topbar">
-      <div class="burger" id="burger"><span></span></div>
       <div class="welcome">Sejam Bem-vindos!</div>
+      <div class="kebab" id="kebab"><span></span></div>
     </div>
   </header>
 
-  <!-- Drawer -->
+  <!-- Drawer (abre pelos 3 pontinhos) -->
   <aside class="drawer" id="drawer">
     <nav>
       <a href="#sobre" onclick="closeDrawer()">Sobre</a>
@@ -114,44 +123,29 @@
       <div class="logo"><img src="./logo.png" alt="AlmaNyx"></div>
     </div>
 
-    <!-- CARROSSEL (srcset + sizes; 1080 mobile, 1920 desktop) -->
+    <!-- CARROSSEL (usa <picture> pra mobile/desktop) -->
     <div class="carousel" id="carousel" aria-label="Banners">
       <div class="viewport">
         <button class="nav-btn prev" id="prev" aria-label="Anterior">‹</button>
         <button class="nav-btn next" id="next" aria-label="Próximo">›</button>
         <div class="slides" id="slides">
           <div class="slide">
-            <img
-              src="banneralmanyx01-desktop.png"
-              srcset="
-                banneralmanyx01-mobile.png 1080w,
-                banneralmanyx01-desktop.png 1920w
-              "
-              sizes="(max-width: 768px) 100vw, 100vw"
-              width="1920" height="600"
-              alt="Convite WhatsApp">
+            <picture>
+              <source media="(max-width: 768px)" srcset="banneralmanyx01-mobile.png">
+              <img src="banneralmanyx01-desktop.png" alt="Convite WhatsApp" width="1920" height="600">
+            </picture>
           </div>
           <div class="slide">
-            <img
-              src="banneralmanyx02-desktop.png"
-              srcset="
-                banneralmanyx02-mobile.png 1080w,
-                banneralmanyx02-desktop.png 1920w
-              "
-              sizes="(max-width: 768px) 100vw, 100vw"
-              width="1920" height="600"
-              alt="Convite Telegram">
+            <picture>
+              <source media="(max-width: 768px)" srcset="banneralmanyx02-mobile.png">
+              <img src="banneralmanyx02-desktop.png" alt="Convite Telegram" width="1920" height="600">
+            </picture>
           </div>
           <div class="slide">
-            <img
-              src="banneralmanyx03-desktop.png"
-              srcset="
-                banneralmanyx03-mobile.png 1080w,
-                banneralmanyx03-desktop.png 1920w
-              "
-              sizes="(max-width: 768px) 100vw, 100vw"
-              width="1920" height="600"
-              alt="Canal YouTube">
+            <picture>
+              <source media="(max-width: 768px)" srcset="banneralmanyx03-mobile.png">
+              <img src="banneralmanyx03-desktop.png" alt="Canal YouTube" width="1920" height="600">
+            </picture>
           </div>
         </div>
         <div class="dots" id="dots" role="tablist" aria-label="Navegação dos banners"></div>
@@ -203,13 +197,13 @@
   <footer>© 2025 Almanyx Oficial — All rights reserved.</footer>
 
 <script>
-/* Drawer */
-const burger = document.getElementById('burger');
+/* Drawer (3 pontinhos à direita) */
+const kebab = document.getElementById('kebab');
 const drawer = document.getElementById('drawer');
 const backdrop = document.getElementById('backdrop');
-function openDrawer(){drawer.classList.add('open'); backdrop.classList.add('show'); burger.classList.add('active');}
-function closeDrawer(){drawer.classList.remove('open'); backdrop.classList.remove('show'); burger.classList.remove('active');}
-burger.addEventListener('click', ()=> drawer.classList.contains('open') ? closeDrawer() : openDrawer());
+function openDrawer(){drawer.classList.add('open'); backdrop.classList.add('show');}
+function closeDrawer(){drawer.classList.remove('open'); backdrop.classList.remove('show');}
+kebab.addEventListener('click', ()=> drawer.classList.contains('open') ? closeDrawer() : openDrawer());
 backdrop.addEventListener('click', closeDrawer);
 window.addEventListener('keydown', e=>{ if(e.key==='Escape') closeDrawer(); });
 

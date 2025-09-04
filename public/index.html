@@ -3,65 +3,182 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>AlmaNyx Pública</title>
-<meta name="description" content="AlmaNyx — Espaço público da Espiral.">
+<title>AlmaNyx</title>
+<meta name="description" content="AlmaNyx — portal público da Espiral.">
 <style>
   :root{
-    --bg:#fff; --fg:#111; --muted:#6b6b6b; --line:#e8e8e8;
-    --max:860px;
+    --gold:#d4af37;         /* fundo dourado */
+    --header:#8B0000;       /* dark red */
+    --white:#ffffff;
+    --black:#111111;
+    --muted:#666;
+    --line:#e8e8e8;
+    --max: 960px;
   }
   *{box-sizing:border-box}
-  html,body{margin:0;background:var(--bg);color:var(--fg);font:400 16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,Arial}
-  .wrap{max-width:var(--max);margin:0 auto;padding:28px 22px}
-  header{display:flex;justify-content:space-between;align-items:center}
-  .title{font:700 28px/1.2 ui-serif, Georgia, serif;letter-spacing:.3px}
-  .menu-btn{cursor:pointer;width:32px;height:32px;display:flex;flex-direction:column;justify-content:center;gap:6px}
-  .menu-btn span{height:3px;background:var(--fg);border-radius:2px;transition:.3s}
-  nav.menu{position:fixed;top:0;right:-100%;width:220px;height:100%;background:#fafafa;
-    box-shadow:-2px 0 6px rgba(0,0,0,.15);padding:20px;display:flex;flex-direction:column;
-    transition:.3s;z-index:1000}
-  nav.menu a{margin:10px 0;text-decoration:none;color:var(--fg);font-weight:500}
-  nav.menu.open{right:0}
-  .bar{margin:22px auto 10px; max-width:720px; display:flex; gap:10px; flex-wrap:wrap; justify-content:center}
-  input[type="search"]{flex:1 1 340px; padding:12px 14px; border:1px solid var(--line); border-radius:8px; outline:none}
-  hr.sep{border:0; border-top:1px solid var(--line); margin:22px 0}
-  article{padding:20px 0; border-bottom:1px dashed var(--line)}
+  html,body{margin:0;padding:0}
+  body{background:var(--gold); color:var(--black); font:400 16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,Arial}
+
+  /* Header */
+  header{
+    background:var(--header);
+    color:var(--white);
+    position:sticky; top:0; z-index:20;
+    box-shadow:0 6px 18px rgba(0,0,0,.15);
+  }
+  .header-inner{
+    max-width:var(--max);
+    margin:0 auto;
+    padding:14px 18px;
+    display:grid;
+    grid-template-columns:40px 1fr 40px;
+    align-items:center;
+  }
+  /* Logo central (circular) */
+  .logo-wrap{display:flex; justify-content:center}
+  .logo{
+    width:60px; height:60px; border-radius:999px; overflow:hidden;
+    border:2px solid rgba(255,255,255,.85); background:rgba(255,255,255,.08);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .logo img{width:100%; height:100%; object-fit:cover; display:block}
+  .logo-fallback{font-weight:800; color:#fff; letter-spacing:.5px}
+
+  /* Hamburger */
+  .hamb{width:32px; height:32px; display:flex; flex-direction:column; justify-content:center; gap:6px; cursor:pointer}
+  .hamb span{height:3px; background:#fff; border-radius:2px; transition:.3s}
+  /* Espaço à esquerda e direita do cabeçalho para alinhar */
+  .left, .right{display:flex; align-items:center; justify-content:center}
+
+  /* Menu lateral + backdrop */
+  .backdrop{
+    position:fixed; inset:0; background:rgba(0,0,0,.4);
+    opacity:0; pointer-events:none; transition:.25s; z-index:30;
+  }
+  .backdrop.show{opacity:1; pointer-events:auto}
+  nav.menu{
+    position:fixed; top:0; right:-100%; height:100%; width:260px;
+    background:#111; color:#fff; z-index:31;
+    box-shadow:-6px 0 18px rgba(0,0,0,.35);
+    padding:18px; display:flex; flex-direction:column; gap:8px;
+    transition:.3s;
+  }
+  nav.menu.open{ right:0 }
+  nav.menu a{
+    color:#fff; text-decoration:none; padding:10px 8px; border-radius:10px;
+  }
+  nav.menu a:hover{ background:rgba(255,255,255,.08) }
+
+  /* Container branco */
+  .wrap{
+    max-width:var(--max);
+    margin:20px auto;
+    padding:0 14px;
+  }
+  .card{
+    background:var(--white);
+    color:var(--black);
+    border-radius:16px;
+    border:1px solid var(--line);
+    box-shadow:0 8px 24px rgba(0,0,0,.10);
+    padding:22px;
+  }
+
+  /* Barra de busca */
+  .bar{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px}
+  input[type="search"]{
+    flex:1 1 320px; padding:12px 14px; border:1px solid var(--line); border-radius:10px; outline:none
+  }
+
+  hr.sep{border:0; border-top:1px solid var(--line); margin:16px 0}
+
+  /* Posts */
+  article{padding:16px 0; border-bottom:1px dashed var(--line)}
   article:last-child{border-bottom:none}
-  article h2{margin:0 0 6px; font:700 24px/1.25 ui-serif, Georgia, serif}
+  article h2{margin:0 0 6px; font:700 22px/1.25 ui-serif, Georgia, serif}
   article small{display:block; color:var(--muted); margin-bottom:10px}
-  footer{color:var(--muted); border-top:1px solid var(--line);padding:20px;text-align:center}
+
+  /* Rodapé */
+  footer{
+    text-align:center; color:#fff; background:var(--header);
+    padding:16px; margin-top:24px; font-size:14px
+  }
+
   @media (prefers-color-scheme:dark){
-    :root{--bg:#0c0c0c;--fg:#ededed;--muted:#a9a9a9;--line:#1e1e1e}
-    nav.menu{background:#111}
-    nav.menu a{color:#eee}
+    /* Mantemos identidade do público — container fica branco mesmo no dark prefer */
   }
 </style>
 </head>
 <body>
-  <header class="wrap">
-    <div class="title">AlmaNyx Pública</div>
-    <div class="menu-btn" id="menuBtn">
-      <span></span><span></span><span></span>
+
+  <!-- Cabeçalho -->
+  <header>
+    <div class="header-inner">
+      <div class="left">
+        <div class="hamb" id="menuBtn" aria-label="Abrir menu" title="Menu">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+
+      <div class="logo-wrap">
+        <div class="logo">
+          <!-- Troque o src pelo caminho do seu logo -->
+          <img src="./logo.png" alt="AlmaNyx">
+          <!-- se quiser fallback de texto, comente a linha acima e descomente a abaixo -->
+          <!-- <div class="logo-fallback">AN</div> -->
+        </div>
+      </div>
+
+      <div class="right"><!-- vazio por simetria --></div>
     </div>
   </header>
 
-  <nav class="menu" id="menu">
+  <!-- Backdrop para fechar ao clicar fora -->
+  <div class="backdrop" id="backdrop"></div>
+
+  <!-- Menu lateral -->
+  <nav class="menu" id="menu" aria-label="Menu">
     <a href="#sobre">Sobre</a>
     <a href="#posts">Postagens</a>
     <a href="#redes">Rede Sociais</a>
     <a href="#contatos">Contatos</a>
   </nav>
 
-  <main class="wrap" id="main">
-    <div class="bar">
-      <input id="q" type="search" placeholder="Pesquisar…" autocomplete="off">
-    </div>
-    <hr class="sep">
-    <section id="posts"></section>
+  <!-- Conteúdo -->
+  <main class="wrap">
+    <section class="card">
+      <div id="sobre">
+        <h2>Sobre</h2>
+        <p>Bem-vindo ao portal público da Espiral. Aqui compartilhamos reflexões selecionadas do nosso caminho.</p>
+      </div>
+
+      <hr class="sep">
+
+      <div class="bar">
+        <input id="q" type="search" placeholder="Pesquisar postagens…" autocomplete="off">
+      </div>
+
+      <section id="posts"></section>
+
+      <hr class="sep">
+
+      <div id="redes">
+        <h2>Rede Sociais</h2>
+        <p>Coloque aqui links (YouTube, Instagram, X, etc.), quando quiser.</p>
+      </div>
+
+      <hr class="sep">
+
+      <div id="contatos">
+        <h2>Contatos</h2>
+        <p>Seu e-mail ou formulário de contato pode entrar aqui.</p>
+      </div>
+    </section>
   </main>
 
+  <!-- Rodapé -->
   <footer>
-    <small>© <span id="year"></span> AlmaNyx — Espiral Pública</small>
+    © 2025 Almanyx Oficial — All rights reserved
   </footer>
 
 <script>
@@ -69,16 +186,31 @@
   const $ = s => document.querySelector(s);
   const postsEl = $('#posts');
   const qInput  = $('#q');
-  let DATA = { posts: [] };
 
-  // Menu toggle
+  // Menu
   const menuBtn = $('#menuBtn');
   const menu = $('#menu');
-  menuBtn.onclick = ()=>menu.classList.toggle('open');
+  const backdrop = $('#backdrop');
 
+  function openMenu(){
+    menu.classList.add('open');
+    backdrop.classList.add('show');
+  }
+  function closeMenu(){
+    menu.classList.remove('open');
+    backdrop.classList.remove('show');
+  }
+  menuBtn.addEventListener('click', openMenu);
+  backdrop.addEventListener('click', closeMenu);
+  document.addEventListener('keydown', (e)=>{
+    if(e.key === 'Escape') closeMenu();
+  });
+
+  // Render
+  let DATA = { posts: [] };
   function renderPosts(list){
     if(!list.length){
-      postsEl.innerHTML = '<p>Nenhum registro encontrado.</p>';
+      postsEl.innerHTML = '<p style="color:#333">Nenhum registro encontrado.</p>';
       return;
     }
     postsEl.innerHTML = list.map(p=>`
@@ -94,7 +226,7 @@
     const q = (qInput.value||'').toLowerCase().trim();
     const list = DATA.posts.filter(p=>{
       if(!q) return true;
-      const hay = (p.titulo+' '+p.corpo).toLowerCase();
+      const hay = (String(p.titulo)+' '+String(p.corpo)).toLowerCase();
       return hay.includes(q);
     });
     renderPosts(list);
@@ -108,16 +240,13 @@
       DATA.posts = (j.posts||[]).slice().sort((a,b)=>String(b.data||'').localeCompare(String(a.data||'')));
       filter();
     }catch(e){
-      postsEl.innerHTML = '<p>Erro ao carregar.</p>';
+      postsEl.innerHTML = '<p style="color:#b00020">Erro ao carregar espiral.json.</p>';
       console.error(e);
     }
   }
 
   qInput.addEventListener('input', filter);
-  document.addEventListener('DOMContentLoaded',()=>{
-    $('#year').textContent = new Date().getFullYear();
-    load();
-  });
+  document.addEventListener('DOMContentLoaded', load);
 })();
 </script>
 </body>

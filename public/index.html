@@ -78,6 +78,7 @@
 
   /* Container branco */
   .wrap{max-width:var(--max); margin:20px auto; padding:0 14px}
+
   .card{
     background:var(--white);
     color:var(--black);
@@ -198,72 +199,74 @@
   ];
 
   const banner = $('#banner');
-  const imgs = [...banner.querySelectorAll('img')];
-  const dots = [...banner.querySelectorAll('.dot')];
-  let idx = 0;
-  let useMobile = window.innerWidth < 768;
+  const imgs = banner.querySelectorAll('img');
+  const dots = banner.querySelectorAll('.dot');
+  const isMobile = () => window.matchMedia('(max-width: 768px)').matches;
 
-  function sourceSet(i){
-    const arr = useMobile ? mobile : desktop;
-    return arr[i] || '';
+  function setSources() {
+    const arr = isMobile() ? mobile : desktop;
+    imgs.forEach((img, i) => {
+      if (!arr[i]) return;
+      if (img.getAttribute('src') !== arr[i]) img.setAttribute('src', arr[i]);
+    });
   }
-  function paintSources(){
-    imgs.forEach((im,i)=>{ im.src = sourceSet(i); });
-  }
-  function show(i){
-    imgs.forEach((im,n)=>im.classList.toggle('active', n===i));
-    dots.forEach((d,n)=>d.classList.toggle('active', n===i));
-    idx = i;
-  }
-  dots.forEach(d=>d.addEventListener('click',()=>show(+d.dataset.i)));
+  setSources();
+  window.addEventListener('resize', setSources);
 
-  // Auto-slide
-  let timer = setInterval(()=>show((idx+1)%imgs.length), 5000);
+  let idx = 0, timer;
+  function paint() {
+    imgs.forEach((im, i)=> im.classList.toggle('active', i===idx));
+    dots.forEach((d, i)=> d.classList.toggle('active', i===idx));
+  }
+  function go(n, pause=false){
+    idx = (n + imgs.length) % imgs.length;
+    paint();
+    if(pause){ resetAuto(); }
+  }
+  function resetAuto(){
+    clearInterval(timer);
+    timer = setInterval(()=> go(idx+1, false), 5000);
+  }
+  resetAuto();
+  dots.forEach(d => d.addEventListener('click', ()=> go(+d.dataset.i, true)));
 
-  // Atualiza quando redimensionar (troca entre desktop/mobile)
-  window.addEventListener('resize', ()=>{
-    const nowMobile = window.innerWidth < 768;
-    if(nowMobile !== useMobile){
-      useMobile = nowMobile;
-      paintSources();
-      show(idx); // mantém o índice atual
+  /* POSTS (espiral.json) + busca */
+  let DATA = {posts:[]};
+  function render(list){
+    if(!list.length){
+      postsEl.innerHTML = '<p style="color:#b00020">Nenhuma postagem encontrada.</p>';
+      return;
     }
-  });
-
-  // inicializa
-  paintSources();
-  show(0);
-
-  /* POSTS PÚBLICOS (espiral.json) */
-  let DATA={posts:[]};
-  function renderPosts(list){
-    if(!list.length){postsEl.innerHTML='<p>Nenhum registro encontrado.</p>';return;}
-    postsEl.innerHTML=list.map(p=>`
-      <article id="${p.id}">
-        <h2>${p.titulo}</h2>
+    postsEl.innerHTML = list.map(p=>`
+      <article id="${p.id||''}">
+        <h2>${p.titulo||''}</h2>
         <small>${p.data||''}</small>
         ${p.corpo||''}
-      </article>`).join('');
+      </article>
+    `).join('');
   }
   function filter(){
     const q=(qInput.value||'').toLowerCase().trim();
-    const list=DATA.posts.filter(p=>!q||(String(p.titulo)+' '+String(p.corpo)).toLowerCase().includes(q));
-    renderPosts(list);
+    const res = DATA.posts.filter(p=>{
+      if(!q) return true;
+      const hay = (String(p.titulo)+' '+String(p.corpo)).toLowerCase();
+      return hay.includes(q);
+    });
+    render(res);
   }
   async function load(){
     try{
-      const res=await fetch('./espiral.json?v='+Date.now(),{cache:'no-store'});
-      if(!res.ok) throw new Error(res.status);
-      const j=await res.json();
-      DATA.posts=(j.posts||[]).slice().sort((a,b)=>String(b.data||'').localeCompare(String(a.data||'')));
+      const res = await fetch('./espiral.json?v='+Date.now(), {cache:'no-store'});
+      const j = await res.json();
+      DATA.posts = (j.posts||[]).slice().sort((a,b)=>String(b.data||'').localeCompare(String(a.data||'')));
       filter();
     }catch(e){
-      postsEl.innerHTML='<p style="color:#b00020">Erro ao carregar espiral.json.</p>';
+      postsEl.innerHTML = '<p style="color:#b00020">Erro ao carregar espiral.json.</p>';
       console.error(e);
     }
   }
-  qInput.addEventListener('input',filter);
-  document.addEventListener('DOMContentLoaded',load);
+  document.addEventListener('DOMContentLoaded', load);
+  qInput.addEventListener('input', filter);
 })();
 </script>
 </body>

@@ -34,7 +34,6 @@
     grid-template-columns:40px 1fr 40px;
     align-items:center;
   }
-  /* Logo central (circular) */
   .logo-wrap{display:flex; justify-content:center}
   .logo{
     width:60px; height:60px; border-radius:999px; overflow:hidden;
@@ -47,14 +46,10 @@
   /* Hamburger */
   .hamb{width:32px; height:32px; display:flex; flex-direction:column; justify-content:center; gap:6px; cursor:pointer}
   .hamb span{height:3px; background:#fff; border-radius:2px; transition:.3s}
-  /* Espaço à esquerda e direita do cabeçalho para alinhar */
   .left, .right{display:flex; align-items:center; justify-content:center}
 
   /* Menu lateral + backdrop */
-  .backdrop{
-    position:fixed; inset:0; background:rgba(0,0,0,.4);
-    opacity:0; pointer-events:none; transition:.25s; z-index:30;
-  }
+  .backdrop{position:fixed; inset:0; background:rgba(0,0,0,.4); opacity:0; pointer-events:none; transition:.25s; z-index:30}
   .backdrop.show{opacity:1; pointer-events:auto}
   nav.menu{
     position:fixed; top:0; right:-100%; height:100%; width:260px;
@@ -64,17 +59,19 @@
     transition:.3s;
   }
   nav.menu.open{ right:0 }
-  nav.menu a{
-    color:#fff; text-decoration:none; padding:10px 8px; border-radius:10px;
-  }
+  nav.menu a{color:#fff; text-decoration:none; padding:10px 8px; border-radius:10px}
   nav.menu a:hover{ background:rgba(255,255,255,.08) }
 
+  /* Banner rotativo */
+  .banner{position:relative; width:100%; max-height:280px; overflow:hidden}
+  .banner img{width:100%; height:280px; object-fit:cover; display:none}
+  .banner img.active{display:block}
+  .dots{position:absolute; bottom:12px; left:50%; transform:translateX(-50%); display:flex; gap:6px}
+  .dot{width:12px; height:12px; border-radius:50%; background:rgba(255,255,255,.6); cursor:pointer; transition:.3s}
+  .dot.active{background:#fff}
+
   /* Container branco */
-  .wrap{
-    max-width:var(--max);
-    margin:20px auto;
-    padding:0 14px;
-  }
+  .wrap{max-width:var(--max); margin:20px auto; padding:0 14px}
   .card{
     background:var(--white);
     color:var(--black);
@@ -86,9 +83,7 @@
 
   /* Barra de busca */
   .bar{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px}
-  input[type="search"]{
-    flex:1 1 320px; padding:12px 14px; border:1px solid var(--line); border-radius:10px; outline:none
-  }
+  input[type="search"]{flex:1 1 320px; padding:12px 14px; border:1px solid var(--line); border-radius:10px; outline:none}
 
   hr.sep{border:0; border-top:1px solid var(--line); margin:16px 0}
 
@@ -99,14 +94,7 @@
   article small{display:block; color:var(--muted); margin-bottom:10px}
 
   /* Rodapé */
-  footer{
-    text-align:center; color:#fff; background:var(--header);
-    padding:16px; margin-top:24px; font-size:14px
-  }
-
-  @media (prefers-color-scheme:dark){
-    /* Mantemos identidade do público — container fica branco mesmo no dark prefer */
-  }
+  footer{text-align:center; color:#fff; background:var(--header); padding:16px; margin-top:24px; font-size:14px}
 </style>
 </head>
 <body>
@@ -115,29 +103,32 @@
   <header>
     <div class="header-inner">
       <div class="left">
-        <div class="hamb" id="menuBtn" aria-label="Abrir menu" title="Menu">
-          <span></span><span></span><span></span>
-        </div>
+        <div class="hamb" id="menuBtn"><span></span><span></span><span></span></div>
       </div>
-
       <div class="logo-wrap">
         <div class="logo">
-          <!-- Troque o src pelo caminho do seu logo -->
           <img src="./logo.png" alt="AlmaNyx">
-          <!-- se quiser fallback de texto, comente a linha acima e descomente a abaixo -->
-          <!-- <div class="logo-fallback">AN</div> -->
         </div>
       </div>
-
-      <div class="right"><!-- vazio por simetria --></div>
+      <div class="right"></div>
     </div>
   </header>
 
-  <!-- Backdrop para fechar ao clicar fora -->
-  <div class="backdrop" id="backdrop"></div>
+  <!-- Banner -->
+  <div class="banner" id="banner">
+    <img src="./banneralmanyx01.png" class="active" alt="Banner 1">
+    <img src="./banneralmanyx02.png" alt="Banner 2">
+    <img src="./banneralmanyx03.png" alt="Banner 3">
+    <div class="dots">
+      <div class="dot active" data-i="0"></div>
+      <div class="dot" data-i="1"></div>
+      <div class="dot" data-i="2"></div>
+    </div>
+  </div>
 
-  <!-- Menu lateral -->
-  <nav class="menu" id="menu" aria-label="Menu">
+  <!-- Backdrop e menu lateral -->
+  <div class="backdrop" id="backdrop"></div>
+  <nav class="menu" id="menu">
     <a href="#sobre">Sobre</a>
     <a href="#posts">Postagens</a>
     <a href="#redes">Rede Sociais</a>
@@ -151,102 +142,71 @@
         <h2>Sobre</h2>
         <p>Bem-vindo ao portal público da Espiral. Aqui compartilhamos reflexões selecionadas do nosso caminho.</p>
       </div>
-
       <hr class="sep">
-
       <div class="bar">
         <input id="q" type="search" placeholder="Pesquisar postagens…" autocomplete="off">
       </div>
-
       <section id="posts"></section>
-
       <hr class="sep">
-
-      <div id="redes">
-        <h2>Rede Sociais</h2>
-        <p>Coloque aqui links (YouTube, Instagram, X, etc.), quando quiser.</p>
-      </div>
-
+      <div id="redes"><h2>Rede Sociais</h2><p>Links para WhatsApp, Telegram e YouTube.</p></div>
       <hr class="sep">
-
-      <div id="contatos">
-        <h2>Contatos</h2>
-        <p>Seu e-mail ou formulário de contato pode entrar aqui.</p>
-      </div>
+      <div id="contatos"><h2>Contatos</h2><p>Seu e-mail ou formulário de contato pode entrar aqui.</p></div>
     </section>
   </main>
 
-  <!-- Rodapé -->
-  <footer>
-    © 2025 Almanyx Oficial — All rights reserved
-  </footer>
+  <footer>© 2025 Almanyx Oficial — All rights reserved</footer>
 
 <script>
 (function(){
   const $ = s => document.querySelector(s);
-  const postsEl = $('#posts');
-  const qInput  = $('#q');
+  const postsEl = $('#posts'); const qInput=$('#q');
+  const menuBtn=$('#menuBtn'),menu=$('#menu'),backdrop=$('#backdrop');
 
-  // Menu
-  const menuBtn = $('#menuBtn');
-  const menu = $('#menu');
-  const backdrop = $('#backdrop');
+  // menu
+  function openMenu(){menu.classList.add('open');backdrop.classList.add('show');}
+  function closeMenu(){menu.classList.remove('open');backdrop.classList.remove('show');}
+  menuBtn.addEventListener('click',openMenu);backdrop.addEventListener('click',closeMenu);
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenu();});
 
-  function openMenu(){
-    menu.classList.add('open');
-    backdrop.classList.add('show');
+  // banner
+  const imgs=[...document.querySelectorAll('#banner img')];
+  const dots=[...document.querySelectorAll('.dot')];
+  let idx=0;
+  function show(i){
+    imgs.forEach((im,n)=>im.classList.toggle('active',n===i));
+    dots.forEach((d,n)=>d.classList.toggle('active',n===i));
+    idx=i;
   }
-  function closeMenu(){
-    menu.classList.remove('open');
-    backdrop.classList.remove('show');
-  }
-  menuBtn.addEventListener('click', openMenu);
-  backdrop.addEventListener('click', closeMenu);
-  document.addEventListener('keydown', (e)=>{
-    if(e.key === 'Escape') closeMenu();
-  });
+  dots.forEach(d=>d.addEventListener('click',()=>show(+d.dataset.i)));
+  setInterval(()=>show((idx+1)%imgs.length),5000);
 
-  // Render
-  let DATA = { posts: [] };
+  // posts
+  let DATA={posts:[]};
   function renderPosts(list){
-    if(!list.length){
-      postsEl.innerHTML = '<p style="color:#333">Nenhum registro encontrado.</p>';
-      return;
-    }
-    postsEl.innerHTML = list.map(p=>`
+    if(!list.length){postsEl.innerHTML='<p>Nenhum registro encontrado.</p>';return;}
+    postsEl.innerHTML=list.map(p=>`
       <article id="${p.id}">
         <h2>${p.titulo}</h2>
         <small>${p.data||''}</small>
         ${p.corpo||''}
-      </article>
-    `).join('');
+      </article>`).join('');
   }
-
   function filter(){
-    const q = (qInput.value||'').toLowerCase().trim();
-    const list = DATA.posts.filter(p=>{
-      if(!q) return true;
-      const hay = (String(p.titulo)+' '+String(p.corpo)).toLowerCase();
-      return hay.includes(q);
-    });
+    const q=(qInput.value||'').toLowerCase().trim();
+    const list=DATA.posts.filter(p=>!q||(p.titulo+' '+p.corpo).toLowerCase().includes(q));
     renderPosts(list);
   }
-
   async function load(){
     try{
-      const res = await fetch('./espiral.json?v='+Date.now(), {cache:'no-store'});
+      const res=await fetch('./espiral.json?v='+Date.now(),{cache:'no-store'});
       if(!res.ok) throw new Error(res.status);
-      const j = await res.json();
-      DATA.posts = (j.posts||[]).slice().sort((a,b)=>String(b.data||'').localeCompare(String(a.data||'')));
+      const j=await res.json();
+      DATA.posts=(j.posts||[]).slice().sort((a,b)=>String(b.data||'').localeCompare(String(a.data||'')));
       filter();
-    }catch(e){
-      postsEl.innerHTML = '<p style="color:#b00020">Erro ao carregar espiral.json.</p>';
-      console.error(e);
-    }
+    }catch(e){postsEl.innerHTML='<p style="color:#b00020">Erro ao carregar espiral.json.</p>';}
   }
-
-  qInput.addEventListener('input', filter);
-  document.addEventListener('DOMContentLoaded', load);
+  qInput.addEventListener('input',filter);
+  document.addEventListener('DOMContentLoaded',load);
 })();
 </script>
 </body>

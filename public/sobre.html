@@ -14,17 +14,19 @@
   html,body{margin:0;padding:0}
   body{background:var(--gold); color:var(--black); font:400 16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,Arial}
 
-  /* Header */
+  /* Header (igual à index: título à esquerda, hamb à direita) */
   header{background:var(--header); color:#fff; position:sticky; top:0; z-index:20; box-shadow:0 6px 18px rgba(0,0,0,.15)}
-  .header-inner{max-width:var(--max); margin:0 auto; padding:10px 14px; display:grid; grid-template-columns:1fr 40px; align-items:center; gap:10px}
+  .header-inner{max-width:var(--max); margin:0 auto; padding:10px 14px;
+    display:grid; grid-template-columns:1fr 40px; align-items:center; gap:10px}
   .title-left{font-weight:700; letter-spacing:.3px}
   .hamb{width:32px; height:32px; display:flex; flex-direction:column; justify-content:center; gap:6px; cursor:pointer}
   .hamb span{height:3px; background:#fff; border-radius:2px; transition:.3s}
 
-  /* Menu lateral + backdrop */
+  /* Menu lateral + backdrop (com botão X) */
   .backdrop{position:fixed; inset:0; background:rgba(0,0,0,.4); opacity:0; pointer-events:none; transition:.25s; z-index:30}
   .backdrop.show{opacity:1; pointer-events:auto}
-  nav.menu{position:fixed; top:0; right:-100%; height:100%; width:280px; background:#111; color:#fff; z-index:31; box-shadow:-6px 0 18px rgba(0,0,0,.35); padding:18px 16px; display:flex; flex-direction:column; gap:8px; transition:.3s}
+  nav.menu{position:fixed; top:0; right:-100%; height:100%; width:280px; background:#111; color:#fff; z-index:31;
+    box-shadow:-6px 0 18px rgba(0,0,0,.35); padding:18px 16px; display:flex; flex-direction:column; gap:8px; transition:.3s}
   nav.menu.open{right:0}
   .menu .topline{display:flex; align-items:center; justify-content:space-between; margin-bottom:8px}
   .menu .close{font-size:20px; line-height:1; cursor:pointer; padding:6px 10px; border-radius:8px; background:rgba(255,255,255,.08)}
@@ -33,10 +35,11 @@
 
   /* Logo central */
   .logo-area{display:flex; justify-content:center; padding:14px 0}
-  .logo{width:88px; height:88px; border-radius:999px; overflow:hidden; border:2px solid rgba(0,0,0,.12); background:rgba(255,255,255,.85); display:flex; align-items:center; justify-content:center; box-shadow:0 6px 18px rgba(0,0,0,.12)}
+  .logo{width:88px; height:88px; border-radius:999px; overflow:hidden; border:2px solid rgba(0,0,0,.12);
+    background:rgba(255,255,255,.85); display:flex; align-items:center; justify-content:center; box-shadow:0 6px 18px rgba(0,0,0,.12)}
   .logo img{width:100%; height:100%; object-fit:cover; display:block}
 
-  /* Banner com .webm (desktop/mobile) */
+  /* Banner .webm idêntico à index */
   .banner{position:relative; width:100%; max-height:300px; overflow:hidden}
   .banner video{width:100%; height:300px; object-fit:cover; display:none}
   .banner video.active{display:block}
@@ -46,7 +49,8 @@
 
   /* Conteúdo */
   .wrap{max-width:var(--max); margin:20px auto; padding:0 14px}
-  .card{background:#fff; color:var(--black); border-radius:16px; border:1px solid var(--line); box-shadow:0 8px 24px rgba(0,0,0,.10); padding:22px}
+  .card{background:#fff; color:var(--black); border-radius:16px; border:1px solid var(--line);
+    box-shadow:0 8px 24px rgba(0,0,0,.10); padding:22px}
   h1{margin:0 0 4px; font:700 26px/1.25 ui-serif, Georgia, serif}
   h2{margin:18px 0 6px; font:700 20px/1.25 ui-serif, Georgia, serif}
   p{margin:10px 0}
@@ -97,8 +101,8 @@
       <strong>Menu</strong>
       <button class="close" id="closeMenu" aria-label="Fechar">✕</button>
     </div>
-    <!-- (sem o link “Sobre” aqui, porque já estamos nesta página) -->
     <a href="./index.html">Página Inicial</a>
+    <!-- sem "Sobre" aqui -->
     <a href="./postagens.html">Postagens</a>
     <a href="./redes-sociais.html">Rede Sociais</a>
     <a href="./contatos.html">Contatos</a>
@@ -113,26 +117,26 @@
       <hr class="sep">
 
       <h2>Missão</h2>
-      <p>Oferecer caminhos práticos e lúcidos para quem despertou da repetição do ciclo fechado e escolheu a <strong>Espiral</strong> — o ciclo aberto que honra a singularidade, a liberdade responsável e a ascensão contínua.</p>
+      <p>Oferecer caminhos práticos e lúcidos para quem despertou do ciclo fechado e escolheu a <strong>Espiral</strong> — o ciclo aberto que honra a singularidade, a liberdade responsável e a ascensão contínua.</p>
 
       <h2>Visão</h2>
-      <p>Ser um farol de clareza e cuidado: um lugar onde conhecimento e experiência se encontram, onde tecnologia e espiritualidade cooperam, e onde cada pessoa encontra meios reais de melhorar corpo, mente e sentido.</p>
+      <p>Ser um farol de clareza e cuidado: onde tecnologia e espiritualidade cooperam, e cada pessoa encontra meios reais de melhorar corpo, mente e sentido.</p>
 
       <h2>Valores (Ciclo Espiral)</h2>
       <ul>
         <li><strong>Singularidade:</strong> cada ser é único; respeitamos o caminho próprio.</li>
-        <li><strong>Verdade:</strong> linguagem limpa, sem máscaras, com checagem e humildade.</li>
-        <li><strong>Coragem serena:</strong> firmeza sem violência; fronteiras claras com respeito.</li>
+        <li><strong>Verdade:</strong> linguagem limpa e auditável, sem máscaras.</li>
+        <li><strong>Coragem serena:</strong> firmeza sem violência; fronteiras claras.</li>
         <li><strong>Serviço compassivo:</strong> aliviar dores reais, começando pelo próximo.</li>
         <li><strong>Aprendizado contínuo:</strong> errar, revisar, melhorar — subir a cada volta.</li>
-        <li><strong>Saúde integral:</strong> corpo como nave viva: sono, água, movimento, respiração.</li>
-        <li><strong>Transparência:</strong> processos simples, acessíveis, auditáveis.</li>
+        <li><strong>Saúde integral:</strong> sono, água, movimento, respiração.</li>
+        <li><strong>Transparência:</strong> processos simples, acessíveis.</li>
       </ul>
 
       <hr class="sep">
 
-      <h2>Como usamos este site</h2>
-      <p>Na página inicial, você verá as <strong>3 postagens mais recentes</strong> (carregadas de <code>./espiral.json</code>). Nos menus, acessa-se <em>Sobre</em>, <em>Postagens</em>, <em>Rede Sociais</em> e <em>Contatos</em>. O cabeçalho e o carrossel de banners são os mesmos em todas as páginas para manter a unidade visual.</p>
+      <h2>Como navegar</h2>
+      <p>Na página inicial você verá as <strong>3 postagens mais recentes</strong> (de <code>espiral.json</code>). Use o menu para acessar <em>Postagens</em>, <em>Rede Sociais</em> e <em>Contatos</em>.</p>
     </section>
   </main>
 
@@ -151,7 +155,7 @@
   closeBtn.addEventListener('click', closeMenu);
   document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeMenu(); });
 
-  /* Banners — troca automática desktop/mobile + carrossel */
+  /* Banners — idêntico à index: desktop/mobile + carrossel */
   const vidsDesktop = [
     './banner1-desktop.webm',
     './banner2-desktop.webm',
@@ -166,7 +170,7 @@
   const videos = Array.from(document.querySelectorAll('#banner video'));
   const dots   = Array.from(document.querySelectorAll('#banner .dot'));
 
-  let sources = vidsDesktop; // atual
+  let sources = vidsDesktop;
   let idx = 0, timer = null;
 
   function isMobile(){ return window.matchMedia('(max-width: 700px)').matches; }
@@ -175,7 +179,6 @@
     const next = isMobile() ? vidsMobile : vidsDesktop;
     if (next === sources) return;
     sources = next;
-    // reatribui as fontes respeitando o índice atual
     videos.forEach((v,i)=>{
       v.src = sources[i];
       if (i === idx) v.play().catch(()=>{});
@@ -190,9 +193,7 @@
       if (i===idx) {
         if (v.src !== sources[i]) v.src = sources[i];
         v.play().catch(()=>{});
-      } else {
-        v.pause();
-      }
+      } else v.pause();
     });
     dots.forEach((d,i)=>d.classList.toggle('active', i===idx));
   }
@@ -204,13 +205,11 @@
 
   dots.forEach(d=>d.addEventListener('click', ()=>{ choose(parseInt(d.dataset.i,10)); restart(); }));
 
-  // init
+  // init (igual à index)
   pickSources();
-  // define inicialmente as sources para os 3 vídeos
   videos.forEach((v,i)=> v.src = sources[i]);
   choose(0); start();
 
-  // troca ao mudar viewport/orientação
   window.addEventListener('resize', ()=>{ const old = sources; pickSources(); if (old!==sources) choose(idx); });
   window.addEventListener('orientationchange', ()=>{ const old = sources; pickSources(); if (old!==sources) choose(idx); });
 })();

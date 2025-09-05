@@ -48,7 +48,87 @@
 </style>
 </head>
 <body>
+<section id="status" style="max-width:1100px;margin:12px auto;padding:12px;border:1px solid #334155;border-radius:12px;background:#0b1325;color:#e5e7eb;font:14px system-ui">
+  <div><strong>Memória:</strong> <span id="stat-total">—</span> posts</div>
+  <div><strong>Chrononyx:</strong> <span id="stat-chron">—</span></div>
+  <div><strong>Próxima volta sugerida:</strong> <span id="stat-next">—</span></div>
+</section>
 
+<script>
+  // aponte para o CDN (ou troque por './almanyx.json')
+  const SRC = 'https://cdn.jsdelivr.net/gh/almanyxoficial/Home/public/almanyx.json';
+
+  const $ = (q, el = document) => el.querySelector(q);
+
+  // reconhece: "Chrononyx ∞", "Chrononyx 0", "Chrononyx 7", "Chrononyx 46", etc.
+  function getChronoKey(titulo = '') {
+    const m = titulo.match(/\bchrononyx\s*(∞|\d{1,3})\b/i);
+    if (!m) return null;
+    return m[1] === '∞' ? -1 : parseInt(m[1], 10);
+  }
+
+  async function loadAll() {
+    const url = `${SRC}?_=${Date.now()}`; // cache-buster
+    const r  = await fetch(url, { cache: 'no-store' });
+    if (!r.ok) throw new Error('Falha ao carregar memória');
+    return await r.json();
+  }
+
+  function summarize(posts) {
+    const keys = [];
+    for (const p of posts) {
+      const k = getChronoKey(p.titulo);
+      if (k !== null && !Number.isNaN(k)) keys.push(k);
+    }
+    // ordena com ∞ (-1) primeiro, depois 0..N
+    keys.sort((a, b) => a - b);
+
+    const hasInf = keys.includes(-1);
+    const nums   = keys.filter(k => k >= 0);
+    const max    = nums.length ? Math.max(...nums) : null;
+
+    // label bonitinha: "∞ — 0…51"
+    const label = [
+      hasInf ? '∞' : null,
+      nums.length ? `0…${String(max).padStart(2, '0')}` : null
+    ].filter(Boolean).join(' — ');
+
+    // próxima sugerida
+    const next = (max === null)
+      ? (hasInf ? '00' : '∞')
+      : String(max + 1).padStart(2, '0');
+
+    return { count: posts.length, label, next, max };
+  }
+
+  (async () => {
+    try {
+      const data = await loadAll();
+      const posts = Array.isArray(data?.posts) ? data.posts : [];
+      const { count, label, next } = summarize(posts);
+
+      $('#stat-total').textContent = `${count}`;
+      $('#stat-chron').textContent = label || '—';
+      $('#stat-next').textContent  = next;
+
+      // opcional: badge com versão/data se você incluir no JSON
+      if (data.version || data.updated_at) {
+        const badge = document.createElement('div');
+        badge.style.cssText = 'margin-top:6px;opacity:.85';
+        badge.textContent = [
+          data.version != null ? `v${data.version}` : null,
+          data.updated_at ? new Date(data.updated_at).toLocaleString('pt-BR') : null
+        ].filter(Boolean).join(' • ');
+        document.getElementById('status').appendChild(badge);
+      }
+    } catch (e) {
+      $('#stat-total').textContent = 'erro ao ler';
+      $('#stat-chron').textContent = '—';
+      $('#stat-next').textContent  = '—';
+      console.error(e);
+    }
+  })();
+</script>
 <!-- Conteúdo protegido -->
 <div id="protected" style="display:none">
 

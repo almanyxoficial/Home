@@ -36,7 +36,7 @@
   .logo{width:88px; height:88px; border-radius:999px; overflow:hidden; border:2px solid rgba(0,0,0,.12); background:rgba(255,255,255,.85); display:flex; align-items:center; justify-content:center; box-shadow:0 6px 18px rgba(0,0,0,.12)}
   .logo img{width:100%; height:100%; object-fit:cover; display:block}
 
-  /* Banner com .webm */
+  /* Banner com .webm (desktop/mobile) */
   .banner{position:relative; width:100%; max-height:300px; overflow:hidden}
   .banner video{width:100%; height:300px; object-fit:cover; display:none}
   .banner video.active{display:block}
@@ -74,12 +74,11 @@
   <!-- Logo central -->
   <div class="logo-area">
     <div class="logo">
-      <!-- seu logo -->
       <img src="./logo.png" alt="AlmaNyx">
     </div>
   </div>
 
-  <!-- Banner (mesmos 3 .webm do site) -->
+  <!-- Banner (auto desktop/mobile) -->
   <div class="banner" id="banner">
     <video class="active" autoplay muted loop playsinline></video>
     <video muted loop playsinline></video>
@@ -98,8 +97,8 @@
       <strong>Menu</strong>
       <button class="close" id="closeMenu" aria-label="Fechar">✕</button>
     </div>
+    <!-- (sem o link “Sobre” aqui, porque já estamos nesta página) -->
     <a href="./index.html">Página Inicial</a>
-    <a href="./sobre.html" aria-current="page">Sobre</a>
     <a href="./postagens.html">Postagens</a>
     <a href="./redes-sociais.html">Rede Sociais</a>
     <a href="./contatos.html">Contatos</a>
@@ -134,9 +133,6 @@
 
       <h2>Como usamos este site</h2>
       <p>Na página inicial, você verá as <strong>3 postagens mais recentes</strong> (carregadas de <code>./espiral.json</code>). Nos menus, acessa-se <em>Sobre</em>, <em>Postagens</em>, <em>Rede Sociais</em> e <em>Contatos</em>. O cabeçalho e o carrossel de banners são os mesmos em todas as páginas para manter a unidade visual.</p>
-
-      <h2>Créditos & Contato rápido</h2>
-      <p>AlmaNyx é um espaço vivo. Sugestões e colaborações são bem-vindas via <a href="./contatos.html">contatos</a>.</p>
     </section>
   </main>
 
@@ -147,6 +143,7 @@
   const $ = s => document.querySelector(s);
   const menuBtn=$('#menuBtn'), menu=$('#menu'), backdrop=$('#backdrop'), closeBtn=$('#closeMenu');
 
+  /* Menu */
   function openMenu(){ menu.classList.add('open'); backdrop.classList.add('show'); }
   function closeMenu(){ menu.classList.remove('open'); backdrop.classList.remove('show'); }
   menuBtn.addEventListener('click', openMenu);
@@ -154,36 +151,68 @@
   closeBtn.addEventListener('click', closeMenu);
   document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeMenu(); });
 
-  /* BANNERS (.webm iguais ao index) */
-  const vids = [
+  /* Banners — troca automática desktop/mobile + carrossel */
+  const vidsDesktop = [
     './banner1-desktop.webm',
     './banner2-desktop.webm',
     './banner3-desktop.webm'
   ];
+  const vidsMobile = [
+    './banner1-mobile.webm',
+    './banner2-mobile.webm',
+    './banner3-mobile.webm'
+  ];
+
   const videos = Array.from(document.querySelectorAll('#banner video'));
   const dots   = Array.from(document.querySelectorAll('#banner .dot'));
-  let i = 0, timer = null;
 
-  function choose(iNew){
-    i = iNew;
-    videos.forEach((v,idx)=>{
-      v.classList.toggle('active', idx===i);
-      if (idx===i && v.src !== vids[idx]) v.src = vids[idx];
-      if (idx===i) v.play().catch(()=>{});
+  let sources = vidsDesktop; // atual
+  let idx = 0, timer = null;
+
+  function isMobile(){ return window.matchMedia('(max-width: 700px)').matches; }
+
+  function pickSources(){
+    const next = isMobile() ? vidsMobile : vidsDesktop;
+    if (next === sources) return;
+    sources = next;
+    // reatribui as fontes respeitando o índice atual
+    videos.forEach((v,i)=>{
+      v.src = sources[i];
+      if (i === idx) v.play().catch(()=>{});
       else v.pause();
     });
-    dots.forEach((d,idx)=>d.classList.toggle('active', idx===i));
   }
-  function next(){ choose((i+1)%videos.length); }
-  dots.forEach(d=>d.addEventListener('click', ()=>{ choose(parseInt(d.dataset.i,10)); restart(); }));
+
+  function choose(iNew){
+    idx = iNew;
+    videos.forEach((v,i)=>{
+      v.classList.toggle('active', i===idx);
+      if (i===idx) {
+        if (v.src !== sources[i]) v.src = sources[i];
+        v.play().catch(()=>{});
+      } else {
+        v.pause();
+      }
+    });
+    dots.forEach((d,i)=>d.classList.toggle('active', i===idx));
+  }
+
+  function next(){ choose((idx+1)%videos.length); }
   function start(){ timer = setInterval(next, 6000); }
-  function stop(){ if(timer){ clearInterval(timer); timer=null; } }
+  function stop(){ if (timer){ clearInterval(timer); timer=null; } }
   function restart(){ stop(); start(); }
 
+  dots.forEach(d=>d.addEventListener('click', ()=>{ choose(parseInt(d.dataset.i,10)); restart(); }));
+
+  // init
+  pickSources();
+  // define inicialmente as sources para os 3 vídeos
+  videos.forEach((v,i)=> v.src = sources[i]);
   choose(0); start();
 
-  /* Responsividade: usa versão mobile se viewport < 700px (opcional)
-     -> se quiser separar mobile/desktop, adapte como no index. */
+  // troca ao mudar viewport/orientação
+  window.addEventListener('resize', ()=>{ const old = sources; pickSources(); if (old!==sources) choose(idx); });
+  window.addEventListener('orientationchange', ()=>{ const old = sources; pickSources(); if (old!==sources) choose(idx); });
 })();
 </script>
 </body>

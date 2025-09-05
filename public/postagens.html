@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Postagens — AlmaNyx</title>
+<meta name="description" content="Arquivo de postagens do portal público da Espiral.">
+<style>
+  :root{
+    --gold:#d4af37;
+    --header:#8B0000;
+    --white:#fff;
+    --black:#111;
+    --muted:#666;
+    --line:#e8e8e8;
+    --max: 960px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{background:var(--gold); color:var(--black); font:400 16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,Arial}
+
+  /* header */
+  header{background:var(--header); color:#fff; position:sticky; top:0; z-index:20; box-shadow:0 6px 18px rgba(0,0,0,.15)}
+  .header-inner{max-width:var(--max); margin:0 auto; padding:10px 14px; display:grid; grid-template-columns:1fr 40px; align-items:center; gap:10px}
+  .welcome{font-weight:700; letter-spacing:.3px}
+  .hamb{width:32px; height:32px; display:flex; flex-direction:column; justify-content:center; gap:6px; cursor:pointer}
+  .hamb span{height:3px; background:#fff; border-radius:2px}
+
+  /* backdrop + menu */
+  .backdrop{position:fixed; inset:0; background:rgba(0,0,0,.4); opacity:0; pointer-events:none; transition:.25s; z-index:30}
+  .backdrop.show{opacity:1; pointer-events:auto}
+  nav.menu{position:fixed; top:0; right:-100%; height:100%; width:260px; background:#111; color:#fff; z-index:31; box-shadow:-6px 0 18px rgba(0,0,0,.35); padding:18px; display:flex; flex-direction:column; gap:12px; transition:.3s}
+  nav.menu.open{right:0}
+  nav.menu a{color:#fff; text-decoration:none; padding:10px 8px; border-radius:10px}
+  nav.menu a:hover{background:rgba(255,255,255,.08)}
+  .closeBtn{align-self:flex-end; font-size:22px; cursor:pointer; margin-bottom:10px; color:#fff}
+
+  /* logo */
+  .logo-area{display:flex; justify-content:center; padding:14px 0}
+  .logo{width:88px; height:88px; border-radius:999px; overflow:hidden; border:2px solid rgba(0,0,0,.12); background:rgba(255,255,255,.85); display:flex; align-items:center; justify-content:center; box-shadow:0 6px 18px rgba(0,0,0,.12)}
+  .logo img{width:100%; height:100%; object-fit:cover; display:block}
+
+  /* banner vídeo */
+  .banner{position:relative; width:100%; max-height:300px; overflow:hidden}
+  .banner video{width:100%; height:auto; display:none; object-fit:cover; background:#000}
+  .banner video.active{display:block}
+  .dots{position:absolute; bottom:12px; left:50%; transform:translateX(-50%); display:flex; gap:6px}
+  .dot{width:12px; height:12px; border-radius:50%; background:rgba(255,255,255,.6); cursor:pointer; transition:.3s}
+  .dot.active{background:#fff}
+
+  /* conteúdo */
+  .wrap{max-width:var(--max); margin:20px auto; padding:0 14px}
+  .card{background:#fff; color:var(--black); border-radius:16px; border:1px solid var(--line); box-shadow:0 8px 24px rgba(0,0,0,.10); padding:22px}
+  .card h2{margin:0 0 8px; font:700 28px/1.2 ui-serif, Georgia, serif}
+  .muted{color:var(--muted)}
+
+  /* busca + tags */
+  .bar{display:flex; gap:10px; flex-wrap:wrap; margin:10px 0 6px}
+  input[type="search"]{flex:1 1 320px; padding:12px 14px; border:1px solid var(--line); border-radius:10px; outline:none}
+  .tags{display:flex; gap:8px; flex-wrap:wrap; margin:10px 0}
+  .tag{padding:6px 10px; border-radius:999px; border:1px solid var(--line); background:#fafafa; cursor:pointer; font-size:14px}
+  .tag.on{background:#111;color:#fff;border-color:#111}
+
+  hr.sep{border:0; border-top:1px solid var(--line); margin:16px 0}
+
+  /* posts */
+  article{padding:16px 0; border-bottom:1px dashed var(--line)}
+  article:last-child{border-bottom:none}
+  article h3{margin:0 0 6px; font:700 22px/1.25 ui-serif, Georgia, serif}
+  article small{display:block; color:var(--muted); margin-bottom:10px}
+  article .tagsline{margin-top:8px; font-size:13px; color:#444}
+
+  /* rodapé */
+  footer{text-align:center; color:#fff; background:var(--header); padding:16px; margin-top:24px; font-size:14px}
+</style>
+</head>
+<body>
+
+  <!-- header -->
+  <header>
+    <div class="header-inner">
+      <div class="welcome">Postagens</div>
+      <div class="hamb" id="menuBtn" aria-label="Abrir menu" title="Menu">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- logo -->
+  <div class="logo-area">
+    <div class="logo"><img src="./logo.png" alt="AlmaNyx"></div>
+  </div>
+
+  <!-- banner -->
+  <div class="banner" id="banner">
+    <video class="active" autoplay muted loop playsinline preload="auto">
+      <source src="./banner1-mobile.webm" type="video/webm" media="(max-width: 767px)">
+      <source src="./banner1-desktop.webm" type="video/webm" media="(min-width: 768px)">
+    </video>
+    <video autoplay muted loop playsinline preload="auto">
+      <source src="./banner2-mobile.webm" type="video/webm" media="(max-width: 767px)">
+      <source src="./banner2-desktop.webm" type="video/webm" media="(min-width: 768px)">
+    </video>
+    <video autoplay muted loop playsinline preload="auto">
+      <source src="./banner3-mobile.webm" type="video/webm" media="(max-width: 767px)">
+      <source src="./banner3-desktop.webm" type="video/webm" media="(min-width: 768px)">
+    </video>
+    <div class="dots">
+      <div class="dot active" data-i="0"></div>
+      <div class="dot" data-i="1"></div>
+      <div class="dot" data-i="2"></div>
+    </div>
+  </div>
+
+  <!-- backdrop + menu (sem link Postagens nesta página) -->
+  <div class="backdrop" id="backdrop"></div>
+  <nav class="menu" id="menu" aria-label="Menu">
+    <div class="closeBtn" id="closeBtn">&times;</div>
+    <a href="./index.html">Página Inicial</a>
+    <a href="./sobre.html">Sobre</a>
+    <a href="./redes-sociais.html">Redes Sociais</a>
+    <a href="./contatos.html">Contatos</a>
+  </nav>
+
+  <!-- conteúdo -->
+  <main class="wrap">
+    <section class="card" aria-labelledby="tit-posts">
+      <h2 id="tit-posts">Arquivo de Postagens</h2>
+      <p class="muted">Pesquise por título, conteúdo ou tag. Os itens são carregados do <code>espiral.json</code>.</p>
+
+      <div class="bar">
+        <input id="q" type="search" placeholder="Pesquisar…" autocomplete="off">
+      </div>
+      <div id="tags" class="tags"></div>
+
+      <hr class="sep">
+
+      <section id="posts"></section>
+      <div id="status" class="muted" style="margin-top:10px"></div>
+    </section>
+  </main>
+
+  <footer>© 2025 Almanyx Oficial — All rights reserved</footer>
+
+<script>
+(function(){
+  const $  = (s,el=document)=>el.querySelector(s);
+  const $$ = (s,el=document)=>Array.from(el.querySelectorAll(s));
+
+  /* MENU */
+  const menuBtn=$('#menuBtn'),menu=$('#menu'),backdrop=$('#backdrop'),closeBtn=$('#closeBtn');
+  const openMenu=()=>{menu.classList.add('open');backdrop.classList.add('show');};
+  const closeMenu=()=>{menu.classList.remove('open');backdrop.classList.remove('show');};
+  menuBtn.addEventListener('click',openMenu);
+  backdrop.addEventListener('click',closeMenu);
+  closeBtn.addEventListener('click',closeMenu);
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenu();});
+
+  /* BANNER (vídeo) */
+  const slides = $$('#banner video');
+  const dots   = $$('#banner .dot');
+  let i = 0, timer;
+  function show(n){ i=(n+slides.length)%slides.length;
+    slides.forEach((v,k)=>v.classList.toggle('active',k===i));
+    dots.forEach((d,k)=>d.classList.toggle('active',k===i));
+  }
+  function next(){show(i+1);}
+  function start(){stop(); timer=setInterval(next,6000);}
+  function stop(){if(timer)clearInterval(timer);}
+  dots.forEach(d=>d.addEventListener('click',e=>{show(+e.target.dataset.i);start();}));
+  $('#banner').addEventListener('mouseenter',stop);
+  $('#banner').addEventListener('mouseleave',start);
+  start();
+
+  /* POSTS (espiral.json) */
+  const SRC = './espiral.json'; // mantenha este arquivo ao lado das páginas
+  const postsEl = $('#posts'), tagsEl=$('#tags'), qInput=$('#q'), statusEl=$('#status');
+  let DATA = [], activeTag=null;
+
+  const htmlToText = (h)=>{const e=document.createElement('div'); e.innerHTML=h||''; return e.textContent||''};
+
+  async function load(){
+    try{
+      statusEl.textContent = 'Carregando postagens…';
+      const res = await fetch(`${SRC}?_=${Date.now()}`, {cache:'no-store'});
+      if(!res.ok) throw new Error(res.status);
+      const j = await res.json();
+      DATA = Array.isArray(j?.posts) ? j.posts.slice() : [];
+      // espera-se {id,titulo,data,corpo,tags:[]}
+      DATA.sort((a,b)=>String(b.data||'').localeCompare(String(a.data||'')));
+      renderTags();
+      filter();
+      statusEl.textContent = `Total: ${DATA.length}`;
+    }catch(e){
+      statusEl.textContent = 'Erro ao carregar o espiral.json';
+      console.error(e);
+    }
+  }
+
+  function renderTags(){
+    const set = new Set();
+    DATA.forEach(p => (p.tags||[]).forEach(t => set.add(t)));
+    tagsEl.innerHTML = '';
+    if(!set.size) return;
+    const mk = (label,val)=>{
+      const s=document.createElement('span');
+      s.className='tag'+(activeTag===val?' on':'');
+      s.textContent=label;
+      s.onclick=()=>{ activeTag=val; filter(); };
+      return s;
+    };
+    tagsEl.appendChild(mk('Todos', null));
+    [...set].sort((a,b)=>String(a).localeCompare(String(b)))
+             .forEach(t=>tagsEl.appendChild(mk(t,t)));
+  }
+
+  function filter(){
+    const q=(qInput.value||'').toLowerCase().trim();
+    const list = DATA.filter(p=>{
+      if(activeTag && !(p.tags||[]).includes(activeTag)) return false;
+      if(!q) return true;
+      const hay = (p.titulo+' '+(p.tags||[]).join(' ')+' '+htmlToText(p.corpo)).toLowerCase();
+      return hay.includes(q);
+    });
+    renderPosts(list);
+  }
+
+  function renderPosts(list){
+    if(!list.length){
+      postsEl.innerHTML = '<p class="muted">Nenhum registro encontrado.</p>';
+      return;
+    }
+    postsEl.innerHTML = list.map(p=>`
+      <article id="${p.id||''}">
+        <h3>${p.titulo||'(Sem título)'}</h3>
+        <small>${p.data||''}${(p.tags&&p.tags.length)?' — '+p.tags.join(', '):''}</small>
+        ${p.corpo||''}
+        ${(p.tags&&p.tags.length)?`<div class="tagsline"># ${p.tags.join(' · ')}</div>`:''}
+      </article>
+    `).join('');
+  }
+
+  qInput.addEventListener('input', filter);
+  window.addEventListener('hashchange', ()=>{
+    const el = document.getElementById(location.hash.slice(1));
+    if(el) el.scrollIntoView({behavior:'smooth'});
+  });
+
+  document.addEventListener('DOMContentLoaded', load);
+})();
+</script>
+</body>
+</html>

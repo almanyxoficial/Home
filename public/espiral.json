@@ -1,4 +1,6 @@
 {
+  "posts": [
+    {
   "ordem": "01",
   "id": "post-01",
   "titulo": "Primeira Postagem — Bem-vindos à Espiral",

@@ -7,65 +7,54 @@
 <meta name="description" content="Reflexões públicas da Espiral.">
 <style>
   :root{
-    --gold:#d4af37;
-    --header:#8B0000;
-    --white:#fff;
-    --black:#111;
-    --muted:#666;
-    --line:#e8e8e8;
-    --max: 960px;
+    --gold:#d4af37; --header:#8B0000; --white:#fff; --black:#111;
+    --muted:#666; --line:#e8e8e8; --max:960px;
   }
   *{box-sizing:border-box}
   html,body{margin:0;padding:0}
-  body{background:var(--gold); color:var(--black); font:400 16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,Arial}
-
+  body{background:var(--gold);color:var(--black);font:400 16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,Arial}
   /* header */
-  header{background:var(--header); color:#fff; position:sticky; top:0; z-index:20; box-shadow:0 6px 18px rgba(0,0,0,.15)}
-  .header-inner{max-width:var(--max); margin:0 auto; padding:10px 14px; display:grid; grid-template-columns:1fr 40px; align-items:center; gap:10px}
-  .welcome{font-weight:700; letter-spacing:.3px}
-  .hamb{width:32px; height:32px; display:flex; flex-direction:column; justify-content:center; gap:6px; cursor:pointer}
-  .hamb span{height:3px; background:#fff; border-radius:2px}
-
-  /* menu lateral e backdrop */
-  .backdrop{position:fixed; inset:0; background:rgba(0,0,0,.4); opacity:0; pointer-events:none; transition:.25s; z-index:30}
-  .backdrop.show{opacity:1; pointer-events:auto}
-  nav.menu{position:fixed; top:0; right:-100%; height:100%; width:260px; background:#111; color:#fff; z-index:31; box-shadow:-6px 0 18px rgba(0,0,0,.35); padding:18px; display:flex; flex-direction:column; gap:12px; transition:.3s}
+  header{background:var(--header);color:#fff;position:sticky;top:0;z-index:20;box-shadow:0 6px 18px rgba(0,0,0,.15)}
+  .header-inner{max-width:var(--max);margin:0 auto;padding:10px 14px;display:grid;grid-template-columns:1fr 40px;align-items:center;gap:10px}
+  .welcome{font-weight:700;letter-spacing:.3px}
+  .hamb{width:32px;height:32px;display:flex;flex-direction:column;justify-content:center;gap:6px;cursor:pointer}
+  .hamb span{height:3px;background:#fff;border-radius:2px}
+  /* menu lateral + backdrop */
+  .backdrop{position:fixed;inset:0;background:rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:.25s;z-index:30}
+  .backdrop.show{opacity:1;pointer-events:auto}
+  nav.menu{position:fixed;top:0;right:-100%;height:100%;width:260px;background:#111;color:#fff;z-index:31;box-shadow:-6px 0 18px rgba(0,0,0,.35);padding:18px;display:flex;flex-direction:column;gap:12px;transition:.3s}
   nav.menu.open{right:0}
-  nav.menu a{color:#fff; text-decoration:none; padding:10px 8px; border-radius:10px}
+  nav.menu a{color:#fff;text-decoration:none;padding:10px 8px;border-radius:10px}
   nav.menu a:hover{background:rgba(255,255,255,.08)}
-
-  /* botão fechar */
-  .closeBtn{align-self:flex-end; font-size:22px; cursor:pointer; margin-bottom:10px; color:#fff}
-
+  .closeBtn{align-self:flex-end;font-size:22px;cursor:pointer;margin-bottom:10px;color:#fff}
   /* logo */
-  .logo-area{display:flex; justify-content:center; padding:14px 0}
-  .logo{width:88px; height:88px; border-radius:999px; overflow:hidden; border:2px solid rgba(0,0,0,.12); background:rgba(255,255,255,.85); display:flex; align-items:center; justify-content:center; box-shadow:0 6px 18px rgba(0,0,0,.12)}
-  .logo img{width:100%; height:100%; object-fit:cover; display:block}
-
-  /* banner com vídeo */
-  .banner{position:relative; width:100%; max-height:300px; overflow:hidden}
-  .banner video{width:100%; height:auto; display:none; object-fit:cover; background:#000}
-  .banner video.active{display:block}
-  .dots{position:absolute; bottom:12px; left:50%; transform:translateX(-50%); display:flex; gap:6px}
-  .dot{width:12px; height:12px; border-radius:50%; background:rgba(255,255,255,.6); cursor:pointer; transition:.3s}
+  .logo-area{display:flex;justify-content:center;padding:14px 0}
+  .logo{width:88px;height:88px;border-radius:999px;overflow:hidden;border:2px solid rgba(0,0,0,.12);background:rgba(255,255,255,.85);display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(0,0,0,.12)}
+  .logo img{width:100%;height:100%;object-fit:cover;display:block}
+  /* banner (link por slide) */
+  .banner{position:relative;width:100%;max-height:300px;overflow:hidden}
+  .slide{display:none}
+  .slide.active{display:block}
+  .slide a{display:block}
+  .slide a[href=""]{pointer-events:none} /* se não quiser link */
+  .banner video{width:100%;height:auto;object-fit:cover;background:#000;display:block}
+  .dots{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:2}
+  .dot{width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.6);cursor:pointer;transition:.3s}
   .dot.active{background:#fff}
-
   /* conteúdo */
-  .wrap{max-width:var(--max); margin:20px auto; padding:0 14px}
-  .card{background:#fff; color:var(--black); border-radius:16px; border:1px solid var(--line); box-shadow:0 8px 24px rgba(0,0,0,.10); padding:22px}
-  .bar{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px}
-  input[type="search"]{flex:1 1 320px; padding:12px 14px; border:1px solid var(--line); border-radius:10px; outline:none}
-  hr.sep{border:0; border-top:1px solid var(--line); margin:16px 0}
-  article{padding:16px 0; border-bottom:1px dashed var(--line)}
+  .wrap{max-width:var(--max);margin:20px auto;padding:0 14px}
+  .card{background:#fff;color:var(--black);border-radius:16px;border:1px solid var(--line);box-shadow:0 8px 24px rgba(0,0,0,.10);padding:22px}
+  .bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+  input[type="search"]{flex:1 1 320px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;outline:none}
+  hr.sep{border:0;border-top:1px solid var(--line);margin:16px 0}
+  article{padding:16px 0;border-bottom:1px dashed var(--line)}
   article:last-child{border-bottom:none}
-  article h2{margin:0 0 6px; font:700 22px/1.25 ui-serif, Georgia, serif}
-  article small{display:block; color:var(--muted); margin-bottom:10px}
-
-  footer{text-align:center; color:#fff; background:var(--header); padding:16px; margin-top:24px; font-size:14px}
+  article h2{margin:0 0 6px;font:700 22px/1.25 ui-serif, Georgia, serif}
+  article small{display:block;color:var(--muted);margin-bottom:10px}
+  footer{text-align:center;color:#fff;background:var(--header);padding:16px;margin-top:24px;font-size:14px}
 </style>
 </head>
 <body>
-
   <!-- header -->
   <header>
     <div class="header-inner">
@@ -77,38 +66,43 @@
   </header>
 
   <!-- logo -->
-  <div class="logo-area">
-    <div class="logo"><img src="./logo.png" alt="AlmaNyx"></div>
-  </div>
+  <div class="logo-area"><div class="logo"><img src="./logo.png" alt="AlmaNyx"></div></div>
 
-  <!-- banner -->
-<div class="banner" id="banner">
-  
-  <div class="slide active">
-    <a href="https://chat.whatsapp.com/CLopyrnEt4qIacgFqtCMDU?mode=ac_t" target="_blank">
-      <video autoplay muted loop playsinline preload="auto">
-        <source src="./banner1-mobile.webm" type="video/webm">
-        <source src="./banner1-desktop.webm" type="video/webm">
-      </video>
-    </a>
-  </div>
+  <!-- banner com 3 links distintos -->
+  <div class="banner" id="banner">
+    <!-- SLIDE 1 -->
+    <div class="slide active">
+      <a href="https://chat.whatsapp.com/CLopyrnEt4qIacgFqtCMDU" target="_blank" rel="noopener">
+        <video autoplay muted loop playsinline preload="auto">
+          <source src="./banner1-mobile.webm" type="video/webm" media="(max-width: 767px)">
+          <source src="./banner1-desktop.webm" type="video/webm" media="(min-width: 768px)">
+        </video>
+      </a>
+    </div>
+    <!-- SLIDE 2 -->
+    <div class="slide">
+      <a href="https://www.youtube.com/@Almanyx.oficial" target="_blank" rel="noopener">
+        <video autoplay muted loop playsinline preload="auto">
+          <source src="./banner2-mobile.webm" type="video/webm" media="(max-width: 767px)">
+          <source src="./banner2-desktop.webm" type="video/webm" media="(min-width: 768px)">
+        </video>
+      </a>
+    </div>
+    <!-- SLIDE 3 -->
+    <div class="slide">
+      <a href="./redes-sociais.html">
+        <video autoplay muted loop playsinline preload="auto">
+          <source src="./banner3-mobile.webm" type="video/webm" media="(max-width: 767px)">
+          <source src="./banner3-desktop.webm" type="video/webm" media="(min-width: 768px)">
+        </video>
+      </a>
+    </div>
 
-  <div class="slide">
-    <a href="https://t.me/seuTelegramAqui" target="_blank">
-      <video autoplay muted loop playsinline preload="auto">
-        <source src="./banner2-mobile.webm" type="video/webm">
-        <source src="./banner2-desktop.webm" type="video/webm">
-      </video>
-    </a>
-  </div>
-
-  <div class="slide">
-    <a href="https://youtube.com/@seuCanalAqui" target="_blank">
-      <video autoplay muted loop playsinline preload="auto">
-        <source src="./banner3-mobile.webm" type="video/webm">
-        <source src="./banner3-desktop.webm" type="video/webm">
-      </video>
-    </a>
+    <div class="dots">
+      <div class="dot active" data-i="0"></div>
+      <div class="dot" data-i="1"></div>
+      <div class="dot" data-i="2"></div>
+    </div>
   </div>
 
   <!-- backdrop + menu -->
@@ -128,7 +122,9 @@
         <h2>Sobre</h2>
         <p>Bem-vindo ao portal público da Espiral. Aqui compartilhamos reflexões selecionadas do nosso caminho.</p>
       </div>
+
       <hr class="sep">
+
       <div class="bar"><input id="q" type="search" placeholder="Pesquisar postagens…" autocomplete="off"></div>
       <section id="posts"></section>
     </section>
@@ -138,8 +134,8 @@
 
 <script>
 (function(){
-  const $ = (s,el=document)=>el.querySelector(s);
-  const $$ = (s,el=document)=>Array.from(el.querySelectorAll(s));
+  const $=(s,el=document)=>el.querySelector(s);
+  const $$=(s,el=document)=>Array.from(el.querySelectorAll(s));
 
   /* menu */
   const menuBtn=$('#menuBtn'),menu=$('#menu'),backdrop=$('#backdrop'),closeBtn=$('#closeBtn');
@@ -150,31 +146,40 @@
   closeBtn.addEventListener('click',closeMenu);
   document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenu();});
 
-  /* carrossel */
-  const slides = $$('#banner video');
-  const dots   = $$('#banner .dot');
-  let i = 0, timer;
-  function show(n){i=(n+slides.length)%slides.length;slides.forEach((v,k)=>v.classList.toggle('active',k===i));dots.forEach((d,k)=>d.classList.toggle('active',k===i));}
-  function next(){show(i+1);}
-  function start(){stop();timer=setInterval(next,6000);}
-  function stop(){if(timer)clearInterval(timer);}
-  dots.forEach(d=>d.addEventListener('click',e=>{show(+e.target.dataset.i);start();}));
+  /* carrossel com <div.slide> (link por slide) */
+  const slides=$$('#banner .slide');
+  const dots  =$$('#banner .dot');
+  let i=0,timer;
+
+  function show(n){
+    i=(n+slides.length)%slides.length;
+    slides.forEach((s,k)=>s.classList.toggle('active',k===i));
+    dots.forEach((d,k)=>d.classList.toggle('active',k===i));
+  }
+  function next(){ show(i+1); }
+  function start(){ stop(); timer=setInterval(next,6000); }
+  function stop(){ if(timer) clearInterval(timer); }
+
+  dots.forEach(d=>d.addEventListener('click',e=>{ show(+e.target.dataset.i); start(); }));
   $('#banner').addEventListener('mouseenter',stop);
   $('#banner').addEventListener('mouseleave',start);
   start();
 
-  /* posts */
-  const POSTS_SRC = './espiral.json';
-  const postsEl = $('#posts');
-  const qInput  = $('#q');
+  /* posts (3 mais recentes) */
+  const POSTS_SRC='./espiral.json';
+  const postsEl=$('#posts'), qInput=$('#q');
+
   function render(list){
-    postsEl.innerHTML = '';
+    postsEl.innerHTML='';
     list.forEach(p=>{
       const el=document.createElement('article');
-      el.innerHTML=`<h2>${p.titulo??'Sem título'}</h2><small>${p.data??''}</small><div>${p.corpo??''}</div>`;
+      el.innerHTML=`<h2>${p.titulo??'Sem título'}</h2>
+                    <small>${p.data??''}</small>
+                    <div>${p.corpo??''}</div>`;
       postsEl.appendChild(el);
     });
   }
+
   async function loadPosts(){
     try{
       const r=await fetch(POSTS_SRC+'?_'+Date.now(),{cache:'no-store'});
@@ -186,7 +191,9 @@
         const filtered=posts.filter(p=>(p.titulo??'').toLowerCase().includes(q)||(p.corpo??'').toLowerCase().includes(q));
         render((q?filtered:posts).slice(0,3));
       });
-    }catch(e){postsEl.innerHTML='<p>Não foi possível carregar as postagens agora.</p>';}
+    }catch(e){
+      postsEl.innerHTML='<p>Não foi possível carregar as postagens agora.</p>';
+    }
   }
   loadPosts();
 })();

@@ -40,10 +40,11 @@
   .logo{width:88px; height:88px; border-radius:999px; overflow:hidden; border:2px solid rgba(0,0,0,.12); background:rgba(255,255,255,.85); display:flex; align-items:center; justify-content:center; box-shadow:0 6px 18px rgba(0,0,0,.12)}
   .logo img{width:100%; height:100%; object-fit:cover; display:block}
 
-  /* banner vídeo */
+  /* banner */
   .banner{position:relative; width:100%; max-height:300px; overflow:hidden}
-  .banner video{width:100%; height:auto; display:none; object-fit:cover; background:#000}
-  .banner video.active{display:block}
+  .slide{display:none}
+  .slide.active{display:block}
+  .slide video{width:100%; height:auto; object-fit:cover; background:#000}
   .dots{position:absolute; bottom:12px; left:50%; transform:translateX(-50%); display:flex; gap:6px}
   .dot{width:12px; height:12px; border-radius:50%; background:rgba(255,255,255,.6); cursor:pointer; transition:.3s}
   .dot.active{background:#fff}
@@ -91,20 +92,36 @@
     <div class="logo"><img src="./logo.png" alt="AlmaNyx"></div>
   </div>
 
-  <!-- banner -->
+  <!-- banner com links -->
   <div class="banner" id="banner">
-    <video class="active" autoplay muted loop playsinline preload="auto">
-      <source src="./banner1-mobile.webm" type="video/webm" media="(max-width: 767px)">
-      <source src="./banner1-desktop.webm" type="video/webm" media="(min-width: 768px)">
-    </video>
-    <video autoplay muted loop playsinline preload="auto">
-      <source src="./banner2-mobile.webm" type="video/webm" media="(max-width: 767px)">
-      <source src="./banner2-desktop.webm" type="video/webm" media="(min-width: 768px)">
-    </video>
-    <video autoplay muted loop playsinline preload="auto">
-      <source src="./banner3-mobile.webm" type="video/webm" media="(max-width: 767px)">
-      <source src="./banner3-desktop.webm" type="video/webm" media="(min-width: 768px)">
-    </video>
+    <!-- SLIDE 1 -->
+    <div class="slide active">
+      <a href="" target="_blank" rel="noopener">
+        <video autoplay muted loop playsinline preload="auto">
+          <source src="./banner1-mobile.webm" type="video/webm" media="(max-width: 767px)">
+          <source src="./banner1-desktop.webm" type="video/webm" media="(min-width: 768px)">
+        </video>
+      </a>
+    </div>
+    <!-- SLIDE 2 -->
+    <div class="slide">
+      <a href="https://www.youtube.com/@Almanyx.oficial" target="_blank" rel="noopener">
+        <video autoplay muted loop playsinline preload="auto">
+          <source src="./banner2-mobile.webm" type="video/webm" media="(max-width: 767px)">
+          <source src="./banner2-desktop.webm" type="video/webm" media="(min-width: 768px)">
+        </video>
+      </a>
+    </div>
+    <!-- SLIDE 3 -->
+    <div class="slide">
+      <a href="https://chat.whatsapp.com/CLopyrnEt4qIacgFqtCMDU" target="_blank" rel="noopener">
+        <video autoplay muted loop playsinline preload="auto">
+          <source src="./banner3-mobile.webm" type="video/webm" media="(max-width: 767px)">
+          <source src="./banner3-desktop.webm" type="video/webm" media="(min-width: 768px)">
+        </video>
+      </a>
+    </div>
+
     <div class="dots">
       <div class="dot active" data-i="0"></div>
       <div class="dot" data-i="1"></div>
@@ -112,7 +129,7 @@
     </div>
   </div>
 
-  <!-- backdrop + menu (sem link Postagens nesta página) -->
+  <!-- backdrop + menu -->
   <div class="backdrop" id="backdrop"></div>
   <nav class="menu" id="menu" aria-label="Menu">
     <div class="closeBtn" id="closeBtn">&times;</div>
@@ -156,12 +173,12 @@
   closeBtn.addEventListener('click',closeMenu);
   document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenu();});
 
-  /* BANNER (vídeo) */
-  const slides = $$('#banner video');
+  /* BANNER */
+  const slides = $$('#banner .slide');
   const dots   = $$('#banner .dot');
   let i = 0, timer;
   function show(n){ i=(n+slides.length)%slides.length;
-    slides.forEach((v,k)=>v.classList.toggle('active',k===i));
+    slides.forEach((s,k)=>s.classList.toggle('active',k===i));
     dots.forEach((d,k)=>d.classList.toggle('active',k===i));
   }
   function next(){show(i+1);}
@@ -172,8 +189,8 @@
   $('#banner').addEventListener('mouseleave',start);
   start();
 
-  /* POSTS (espiral.json) */
-  const SRC = './espiral.json'; // mantenha este arquivo ao lado das páginas
+  /* POSTS */
+  const SRC = './espiral.json';
   const postsEl = $('#posts'), tagsEl=$('#tags'), qInput=$('#q'), statusEl=$('#status');
   let DATA = [], activeTag=null;
 
@@ -186,7 +203,6 @@
       if(!res.ok) throw new Error(res.status);
       const j = await res.json();
       DATA = Array.isArray(j?.posts) ? j.posts.slice() : [];
-      // espera-se {id,titulo,data,corpo,tags:[]}
       DATA.sort((a,b)=>String(b.data||'').localeCompare(String(a.data||'')));
       renderTags();
       filter();

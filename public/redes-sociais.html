@@ -7,172 +7,163 @@
 <meta name="description" content="Canais oficiais do portal público da Espiral.">
 <style>
   :root{
-    --gold:#d4af37;
-    --header:#8B0000;
-    --white:#fff;
-    --black:#111;
-    --muted:#666;
-    --line:#e8e8e8;
-    --max: 960px;
+    --gold:#d4af37; --header:#8B0000; --white:#fff;
+    --black:#111; --muted:#666; --line:#e8e8e8; --max: 960px;
   }
   *{box-sizing:border-box}
-  html,body{margin:0;padding:0}
-  body{background:var(--gold); color:var(--black);
-       font:400 16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,Arial}
+  body{margin:0;background:var(--gold);color:var(--black);font:400 16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,Arial}
 
-  header{background:var(--header); color:#fff; position:sticky; top:0; z-index:20;
-         box-shadow:0 6px 18px rgba(0,0,0,.15)}
-  .header-inner{max-width:var(--max); margin:0 auto; padding:10px 14px;
-                display:grid; grid-template-columns:40px 1fr; align-items:center; gap:10px}
-  .hamb{width:32px; height:32px; display:flex; flex-direction:column; justify-content:center; gap:6px; cursor:pointer}
-  .hamb span{height:3px; background:#fff; border-radius:2px}
-  .welcome{font-weight:700; letter-spacing:.3px; text-align:right}
+  header{background:var(--header);color:#fff;position:sticky;top:0;z-index:20;box-shadow:0 6px 18px rgba(0,0,0,.15)}
+  .header-inner{max-width:var(--max);margin:0 auto;padding:10px 14px;
+                display:grid;grid-template-columns:1fr 40px;align-items:center;gap:10px}
+  .welcome{font-weight:700;letter-spacing:.3px}
+  .hamb{width:32px;height:32px;display:flex;flex-direction:column;justify-content:center;gap:6px;cursor:pointer}
+  .hamb span{height:3px;background:#fff;border-radius:2px}
 
-  .backdrop{position:fixed; inset:0; background:rgba(0,0,0,.4); opacity:0; pointer-events:none;
-            transition:.25s; z-index:30}
-  .backdrop.show{opacity:1; pointer-events:auto}
-  nav.menu{position:fixed; top:0; right:-100%; height:100%; width:260px; background:#111; color:#fff; z-index:31;
-           box-shadow:-6px 0 18px rgba(0,0,0,.35); padding:18px; display:flex; flex-direction:column; gap:12px; transition:.3s}
+  .backdrop{position:fixed;inset:0;background:rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:.25s;z-index:30}
+  .backdrop.show{opacity:1;pointer-events:auto}
+  nav.menu{position:fixed;top:0;right:-100%;height:100%;width:260px;background:#111;color:#fff;z-index:31;
+           box-shadow:-6px 0 18px rgba(0,0,0,.35);padding:18px;display:flex;flex-direction:column;gap:12px;transition:.3s}
   nav.menu.open{right:0}
-  nav.menu a{color:#fff; text-decoration:none; padding:10px 8px; border-radius:10px}
+  nav.menu a{color:#fff;text-decoration:none;padding:10px 8px;border-radius:10px}
   nav.menu a:hover{background:rgba(255,255,255,.08)}
-  .closeBtn{align-self:flex-end; font-size:22px; cursor:pointer; margin-bottom:10px; color:#fff}
+  .closeBtn{align-self:flex-end;font-size:22px;cursor:pointer;margin-bottom:10px;color:#fff}
 
-  .logo-area{display:flex; justify-content:center; padding:14px 0}
-  .logo{width:88px; height:88px; border-radius:999px; overflow:hidden;
-        border:2px solid rgba(0,0,0,.12); background:rgba(255,255,255,.85);
-        display:flex; align-items:center; justify-content:center;
+  .logo-area{display:flex;justify-content:center;padding:14px 0}
+  .logo{width:88px;height:88px;border-radius:999px;overflow:hidden;
+        border:2px solid rgba(0,0,0,.12);background:rgba(255,255,255,.85);
+        display:flex;align-items:center;justify-content:center;
         box-shadow:0 6px 18px rgba(0,0,0,.12)}
-  .logo img{width:100%; height:100%; object-fit:cover; display:block}
+  .logo img{width:100%;height:100%;object-fit:cover;display:block}
 
-  .banner{position:relative; width:100%; max-height:300px; overflow:hidden}
-  .banner video{width:100%; height:auto; display:none; object-fit:cover; background:#000}
+  .banner{position:relative;width:100%;max-height:300px;overflow:hidden}
+  .banner video{width:100%;height:auto;display:none;object-fit:cover;background:#000}
   .banner video.active{display:block}
-  .dots{position:absolute; bottom:12px; left:50%; transform:translateX(-50%); display:flex; gap:6px}
-  .dot{width:12px; height:12px; border-radius:50%; background:rgba(255,255,255,.6); cursor:pointer; transition:.3s}
+  .dots{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:6px}
+  .dot{width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.6);cursor:pointer;transition:.3s}
   .dot.active{background:#fff}
 
-  .wrap{max-width:var(--max); margin:20px auto; padding:0 14px}
-  .card{background:#fff; color:var(--black); border-radius:16px; border:1px solid var(--line);
-        box-shadow:0 8px 24px rgba(0,0,0,.10); padding:22px}
-  .card h2{margin:0 0 8px; font:700 28px/1.2 ui-serif, Georgia, serif}
-  .grid{display:grid; grid-template-columns:repeat(1,1fr); gap:14px; margin-top:10px}
-  .ch{display:flex; align-items:center; gap:12px; padding:12px; border:1px solid var(--line); border-radius:12px}
-  .ch img.icon{width:28px; height:28px; object-fit:contain}
+  .wrap{max-width:var(--max);margin:20px auto;padding:0 14px}
+  .card{background:#fff;color:var(--black);border-radius:16px;border:1px solid var(--line);
+        box-shadow:0 8px 24px rgba(0,0,0,.10);padding:22px}
+  .card h2{margin:0 0 8px;font:700 28px/1.2 ui-serif,Georgia,serif}
+  .muted{color:var(--muted)}
+
+  .grid{display:grid;grid-template-columns:repeat(1,1fr);gap:14px;margin-top:10px}
+  .ch{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--line);border-radius:12px}
+  .ch img.icon{width:28px;height:28px;object-fit:contain}
   .ch .meta{flex:1}
-  .ch .meta strong{display:block; font-weight:700}
-  .ch .mini{width:120px; height:60px; object-fit:cover; border-radius:8px; border:1px solid var(--line); background:#f7f7f7}
+  .ch .meta strong{display:block;font-weight:700}
+  .ch .mini{width:120px;height:60px;object-fit:cover;border-radius:8px;border:1px solid var(--line);background:#f7f7f7}
 
-  @media(min-width:680px){ .grid{grid-template-columns:repeat(2,1fr)} }
-  @media(min-width:900px){ .grid{grid-template-columns:repeat(3,1fr)} }
+  @media(min-width:680px){.grid{grid-template-columns:repeat(2,1fr)}}
+  @media(min-width:900px){.grid{grid-template-columns:repeat(3,1fr)}}
 
-  footer{text-align:center; color:#fff; background:var(--header); padding:16px; margin-top:24px; font-size:14px}
+  footer{text-align:center;color:#fff;background:var(--header);padding:16px;margin-top:24px;font-size:14px}
 </style>
 </head>
 <body>
 
-  <header>
-    <div class="header-inner">
-      <div class="hamb" id="menuBtn"><span></span><span></span><span></span></div>
-      <div class="welcome">Redes Sociais</div>
-    </div>
-  </header>
-
-  <div class="logo-area">
-    <div class="logo"><img src="./logo.png" alt="AlmaNyx"></div>
+<header>
+  <div class="header-inner">
+    <div class="welcome">Redes Sociais</div>
+    <div class="hamb" id="menuBtn"><span></span><span></span><span></span></div>
   </div>
+</header>
 
-  <!-- Banner com 3 links distintos -->
+<div class="logo-area"><div class="logo"><img src="./logo.png" alt="AlmaNyx"></div></div>
+
+<!-- Banner com 3 links -->
 <div class="banner" id="banner">
-  <!-- SLIDE 1 -->
-  <div class="slide active">
-    <a href="https://youtube.com/@almanyx.oficial" target="_blank" rel="noopener">
-      <video autoplay muted loop playsinline preload="auto">
-        <source src="./banner1-mobile.webm" type="video/webm" media="(max-width: 767px)">
-        <source src="./banner1-desktop.webm" type="video/webm" media="(min-width: 768px)">
-      </video>
-    </a>
-  </div>
-
-  <!-- SLIDE 2 -->
-  <div class="slide">
-    <a href="https://chat.whatsapp.com/CLopyrnEt4qIacgFqtCMDU" target="_blank" rel="noopener">
-      <video autoplay muted loop playsinline preload="auto">
-        <source src="./banner2-mobile.webm" type="video/webm" media="(max-width: 767px)">
-        <source src="./banner2-desktop.webm" type="video/webm" media="(min-width: 768px)">
-      </video>
-    </a>
-  </div>
-
-  <!-- SLIDE 3 -->
-  <div class="slide">
-    <a href="https://instagram.com/almanyx.oficial" target="_blank" rel="noopener">
-      <video autoplay muted loop playsinline preload="auto">
-        <source src="./banner3-mobile.webm" type="video/webm" media="(max-width: 767px)">
-        <source src="./banner3-desktop.webm" type="video/webm" media="(min-width: 768px)">
-      </video>
-    </a>
-  </div>
-
-  <!-- Bolinhas de navegação -->
+  <a href="https://youtube.com/@almanyx" target="_blank" rel="noopener">
+    <video class="active" autoplay muted loop playsinline preload="auto">
+      <source src="./banner1-mobile.webm" type="video/webm" media="(max-width: 767px)">
+      <source src="./banner1-desktop.webm" type="video/webm" media="(min-width: 768px)">
+    </video>
+  </a>
+  <a href="https://chat.whatsapp.com/XXXX" target="_blank" rel="noopener">
+    <video autoplay muted loop playsinline preload="auto">
+      <source src="./banner2-mobile.webm" type="video/webm" media="(max-width: 767px)">
+      <source src="./banner2-desktop.webm" type="video/webm" media="(min-width: 768px)">
+    </video>
+  </a>
+  <a href="https://tiktok.com/@almanyx" target="_blank" rel="noopener">
+    <video autoplay muted loop playsinline preload="auto">
+      <source src="./banner3-mobile.webm" type="video/webm" media="(max-width: 767px)">
+      <source src="./banner3-desktop.webm" type="video/webm" media="(min-width: 768px)">
+    </video>
+  </a>
   <div class="dots">
     <div class="dot active" data-i="0"></div>
     <div class="dot" data-i="1"></div>
     <div class="dot" data-i="2"></div>
   </div>
 </div>
-  
-  <div class="backdrop" id="backdrop"></div>
-  <nav class="menu" id="menu" aria-label="Menu">
-    <div class="closeBtn" id="closeBtn">&times;</div>
-    <a href="./index.html">Página Inicial</a>
-    <a href="./sobre.html">Sobre</a>
-    <a href="./postagens.html">Postagens</a>
-    <a href="./contatos.html">Contatos</a>
-  </nav>
 
-  <main class="wrap">
-    <section class="card">
-      <h2>Canais oficiais</h2>
-      <div class="grid">
-        <a class="ch" href="https://youtube.com/@almanyx.oficial" target="_blank">
-          <img class="icon" src="./icons/youtube.svg"><div class="meta"><strong>YouTube</strong></div>
-          <img class="mini" src="./banners/youtube-mini.png">
-        </a>
-        <a class="ch" href="#" target="_blank">
-          <img class="icon" src="./icons/tiktok.svg"><div class="meta"><strong>TikTok</strong></div>
-          <img class="mini" src="./banners/tiktok-mini.png">
-        </a>
-        <a class="ch" href="#" target="_blank">
-          <img class="icon" src="./icons/whatsapp.svg"><div class="meta"><strong>WhatsApp</strong></div>
-          <img class="mini" src="./banners/whatsapp-mini.png">
-        </a>
-        <a class="ch" href="#" target="_blank">
-          <img class="icon" src="./icons/instagram.svg"><div class="meta"><strong>Instagram</strong></div>
-          <img class="mini" src="./banners/instagram-mini.png">
-        </a>
-        <a class="ch" href="#" target="_blank">
-          <img class="icon" src="./icons/facebook.svg"><div class="meta"><strong>Facebook</strong></div>
-          <img class="mini" src="./banners/facebook-mini.png">
-        </a>
-      </div>
-    </section>
-  </main>
+<div class="backdrop" id="backdrop"></div>
+<nav class="menu" id="menu">
+  <div class="closeBtn" id="closeBtn">&times;</div>
+  <a href="./index.html">Página Inicial</a>
+  <a href="./sobre.html">Sobre</a>
+  <a href="./postagens.html">Postagens</a>
+  <a href="./contatos.html">Contatos</a>
+</nav>
 
-  <footer>© 2025 Almanyx Oficial — All rights reserved</footer>
+<main class="wrap">
+  <section class="card">
+    <h2>Canais oficiais</h2>
+    <p class="muted">Substitua os links e mini-banners abaixo conforme for criando os canais.</p>
+    <div class="grid">
+      <!-- YouTube -->
+      <a class="ch" href="https://youtube.com/@almanyx" target="_blank" rel="noopener">
+        <img class="icon" src="./icons/youtube.svg" alt="">
+        <div class="meta"><strong>YouTube</strong><span>@almanyx</span></div>
+        <img class="mini" src="./banners/youtube-mini.png" alt="">
+      </a>
+      <!-- TikTok -->
+      <a class="ch" href="#" target="_blank" rel="noopener">
+        <img class="icon" src="./icons/tiktok.svg" alt="">
+        <div class="meta"><strong>TikTok</strong><span>@almanyx</span></div>
+        <img class="mini" src="./banners/tiktok-mini.png" alt="">
+      </a>
+      <!-- WhatsApp -->
+      <a class="ch" href="#" target="_blank" rel="noopener">
+        <img class="icon" src="./icons/whatsapp.svg" alt="">
+        <div class="meta"><strong>Grupo WhatsApp</strong><span>Convite</span></div>
+        <img class="mini" src="./banners/whatsapp-mini.png" alt="">
+      </a>
+      <!-- Instagram -->
+      <a class="ch" href="#" target="_blank" rel="noopener">
+        <img class="icon" src="./icons/instagram.svg" alt="">
+        <div class="meta"><strong>Instagram</strong><span>@almanyx</span></div>
+        <img class="mini" src="./banners/instagram-mini.png" alt="">
+      </a>
+      <!-- Facebook -->
+      <a class="ch" href="#" target="_blank" rel="noopener">
+        <img class="icon" src="./icons/facebook.svg" alt="">
+        <div class="meta"><strong>Facebook</strong><span>/almanyx</span></div>
+        <img class="mini" src="./banners/facebook-mini.png" alt="">
+      </a>
+    </div>
+  </section>
+</main>
+
+<footer>© 2025 Almanyx Oficial — All rights reserved</footer>
 
 <script>
 (function(){
-  const $=(s,el=document)=>el.querySelector(s);
-  const $$=(s,el=document)=>Array.from(el.querySelectorAll(s));
+  const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
   const menuBtn=$('#menuBtn'),menu=$('#menu'),backdrop=$('#backdrop'),closeBtn=$('#closeBtn');
-  const open=()=>{menu.classList.add('open');backdrop.classList.add('show');};
-  const close=()=>{menu.classList.remove('open');backdrop.classList.remove('show');};
-  menuBtn.addEventListener('click',open);backdrop.addEventListener('click',close);closeBtn.addEventListener('click',close);
-  document.addEventListener('keydown',e=>{if(e.key==='Escape')close();});
-  const slides=$$('#banner video'),dots=$$('#banner .dot');let i=0,t;
-  function show(n){i=(n+slides.length)%slides.length;slides.forEach((v,k)=>v.classList.toggle('active',k===i));dots.forEach((d,k)=>d.classList.toggle('active',k===i));}
-  function next(){show(i+1);}function start(){stop();t=setInterval(next,6000);}function stop(){if(t)clearInterval(t);}
+  const openMenu=()=>{menu.classList.add('open');backdrop.classList.add('show');};
+  const closeMenu=()=>{menu.classList.remove('open');backdrop.classList.remove('show');};
+  menuBtn.addEventListener('click',openMenu);backdrop.addEventListener('click',closeMenu);closeBtn.addEventListener('click',closeMenu);
+
+  const slides=$$('#banner video'),dots=$$('#banner .dot'); let i=0,timer;
+  function show(n){i=(n+slides.length)%slides.length;
+    slides.forEach((v,k)=>v.classList.toggle('active',k===i));
+    dots.forEach((d,k)=>d.classList.toggle('active',k===i));}
+  function next(){show(i+1);} function start(){stop();timer=setInterval(next,6000);}
+  function stop(){if(timer)clearInterval(timer);}
   dots.forEach(d=>d.addEventListener('click',e=>{show(+e.target.dataset.i);start();}));
   $('#banner').addEventListener('mouseenter',stop);$('#banner').addEventListener('mouseleave',start);start();
 })();

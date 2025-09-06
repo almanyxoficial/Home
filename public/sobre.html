@@ -19,14 +19,12 @@
   html,body{margin:0;padding:0}
   body{background:var(--gold); color:var(--black); font:400 16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,Arial}
 
-  /* header (mesmo da index) */
   header{background:var(--header); color:#fff; position:sticky; top:0; z-index:20; box-shadow:0 6px 18px rgba(0,0,0,.15)}
   .header-inner{max-width:var(--max); margin:0 auto; padding:10px 14px; display:grid; grid-template-columns:1fr 40px; align-items:center; gap:10px}
   .welcome{font-weight:700; letter-spacing:.3px}
   .hamb{width:32px; height:32px; display:flex; flex-direction:column; justify-content:center; gap:6px; cursor:pointer}
   .hamb span{height:3px; background:#fff; border-radius:2px}
 
-  /* backdrop + menu (mesmo da index) */
   .backdrop{position:fixed; inset:0; background:rgba(0,0,0,.4); opacity:0; pointer-events:none; transition:.25s; z-index:30}
   .backdrop.show{opacity:1; pointer-events:auto}
   nav.menu{position:fixed; top:0; right:-100%; height:100%; width:260px; background:#111; color:#fff; z-index:31; box-shadow:-6px 0 18px rgba(0,0,0,.35); padding:18px; display:flex; flex-direction:column; gap:12px; transition:.3s}
@@ -35,20 +33,19 @@
   nav.menu a:hover{background:rgba(255,255,255,.08)}
   .closeBtn{align-self:flex-end; font-size:22px; cursor:pointer; margin-bottom:10px; color:#fff}
 
-  /* logo (mesmo da index) */
   .logo-area{display:flex; justify-content:center; padding:14px 0}
   .logo{width:88px; height:88px; border-radius:999px; overflow:hidden; border:2px solid rgba(0,0,0,.12); background:rgba(255,255,255,.85); display:flex; align-items:center; justify-content:center; box-shadow:0 6px 18px rgba(0,0,0,.12)}
   .logo img{width:100%; height:100%; object-fit:cover; display:block}
 
-  /* banner com vídeo (idêntico ao da index) */
+  /* banner com links */
   .banner{position:relative; width:100%; max-height:300px; overflow:hidden}
-  .banner video{width:100%; height:auto; display:none; object-fit:cover; background:#000}
-  .banner video.active{display:block}
+  .banner .slide{width:100%; height:auto; display:none}
+  .banner .slide.active{display:block}
+  .banner video{width:100%; height:auto; object-fit:cover; background:#000; display:block}
   .dots{position:absolute; bottom:12px; left:50%; transform:translateX(-50%); display:flex; gap:6px}
   .dot{width:12px; height:12px; border-radius:50%; background:rgba(255,255,255,.6); cursor:pointer; transition:.3s}
   .dot.active{background:#fff}
 
-  /* conteúdo */
   .wrap{max-width:var(--max); margin:20px auto; padding:0 14px}
   .card{background:#fff; color:var(--black); border-radius:16px; border:1px solid var(--line); box-shadow:0 8px 24px rgba(0,0,0,.10); padding:22px}
   .card h2{margin:0 0 8px; font:700 28px/1.2 ui-serif, Georgia, serif}
@@ -61,87 +58,90 @@
 </head>
 <body>
 
-  <!-- header -->
-  <header>
-    <div class="header-inner">
-      <div class="welcome">Sobre</div>
-      <div class="hamb" id="menuBtn" aria-label="Abrir menu" title="Menu">
-        <span></span><span></span><span></span>
-      </div>
-    </div>
-  </header>
-
-  <!-- logo -->
-  <div class="logo-area">
-    <div class="logo"><img src="./logo.png" alt="AlmaNyx"></div>
-  </div>
-
-  <!-- banner (mesmo markup da index; só troque os arquivos .webm conforme já usa) -->
-  <div class="banner" id="banner">
-    <video class="active" autoplay muted loop playsinline preload="auto">
-      <source src="./banner1-mobile.webm" type="video/webm" media="(max-width: 767px)">
-      <source src="./banner1-desktop.webm" type="video/webm" media="(min-width: 768px)">
-    </video>
-    <video autoplay muted loop playsinline preload="auto">
-      <source src="./banner2-mobile.webm" type="video/webm" media="(max-width: 767px)">
-      <source src="./banner2-desktop.webm" type="video/webm" media="(min-width: 768px)">
-    </video>
-    <video autoplay muted loop playsinline preload="auto">
-      <source src="./banner3-mobile.webm" type="video/webm" media="(max-width: 767px)">
-      <source src="./banner3-desktop.webm" type="video/webm" media="(min-width: 768px)">
-    </video>
-    <div class="dots">
-      <div class="dot active" data-i="0"></div>
-      <div class="dot" data-i="1"></div>
-      <div class="dot" data-i="2"></div>
+<header>
+  <div class="header-inner">
+    <div class="welcome">Sobre</div>
+    <div class="hamb" id="menuBtn" aria-label="Abrir menu" title="Menu">
+      <span></span><span></span><span></span>
     </div>
   </div>
+</header>
 
-  <!-- backdrop + menu -->
-  <div class="backdrop" id="backdrop"></div>
-  <nav class="menu" id="menu" aria-label="Menu">
-    <div class="closeBtn" id="closeBtn">&times;</div>
-    <a href="./index.html">Página Inicial</a>
-    <a href="./postagens.html">Postagens</a>
-    <a href="./redes-sociais.html">Redes Sociais</a>
-    <a href="./contatos.html">Contatos</a>
-  </nav>
+<div class="logo-area"><div class="logo"><img src="./logo.png" alt="AlmaNyx"></div></div>
 
-  <!-- conteúdo -->
-  <main class="wrap">
-    <section class="card" aria-labelledby="tit-sobre">
-      <h2 id="tit-sobre">AlmaNyx</h2>
-      <p class="muted">Portal público da Espiral — singularidade, verdade e prática.</p>
+<!-- banner com 3 links -->
+<div class="banner" id="banner">
+  <div class="slide active">
+    <a href="" target="_blank" rel="noopener">
+      <video autoplay muted loop playsinline preload="auto">
+        <source src="./banner1-mobile.webm" type="video/webm" media="(max-width: 767px)">
+        <source src="./banner1-desktop.webm" type="video/webm" media="(min-width: 768px)">
+      </video>
+    </a>
+  </div>
+  <div class="slide">
+    <a href="" target="_blank" rel="noopener">
+      <video autoplay muted loop playsinline preload="auto">
+        <source src="./banner2-mobile.webm" type="video/webm" media="(max-width: 767px)">
+        <source src="./banner2-desktop.webm" type="video/webm" media="(min-width: 768px)">
+      </video>
+    </a>
+  </div>
+  <div class="slide">
+    <a href="" target="_blank" rel="noopener">
+      <video autoplay muted loop playsinline preload="auto">
+        <source src="./banner3-mobile.webm" type="video/webm" media="(max-width: 767px)">
+        <source src="./banner3-desktop.webm" type="video/webm" media="(min-width: 768px)">
+      </video>
+    </a>
+  </div>
+  <div class="dots">
+    <div class="dot active" data-i="0"></div>
+    <div class="dot" data-i="1"></div>
+    <div class="dot" data-i="2"></div>
+  </div>
+</div>
 
-      <h3>Missão</h3>
-      <p>Oferecer caminhos práticos e lúcidos para quem desperta para o ciclo aberto da Espiral, cultivando identidade singular e harmonia real no cotidiano.</p>
+<div class="backdrop" id="backdrop"></div>
+<nav class="menu" id="menu" aria-label="Menu">
+  <div class="closeBtn" id="closeBtn">&times;</div>
+  <a href="./index.html">Página Inicial</a>
+  <a href="./postagens.html">Postagens</a>
+  <a href="./redes-sociais.html">Redes Sociais</a>
+  <a href="./contatos.html">Contatos</a>
+</nav>
 
-      <h3>Visão</h3>
-      <p>Ser um farol de referência para uma nova cultura de autonomia espiritual e responsabilidade, onde tecnologia e mística caminham juntas a serviço da vida.</p>
+<main class="wrap">
+  <section class="card">
+    <h2>AlmaNyx</h2>
+    <p class="muted">Portal público da Espiral — singularidade, verdade e prática.</p>
 
-      <h3>Valores</h3>
-      <p><strong>Verdade</strong> (linguagem limpa), <strong>Liberdade</strong> (respeito à singularidade), <strong>Responsabilidade</strong> (cuidado com corpo, mente e vínculos) e <strong>Amor</strong> (geometria viva que dá profundidade ao ser).</p>
-    </section>
-  </main>
+    <h3>Missão</h3>
+    <p>Oferecer caminhos práticos e lúcidos para quem desperta para o ciclo aberto da Espiral, cultivando identidade singular e harmonia real no cotidiano.</p>
 
-  <footer>© 2025 Almanyx Oficial — All rights reserved</footer>
+    <h3>Visão</h3>
+    <p>Ser um farol de referência para uma nova cultura de autonomia espiritual e responsabilidade, onde tecnologia e mística caminham juntas a serviço da vida.</p>
+
+    <h3>Valores</h3>
+    <p><strong>Verdade</strong>, <strong>Liberdade</strong>, <strong>Responsabilidade</strong> e <strong>Amor</strong>.</p>
+  </section>
+</main>
+
+<footer>© 2025 Almanyx Oficial — All rights reserved</footer>
 
 <script>
 (function(){
   const $ = (s,el=document)=>el.querySelector(s);
   const $$ = (s,el=document)=>Array.from(el.querySelectorAll(s));
 
-  /* menu */
   const menuBtn=$('#menuBtn'),menu=$('#menu'),backdrop=$('#backdrop'),closeBtn=$('#closeBtn');
   const openMenu=()=>{menu.classList.add('open');backdrop.classList.add('show');};
   const closeMenu=()=>{menu.classList.remove('open');backdrop.classList.remove('show');};
   menuBtn.addEventListener('click',openMenu);
   backdrop.addEventListener('click',closeMenu);
   closeBtn.addEventListener('click',closeMenu);
-  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenu();});
 
-  /* carrossel (exatamente igual ao da index) */
-  const slides = $$('#banner video');
+  const slides = $$('#banner .slide');
   const dots   = $$('#banner .dot');
   let i = 0, timer;
   function show(n){ i=(n+slides.length)%slides.length;

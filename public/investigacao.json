@@ -109,5 +109,23 @@
   "notas": [
     "Toda hipótese marcada como tal (não confundir com afirmação histórica).",
     "Atualizar 'confianca' gradativamente, conforme fontes primárias entrarem."
+{
+  "id": "H6",
+  "titulo": "A Coerência Invisível",
+  "descricao": "Hipótese de que a narrativa oficial da história do nazismo é incoerente porque foi construída em torno de um Hitler falso (impostor político). Ao admitir a existência de um Hitler verdadeiro (esotérico) atuando nos bastidores, as contradições se tornam compreensíveis.",
+  "apoio": [
+    "O Hitler 'oficial' mistura elementos contraditórios: partido chamado socialista mas de extrema-direita, aliança com Stalin após retórica anticomunista, estética esotérica usada em regime supostamente 'racional'.",
+    "A presença de Himmler e da SS com agenda mística sugere dupla camada de lealdade: ao Hitler público (falso) e ao Hitler oculto (verdadeiro).",
+    "Relatos e lendas em Córdoba (Argentina) alimentam a hipótese de fuga do verdadeiro Hitler."
+  ],
+  "contrapontos": [
+    "A historiografia tradicional mantém continuidade documental de Hitler de 1919 a 1945, sem lacunas que comprovem a troca.",
+    "Fotografias, discursos e testemunhos contemporâneos sustentam a versão de um único indivíduo pragmático, não de um duplo."
+  ],
+  "confianca": 0.5,
+  "status": "em investigação",
+  "notas": [
+    "Esta hipótese não afirma substituição como fato, apenas sugere que esse modelo explicativo resolve contradições da versão oficial.",
+    "Manter aberto: objetivo é testar coerência, não fechar questão."
   ]
 }

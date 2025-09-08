@@ -49,15 +49,12 @@
   .card h2{margin:0 0 8px;font:700 28px/1.2 ui-serif,Georgia,serif}
   .muted{color:var(--muted)}
 
-  .grid{display:grid;grid-template-columns:repeat(1,1fr);gap:14px;margin-top:10px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:14px;margin-top:10px}
   .ch{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--line);border-radius:12px}
   .ch img.icon{width:28px;height:28px;object-fit:contain}
   .ch .meta{flex:1}
   .ch .meta strong{display:block;font-weight:700}
   .ch .mini{width:120px;height:60px;object-fit:cover;border-radius:8px;border:1px solid var(--line);background:#f7f7f7}
-
-  @media(min-width:680px){.grid{grid-template-columns:repeat(2,1fr)}}
-  @media(min-width:900px){.grid{grid-template-columns:repeat(3,1fr)}}
 
   footer{text-align:center;color:#fff;background:var(--header);padding:16px;margin-top:24px;font-size:14px}
 </style>
@@ -75,19 +72,19 @@
 
 <!-- Banner com 3 links -->
 <div class="banner" id="banner">
-  <a href="https://www.tiktok.com/@almanyx.oficial?_t=ZM-8zVZZLMA7h2&_r=1" target="_blank" rel="noopener">
+  <a href="https://www.tiktok.com/@almanyx.oficial" target="_blank" rel="noopener">
     <video class="active" autoplay muted loop playsinline preload="auto">
       <source src="./banner1-mobile.webm" type="video/webm" media="(max-width: 767px)">
       <source src="./banner1-desktop.webm" type="video/webm" media="(min-width: 768px)">
     </video>
   </a>
-  <a href="https://youtube.com/@almanyx.oficial?si=uB6Y7V0JDhMDTOiZ" target="_blank" rel="noopener">
+  <a href="https://youtube.com/@almanyx.oficial" target="_blank" rel="noopener">
     <video autoplay muted loop playsinline preload="auto">
       <source src="./banner2-mobile.webm" type="video/webm" media="(max-width: 767px)">
       <source src="./banner2-desktop.webm" type="video/webm" media="(min-width: 768px)">
     </video>
   </a>
-  <a href="https://www.instagram.com/almanyx.oficial?igsh=MWs1NmlzNm9sbjBzMg=="_blank" rel="noopener">
+  <a href="https://www.instagram.com/almanyx.oficial" target="_blank" rel="noopener">
     <video autoplay muted loop playsinline preload="auto">
       <source src="./banner3-mobile.webm" type="video/webm" media="(max-width: 767px)">
       <source src="./banner3-desktop.webm" type="video/webm" media="(min-width: 768px)">
@@ -112,22 +109,19 @@
 <main class="wrap">
   <section class="card">
     <h2>Canais oficiais</h2>
-    <p class="muted">.</p>
+    <p class="muted">Adicionei espaços para os canais oficiais do AlmaNyx:</p>
     <div class="grid">
-      <!-- YouTube -->
       <a class="ch" href="https://youtube.com/@almanyx" target="_blank" rel="noopener">
         <img class="icon" src="./icons/youtube.svg" alt="">
         <div class="meta"><strong>YouTube</strong><span>@almanyx</span></div>
         <img class="mini" src="./banners/youtube-mini.png" alt="">
       </a>
-      <!-- TikTok -->
-      <a class="ch" href="https://www.tiktok.com/@almanyx.oficial?_t=ZM-8zYEmtG8C4m&_r=1" target="_blank" rel="noopener">
+      <a class="ch" href="https://www.tiktok.com/@almanyx.oficial" target="_blank" rel="noopener">
         <img class="icon" src="./icons/tiktok.svg" alt="">
         <div class="meta"><strong>TikTok</strong><span>@almanyx.oficial</span></div>
         <img class="mini" src="./banners/tiktok-mini.png" alt="">
       </a>
-      <!-- Instagram -->
-      <a class="ch" href="https://www.instagram.com/almanyx.oficial?igsh=MWs1NmlzNm9sbjBzMg==" target="_blank" rel="noopener">
+      <a class="ch" href="https://www.instagram.com/almanyx.oficial" target="_blank" rel="noopener">
         <img class="icon" src="./icons/instagram.svg" alt="">
         <div class="meta"><strong>Instagram</strong><span>@almanyx.oficial</span></div>
         <img class="mini" src="./banners/instagram-mini.png" alt="">

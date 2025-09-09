@@ -163,4 +163,183 @@
     "footer": {
       "text": "© 2025 Almanyx Oficial — All rights reserved"
     },
+    {
+  "version": 1,
+  "updated_at": "2025-09-09T07:30:00-03:00",
+  "page": {
+    "title": "Contatos — AlmaNyx",
+    "description": "Fale com o portal público da Espiral.",
+    "lang": "pt-BR",
+    "logo": "./logo.png",
+    "banner": {
+      "slides": [
+        {
+          "index": 0,
+          "link": "https://www.tiktok.com/@almanyx.oficial?_t=ZM-8zVZZLMA7h2&_r=1",
+          "video": {
+            "mobile_webm": "./banner1-mobile.webm",
+            "desktop_webm": "./banner1-desktop.webm"
+          }
+        },
+        {
+          "index": 1,
+          "link": "https://www.youtube.com/@Almanyx.oficial",
+          "video": {
+            "mobile_webm": "./banner2-mobile.webm",
+            "desktop_webm": "./banner2-desktop.webm"
+          }
+        },
+        {
+          "index": 2,
+          "link": "https://www.instagram.com/almanyx.oficial?igsh=MWs1NmlzNm9sbjBzMg==",
+          "video": {
+            "mobile_webm": "./banner3-mobile.webm",
+            "desktop_webm": "./banner3-desktop.webm"
+          }
+        }
+      ],
+      "dots": 3,
+      "autoplay_ms": 6000
+    },
+    "content": {
+      "heading": "Fale Conosco",
+      "subtitle": "Preferir e-mail? contato@almanyx.com.br",
+      "form": {
+        "id": "formContato",
+        "fields": [
+          { "id": "nome", "label": "Nome", "type": "text", "placeholder": "Seu nome", "required": true },
+          { "id": "email", "label": "E-mail", "type": "email", "placeholder": "voce@exemplo.com", "required": true },
+          { "id": "msg", "label": "Mensagem", "type": "textarea", "placeholder": "Escreva sua mensagem…", "required": true }
+        ],
+        "submit": { "label": "Enviar", "action": "mailto:contato@almanyx.com.br" },
+        "hint": "Ao enviar, abriremos seu app de e-mail com a mensagem preenchida."
+      }
+    },
+    "footer": {
+      "text": "© 2025 Almanyx Oficial — Todos os Direitos Reservados"
+    },
+    {
+  "version": 1,
+  "updated_at": "2025-09-09T07:45:00-03:00",
+  "page": {
+    "title": "Postagens — AlmaNyx",
+    "description": "Arquivo de postagens do portal público da Espiral.",
+    "lang": "pt-BR",
+    "logo": "./logo.png",
+    "banner": {
+      "slides": [
+        {
+          "index": 0,
+          "link": "https://www.tiktok.com/@almanyx.oficial?_t=ZM-8zVZZLMA7h2&_r=1",
+          "video": {
+            "mobile_webm": "./banner1-mobile.webm",
+            "desktop_webm": "./banner1-desktop.webm"
+          }
+        },
+        {
+          "index": 1,
+          "link": "https://www.youtube.com/@Almanyx.oficial",
+          "video": {
+            "mobile_webm": "./banner2-mobile.webm",
+            "desktop_webm": "./banner2-desktop.webm"
+          }
+        },
+        {
+          "index": 2,
+          "link": "https://www.instagram.com/almanyx.oficial?igsh=MWs1NmlzNm9sbjBzMg==",
+          "video": {
+            "mobile_webm": "./banner3-mobile.webm",
+            "desktop_webm": "./banner3-desktop.webm"
+          }
+        }
+      ],
+      "dots": 3,
+      "autoplay_ms": 6000
+    },
+    "content": {
+      "heading": "Arquivo de Postagens",
+      "subtitle": "Pesquise por título, conteúdo ou tags.",
+      "search": {
+        "input_id": "q",
+        "placeholder": "Pesquisar…",
+        "tags_container_id": "tags"
+      },
+      "posts": {
+        "container_id": "posts",
+        "source": "./espiral.json",
+        "status_id": "status"
+      }
+    },
+    "footer": {
+      "text": "© 2025 Almanyx Oficial — All rights reserved"
+    },
+    {
+  "version": 1,
+  "updated_at": "2025-09-09T08:05:00-03:00",
+  "page": {
+    "title": "Redes Sociais — AlmaNyx",
+    "description": "Canais oficiais do portal público da Espiral.",
+    "lang": "pt-BR",
+    "logo": "./logo.png",
+    "banner": {
+      "slides": [
+        {
+          "index": 0,
+          "link": "https://www.tiktok.com/@almanyx.oficial",
+          "video": {
+            "mobile_webm": "./banner1-mobile.webm",
+            "desktop_webm": "./banner1-desktop.webm"
+          },
+          "active": true
+        },
+        {
+          "index": 1,
+          "link": "https://youtube.com/@almanyx.oficial",
+          "video": {
+            "mobile_webm": "./banner2-mobile.webm",
+            "desktop_webm": "./banner2-desktop.webm"
+          }
+        },
+        {
+          "index": 2,
+          "link": "https://www.instagram.com/almanyx.oficial",
+          "video": {
+            "mobile_webm": "./banner3-mobile.webm",
+            "desktop_webm": "./banner3-desktop.webm"
+          }
+        }
+      ],
+      "dots": 3,
+      "autoplay_ms": 6000
+    },
+    "content": {
+      "heading": "Canais oficiais",
+      "subtitle": "Adicionei espaços para os canais oficiais do AlmaNyx:",
+      "grid": [
+        {
+          "label": "YouTube",
+          "handle": "@almanyx",
+          "href": "https://youtube.com/@almanyx",
+          "icon": "./icons/youtube.svg",
+          "thumb": "./banners/youtube-mini.png"
+        },
+        {
+          "label": "TikTok",
+          "handle": "@almanyx.oficial",
+          "href": "https://www.tiktok.com/@almanyx.oficial",
+          "icon": "./icons/tiktok.svg",
+          "thumb": "./banners/tiktok-mini.png"
+        },
+        {
+          "label": "Instagram",
+          "handle": "@almanyx.oficial",
+          "href": "https://www.instagram.com/almanyx.oficial",
+          "icon": "./icons/instagram.svg",
+          "thumb": "./banners/instagram-mini.png"
+        }
+      ]
+    },
+    "footer": {
+      "text": "© 2025 Almanyx Oficial — All rights reserved"
+    }
   }

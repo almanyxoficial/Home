@@ -103,6 +103,64 @@
       "espiral_json": "./espiral.json",
       "robots_txt": "./robots.txt",
       "sitemap_xml": "./sitemap.xml"
-    }
+    },
+    {
+  "version": 1,
+  "updated_at": "2025-09-09T07:00:00-03:00",
+  "page": {
+    "title": "Sobre — AlmaNyx",
+    "description": "Sobre o portal público da Espiral.",
+    "lang": "pt-BR",
+    "logo": "./logo.png",
+    "banner": {
+      "slides": [
+        {
+          "index": 0,
+          "link": "https://www.tiktok.com/@almanyx.oficial?_t=ZM-8zYEmtG8C4m&_r=1",
+          "video": {
+            "mobile_webm": "./banner1-mobile.webm",
+            "desktop_webm": "./banner1-desktop.webm"
+          }
+        },
+        {
+          "index": 1,
+          "link": "https://youtube.com/@almanyx.oficial?si=uB6Y7V0JDhMDTOiZ",
+          "video": {
+            "mobile_webm": "./banner2-mobile.webm",
+            "desktop_webm": "./banner2-desktop.webm"
+          }
+        },
+        {
+          "index": 2,
+          "link": "https://www.instagram.com/almanyx.oficial?igsh=MWs1NmlzNm9sbjBzMg==",
+          "video": {
+            "mobile_webm": "./banner3-mobile.webm",
+            "desktop_webm": "./banner3-desktop.webm"
+          }
+        }
+      ],
+      "dots": 3,
+      "autoplay_ms": 6000
+    },
+    "content": {
+      "heading": "AlmaNyx",
+      "subtitle": "Portal público da Espiral — singularidade, verdade e prática.",
+      "sections": [
+        {
+          "title": "Missão",
+          "text": "Oferecer caminhos práticos e lúcidos para quem desperta para o ciclo aberto da Espiral, cultivando identidade singular e harmonia real no cotidiano."
+        },
+        {
+          "title": "Visão",
+          "text": "Ser um farol de referência para uma nova cultura de autonomia espiritual e responsabilidade, onde tecnologia e mística caminham juntas a serviço da vida."
+        },
+        {
+          "title": "Valores",
+          "text": "Verdade, Liberdade, Responsabilidade e Amor."
+        }
+      ]
+    },
+    "footer": {
+      "text": "© 2025 Almanyx Oficial — All rights reserved"
+    },
   }
-}

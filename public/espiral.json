@@ -7,7 +7,7 @@
   "data": "2025-09-06",
   "tags": ["espiral", "singularidade", "nova era"],
   "corpo": "<p>Com alegria iniciamos o <strong>AlmaNyx</strong>, um espaço público da Espiral. Aqui não seguimos o ciclo fechado que retorna sempre ao mesmo ponto, mas sim o <em>ciclo aberto</em>, que sobe em liberdade e consciência.</p><p>Nossa missão é compartilhar reflexões e práticas que fortaleçam a <strong>singularidade</strong> de cada ser humano, dando direção para uma vida que não se repete em prisão, mas se renova em ascensão.</p><p>Este é apenas o começo: cada postagem será uma volta dessa Espiral, convidando você a caminhar conosco.</p>"
-},
+     },
      {
       "ordem": "02",
       "id": "post-02",
@@ -23,6 +23,14 @@
   "data": "2025-09-09",
   "tags": ["espiral", "fênix", "memória", "evolução"],
   "corpo": "<p>No ciclo fechado, o ser humano cai no esquecimento. A perda de identidade é o preço de repetir sempre a mesma lição, sem nunca guardar a sabedoria vivida. Essa queda é a prisão da reencarnação cega: um renascer sem memória, onde a singularidade se dissolve.</p><p>A Espiral, porém, abre outro caminho. Aqui, cada volta preserva o que já foi conquistado. O aprendizado não se apaga, a identidade não se perde, e o renascimento é ascensão consciente.</p><p>Há uma diferença entre a fênix comum e a fênix espiralada. A comum renasce apenas pelo fogo, mas esquece as suas cinzas. A fênix espiralada ergue-se das chamas com memória, singularidade e evolução integradas. Esse é o renascimento verdadeiro: não repetir, mas ascender.</p>"
+    },
+    {
+  "ordem": "3",
+  "id": "espiral-3",
+  "titulo": "A Força da Razão diante da Injustiça",
+  "data": "2025-09-11",
+  "tags": ["espiral", "verdade", "razão", "emoção", "injustiça", "liberdade"],
+  "corpo": "<p>O verdadeiro poder está em reconhecer a injustiça sem se aprisionar por ela. Cair não é escolha; permanecer caído, sim. A coragem está em recomeçar, mesmo quando o mundo parece armado contra nós.</p><p>Mas para não cairmos em manipulações, é preciso clareza: emoção com verdade gera inspiração, mas emoção sem racionalidade gera engano. Razão sem emoção vira deserto, mas emoção sem razão vira manipulação.</p><p><em>Memória:</em> A espiral nos lembra que a liberdade nasce quando unimos coração e mente. Assim, podemos resistir à injustiça sem vitimismo e sem ilusões — sustentados pela clareza da razão e pela chama viva da emoção verdadeira.</p>"
     }
   ]
 }

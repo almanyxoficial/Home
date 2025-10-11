@@ -36,7 +36,7 @@
   }
   *{box-sizing:border-box}
   html,body{margin:0;padding:0}
-  body{background:var(--gold); color:var(--black); font:400 16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,Arial}
+  body{background:var(--header);background:linear-gradient(180deg,#8B0000 0%, #b30000 40%, #d4af37 100%); color:var(--black); font:400 16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,Arial}
 
   /* header */
   header{background:var(--header); color:#fff; position:sticky; top:0; z-index:20; box-shadow:0 6px 18px rgba(0,0,0,.15)}
@@ -122,6 +122,22 @@
   .post-card small{display:block; color:var(--muted); margin-bottom:10px}
   .post-card .tagsline{margin-top:8px; font-size:13px; color:#444}
 
+  /* paginação (números pequenos + setas discretas) */
+  .pager{display:flex; gap:6px; justify-content:flex-end; align-items:center; flex-wrap:wrap; margin-top:4px}
+  .pager button{
+    min-width:32px; height:32px; padding:0 10px;
+    border-radius:8px; border:2px solid var(--gold);
+    background:linear-gradient(180deg,#8B0000 0%, #5f0000 100%);
+    color:#fff; font-weight:700; font-size:12px; cursor:pointer;
+    box-shadow:0 6px 14px rgba(0,0,0,.20), inset 0 0 0 1px rgba(255,255,255,.08);
+    transition:transform .15s ease, filter .15s ease, box-shadow .15s ease;
+  }
+  .pager button:hover{filter:brightness(1.08); transform:translateY(-1px)}
+  .pager button:active{transform:translateY(0); filter:brightness(.97)}
+  .pager .num.on{filter:brightness(1.12); box-shadow:0 10px 20px rgba(0,0,0,.28), inset 0 0 0 1px rgba(255,255,255,.12)}
+  .pager .disabled{opacity:.45; pointer-events:none; filter:grayscale(.2)}
+  .pager .sep{width:8px; height:1px; background:rgba(255,255,255,.5); margin:0 2px}
+
   /* rodapé */
   footer{text-align:center; color:#fff; background:var(--header); padding:16px; margin-top:24px; font-size:14px}
 </style>
@@ -195,7 +211,7 @@
     <!-- CARD 1: título + descrição -->
     <section class="card" aria-labelledby="tit-posts">
       <h2 id="tit-posts">Arquivo de Postagens</h2>
-      <p class="muted">Pesquise por título, conteúdo ou tags.</p>
+      <p class="muted">Pesquise por título, conteúdo ou tags. Navegue por páginas para manter a leitura leve.</p>
     </section>
 
     <!-- CARD 2: busca + tags -->
@@ -208,6 +224,9 @@
 
     <!-- POSTS: cada item renderizado como card individual -->
     <section id="posts" class="posts-grid" aria-live="polite"></section>
+
+    <!-- paginação -->
+    <nav id="pager" class="pager" aria-label="Paginação"></nav>
 
     <!-- status/contador -->
     <div id="status" class="muted" style="margin:4px 0 0 4px"></div>
@@ -245,10 +264,15 @@
   $('#banner').addEventListener('mouseleave',start);
   start();
 
-  /* POSTS */
+  /* POSTS + BUSCA + TAGS + PAGINAÇÃO */
   const SRC = './espiral.json';
-  const postsEl = $('#posts'), tagsEl=$('#tags'), qInput=$('#q'), statusEl=$('#status');
-  let DATA = [], activeTag=null;
+  const postsEl = $('#posts'), tagsEl=$('#tags'), qInput=$('#q'), statusEl=$('#status'), pagerEl=$('#pager');
+
+  const PER_PAGE = 3;     // <<< 3 posts por página
+  let DATA = [];          // dados originais
+  let filtered = [];      // filtrados por busca/tags
+  let activeTag = null;
+  let page = 1;           // página atual
 
   const htmlToText = (h)=>{const e=document.createElement('div'); e.innerHTML=h||''; return e.textContent||''};
 
@@ -261,14 +285,14 @@
       DATA = Array.isArray(j?.posts) ? j.posts.slice() : [];
       DATA.sort((a,b)=>String(b.data||'').localeCompare(String(a.data||'')));
       renderTags();
-      filter();
-      statusEl.textContent = `Total: ${DATA.length}`;
+      applyFilters();
     }catch(e){
       statusEl.textContent = 'Erro ao carregar o espiral.json';
       console.error(e);
     }
   }
 
+  /* TAGS */
   function renderTags(){
     const set = new Set();
     DATA.forEach(p => (p.tags||[]).forEach(t => set.add(t)));
@@ -278,7 +302,7 @@
       const s=document.createElement('span');
       s.className='tag'+(activeTag===val?' on':'');
       s.textContent=label;
-      s.onclick=()=>{ activeTag=val; filter(); };
+      s.onclick=()=>{ activeTag=val; page=1; applyFilters(); };
       return s;
     };
     tagsEl.appendChild(mk('Todos', null));
@@ -286,39 +310,128 @@
              .forEach(t=>tagsEl.appendChild(mk(t,t)));
   }
 
-  function filter(){
+  /* BUSCA + TAGS → FILTRO + RE-RENDER */
+  function applyFilters(){
     const q=(qInput.value||'').toLowerCase().trim();
-    const list = DATA.filter(p=>{
+    filtered = DATA.filter(p=>{
       if(activeTag && !(p.tags||[]).includes(activeTag)) return false;
       if(!q) return true;
       const hay = (p.titulo+' '+(p.tags||[]).join(' ')+' '+htmlToText(p.corpo)).toLowerCase();
       return hay.includes(q);
     });
-    renderPosts(list);
+    page = clamp(page, 1, totalPages());
+    render();
   }
 
-  function renderPosts(list){
+  qInput.addEventListener('input', ()=>{ page=1; applyFilters(); });
+
+  /* RENDERIZAÇÃO */
+  function totalPages(){ return Math.max(1, Math.ceil(filtered.length / PER_PAGE)); }
+  function clamp(n,min,max){ return Math.min(Math.max(n,min),max); }
+  function sliceByPage(list, p){ const start=(p-1)*PER_PAGE; return list.slice(start, start+PER_PAGE); }
+
+  function render(){
+    // posts
+    const list = sliceByPage(filtered, page);
     if(!list.length){
       postsEl.innerHTML = '<div class="post-card"><p class="muted">Nenhum registro encontrado.</p></div>';
-      return;
+    }else{
+      postsEl.innerHTML = list.map(p=>`
+        <article class="post-card" id="${p.id||''}">
+          <h3>${p.titulo||'(Sem título)'}</h3>
+          <small>${p.data||''}${(p.tags&&p.tags.length)?' — '+p.tags.join(', '):''}</small>
+          ${p.corpo||''}
+          ${(p.tags&&p.tags.length)?`<div class="tagsline"># ${p.tags.join(' · ')}</div>`:''}
+        </article>
+      `).join('');
     }
-    postsEl.innerHTML = list.map(p=>`
-      <article class="post-card" id="${p.id||''}">
-        <h3>${p.titulo||'(Sem título)'}</h3>
-        <small>${p.data||''}${(p.tags&&p.tags.length)?' — '+p.tags.join(', '):''}</small>
-        ${p.corpo||''}
-        ${(p.tags&&p.tags.length)?`<div class="tagsline"># ${p.tags.join(' · ')}</div>`:''}
-      </article>
-    `).join('');
+
+    // status
+    const total = filtered.length;
+    const start = total ? ( (page-1)*PER_PAGE + 1 ) : 0;
+    const end   = Math.min(page*PER_PAGE, total);
+    statusEl.textContent = total
+      ? `Exibindo ${start}–${end} de ${total} • pág ${page}/${totalPages()}`
+      : 'Nenhum registro';
+
+    // paginação
+    renderPager();
+
+    // rola pro início dos posts quando troca página
+    postsEl.scrollIntoView({behavior:'smooth', block:'start'});
   }
 
-  qInput.addEventListener('input', filter);
+  function renderPager(){
+    const total = totalPages();
+    if(total<=1){ pagerEl.innerHTML = ''; return; }
+
+    const mkBtn = (label, cls, disabled, handler, aria) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = cls + (disabled?' disabled':'');
+      b.textContent = label;
+      if(aria) b.setAttribute('aria-label', aria);
+      if(!disabled) b.addEventListener('click', handler);
+      return b;
+    };
+
+    pagerEl.innerHTML = '';
+
+    // Anterior
+    pagerEl.appendChild(mkBtn('‹', 'prev', page===1, ()=>{ page--; render(); }, 'Página anterior'));
+
+    // números (máx 7 visíveis com elipse simples)
+    const maxNums = 7;
+    const nums = [];
+    let start = Math.max(1, page - 3);
+    let end   = Math.min(total, start + maxNums - 1);
+    if(end - start < maxNums - 1){
+      start = Math.max(1, end - maxNums + 1);
+    }
+    for(let n=start; n<=end; n++){ nums.push(n); }
+
+    if(start>1){
+      pagerEl.appendChild(mkBtn('1','num',false,()=>{page=1;render();},'Página 1'));
+      if(start>2){ const d=document.createElement('span'); d.className='sep'; pagerEl.appendChild(d); }
+    }
+    nums.forEach(n=>{
+      const b = mkBtn(String(n),'num'+(n===page?' on':''), false, ()=>{ page=n; render(); }, `Página ${n}`);
+      b.setAttribute('aria-current', n===page ? 'page' : 'false');
+      pagerEl.appendChild(b);
+    });
+    if(end<total){
+      if(end<total-1){ const d=document.createElement('span'); d.className='sep'; pagerEl.appendChild(d); }
+      pagerEl.appendChild(mkBtn(String(total),'num',false,()=>{page=total;render();},`Página ${total}`));
+    }
+
+    // Próximo
+    pagerEl.appendChild(mkBtn('Próximo ›', 'next', page===total, ()=>{ page++; render(); }, 'Próxima página'));
+  }
+
+  // deep-link opcional via hash #p=2
+  function getPageFromHash(){
+    const m = /p=(\d+)/.exec(location.hash||'');
+    return m ? parseInt(m[1],10) : 1;
+  }
+  function setHashPage(){
+    const url = new URL(location.href);
+    url.hash = `p=${page}`;
+    history.replaceState(null,'',url);
+  }
   window.addEventListener('hashchange', ()=>{
-    const el = document.getElementById(location.hash.slice(1));
-    if(el) el.scrollIntoView({behavior:'smooth'});
+    const newP = clamp(getPageFromHash(), 1, totalPages());
+    if(newP!==page){ page=newP; render(); }
   });
 
-  document.addEventListener('DOMContentLoaded', load);
+  // iniciar
+  (async ()=>{
+    await load();
+    page = clamp(getPageFromHash(), 1, totalPages());
+    render();
+    // sempre que renderar, sincroniza o hash
+    const mo = new MutationObserver(()=> setHashPage());
+    mo.observe(pagerEl, {childList:true, subtree:true});
+  })();
 })();
 </script>
 </body>

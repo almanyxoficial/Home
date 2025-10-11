@@ -3,8 +3,27 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
 <title>Postagens — AlmaNyx</title>
 <meta name="description" content="Arquivo de postagens do portal público da Espiral.">
+
+<!-- Metatags extras (SEO/Share) -->
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="/postagens.html">
+<meta name="theme-color" content="#8B0000">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="AlmaNyx — Portal da Espiral">
+<meta property="og:title" content="Postagens — AlmaNyx">
+<meta property="og:description" content="Arquivo de postagens do portal público da Espiral.">
+<meta property="og:image" content="./logo.png">
+<meta property="og:url" content="/postagens.html">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Postagens — AlmaNyx">
+<meta name="twitter:description" content="Arquivo de postagens do portal público da Espiral.">
+<meta name="twitter:image" content="./logo.png">
+
 <style>
   :root{
     --gold:#d4af37;
@@ -31,8 +50,39 @@
   .backdrop.show{opacity:1; pointer-events:auto}
   nav.menu{position:fixed; top:0; right:-100%; height:100%; width:260px; background:#111; color:#fff; z-index:31; box-shadow:-6px 0 18px rgba(0,0,0,.35); padding:18px; display:flex; flex-direction:column; gap:12px; transition:.3s}
   nav.menu.open{right:0}
-  nav.menu a{color:#fff; text-decoration:none; padding:10px 8px; border-radius:10px}
-  nav.menu a:hover{background:rgba(255,255,255,.08)}
+
+  /* BOTÕES DO MENU: vinho + dourado + texto branco */
+  nav.menu a{
+    display:block;
+    text-align:center;
+    color:#fff;
+    background:linear-gradient(180deg,#8B0000 0%, #5f0000 100%);
+    border:2px solid var(--gold);
+    border-radius:12px;
+    padding:12px 14px;
+    font-weight:700;
+    letter-spacing:.3px;
+    text-decoration:none;
+    box-shadow:
+      0 6px 14px rgba(0,0,0,.25),
+      inset 0 0 0 1px rgba(255,255,255,.08);
+    transition:transform .15s ease, filter .15s ease, box-shadow .15s ease;
+  }
+  nav.menu a:hover{
+    filter:brightness(1.08);
+    transform:translateY(-1px);
+    box-shadow:
+      0 10px 20px rgba(0,0,0,.28),
+      inset 0 0 0 1px rgba(255,255,255,.12);
+  }
+  nav.menu a:active{ transform:translateY(0); filter:brightness(.97); }
+  nav.menu a:focus-visible{
+    outline:0;
+    box-shadow:
+      0 0 0 3px rgba(212,175,55,.45),
+      0 10px 20px rgba(0,0,0,.28);
+  }
+
   .closeBtn{align-self:flex-end; font-size:22px; cursor:pointer; margin-bottom:10px; color:#fff}
 
   /* logo */
@@ -49,27 +99,28 @@
   .dot{width:12px; height:12px; border-radius:50%; background:rgba(255,255,255,.6); cursor:pointer; transition:.3s}
   .dot.active{background:#fff}
 
-  /* conteúdo */
-  .wrap{max-width:var(--max); margin:20px auto; padding:0 14px}
+  /* layout/containers */
+  .wrap{max-width:var(--max); margin:20px auto; padding:0 14px; display:grid; gap:16px}
   .card{background:#fff; color:var(--black); border-radius:16px; border:1px solid var(--line); box-shadow:0 8px 24px rgba(0,0,0,.10); padding:22px}
   .card h2{margin:0 0 8px; font:700 28px/1.2 ui-serif, Georgia, serif}
   .muted{color:var(--muted)}
 
-  /* busca + tags */
+  /* busca + tags (em card próprio) */
   .bar{display:flex; gap:10px; flex-wrap:wrap; margin:10px 0 6px}
   input[type="search"]{flex:1 1 320px; padding:12px 14px; border:1px solid var(--line); border-radius:10px; outline:none}
-  .tags{display:flex; gap:8px; flex-wrap:wrap; margin:10px 0}
+  .tags{display:flex; gap:8px; flex-wrap:wrap; margin:6px 0 0}
   .tag{padding:6px 10px; border-radius:999px; border:1px solid var(--line); background:#fafafa; cursor:pointer; font-size:14px}
   .tag.on{background:#111;color:#fff;border-color:#111}
 
-  hr.sep{border:0; border-top:1px solid var(--line); margin:16px 0}
-
-  /* posts */
-  article{padding:16px 0; border-bottom:1px dashed var(--line)}
-  article:last-child{border-bottom:none}
-  article h3{margin:0 0 6px; font:700 22px/1.25 ui-serif, Georgia, serif}
-  article small{display:block; color:var(--muted); margin-bottom:10px}
-  article .tagsline{margin-top:8px; font-size:13px; color:#444}
+  /* grade das postagens: cada post é um card individual */
+  .posts-grid{display:grid; gap:16px}
+  @media (min-width: 980px){
+    .posts-grid{grid-template-columns:1fr 1fr}
+  }
+  .post-card{background:#fff; border-radius:16px; border:1px solid var(--line); box-shadow:0 8px 24px rgba(0,0,0,.10); padding:22px}
+  .post-card h3{margin:0 0 6px; font:700 22px/1.25 ui-serif, Georgia, serif}
+  .post-card small{display:block; color:var(--muted); margin-bottom:10px}
+  .post-card .tagsline{margin-top:8px; font-size:13px; color:#444}
 
   /* rodapé */
   footer{text-align:center; color:#fff; background:var(--header); padding:16px; margin-top:24px; font-size:14px}
@@ -139,22 +190,27 @@
     <a href="./contatos.html">Contatos</a>
   </nav>
 
-  <!-- conteúdo -->
+  <!-- conteúdo: cards independentes -->
   <main class="wrap">
+    <!-- CARD 1: título + descrição -->
     <section class="card" aria-labelledby="tit-posts">
       <h2 id="tit-posts">Arquivo de Postagens</h2>
       <p class="muted">Pesquise por título, conteúdo ou tags.</p>
+    </section>
 
+    <!-- CARD 2: busca + tags -->
+    <section class="card">
       <div class="bar">
         <input id="q" type="search" placeholder="Pesquisar…" autocomplete="off">
       </div>
       <div id="tags" class="tags"></div>
-
-      <hr class="sep">
-
-      <section id="posts"></section>
-      <div id="status" class="muted" style="margin-top:10px"></div>
     </section>
+
+    <!-- POSTS: cada item renderizado como card individual -->
+    <section id="posts" class="posts-grid" aria-live="polite"></section>
+
+    <!-- status/contador -->
+    <div id="status" class="muted" style="margin:4px 0 0 4px"></div>
   </main>
 
   <footer>© 2025 Almanyx Oficial — Todos os Direitos Reservados</footer>
@@ -243,11 +299,11 @@
 
   function renderPosts(list){
     if(!list.length){
-      postsEl.innerHTML = '<p class="muted">Nenhum registro encontrado.</p>';
+      postsEl.innerHTML = '<div class="post-card"><p class="muted">Nenhum registro encontrado.</p></div>';
       return;
     }
     postsEl.innerHTML = list.map(p=>`
-      <article id="${p.id||''}">
+      <article class="post-card" id="${p.id||''}">
         <h3>${p.titulo||'(Sem título)'}</h3>
         <small>${p.data||''}${(p.tags&&p.tags.length)?' — '+p.tags.join(', '):''}</small>
         ${p.corpo||''}

@@ -6,7 +6,7 @@
 <title>AlmaNyx — Portal da Espiral</title>
 <meta name="description" content="Reflexões públicas da Espiral.">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png"> <!-- Opcional, pra iOS -->
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <style>
   :root{
     --gold:#d4af37; --header:#8B0000; --white:#fff; --black:#111;
@@ -42,25 +42,34 @@
   .slide{display:none}
   .slide.active{display:block}
   .slide a{display:block}
-  .slide a[href=""]{pointer-events:none} /* se não quiser link */
+  .slide a[href=""]{pointer-events:none}
   .banner video{width:100%;height:auto;object-fit:cover;background:#000;display:block}
   .dots{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:2}
   .dot{width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.6);cursor:pointer;transition:.3s}
   .dot.active{background:#fff}
 
-  /* conteúdo: agora são cards separados */
+  /* layout principal */
   .wrap{max-width:var(--max);margin:20px auto;padding:0 14px;display:grid;gap:16px}
   @media (min-width: 980px){
-    .wrap{grid-template-columns:1fr 1fr;} /* em telas largas, 2 colunas */
+    .wrap{grid-template-columns:1fr 1fr}
+    /* dá pra ficar 2 colunas quando houver espaço */
   }
 
+  /* cards (containers brancos) */
   .card{background:#fff;color:var(--black);border-radius:16px;border:1px solid var(--line);box-shadow:0 8px 24px rgba(0,0,0,.10);padding:22px}
-  .bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+
+  /* barra de busca dentro de um card próprio */
+  .bar{display:flex;gap:10px;flex-wrap:wrap}
   input[type="search"]{flex:1 1 320px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;outline:none}
-  article{padding:16px 0;border-bottom:1px dashed var(--line)}
-  article:last-child{border-bottom:none}
-  article h2{margin:0 0 6px;font:700 22px/1.25 ui-serif, Georgia, serif}
-  article small{display:block;color:var(--muted);margin-bottom:10px}
+
+  /* grid das postagens (cada post = card individual) */
+  .posts-grid{display:grid;gap:16px}
+  @media (min-width: 980px){
+    .posts-grid{grid-column:1 / -1} /* posts ocupam a largura toda */
+  }
+  .post-card{background:#fff;border-radius:16px;border:1px solid var(--line);box-shadow:0 8px 24px rgba(0,0,0,.10);padding:22px}
+  .post-card h2{margin:0 0 6px;font:700 22px/1.25 ui-serif, Georgia, serif}
+  .post-card small{display:block;color:var(--muted);margin-bottom:10px}
 
   footer{text-align:center;color:#fff;background:var(--header);padding:16px;margin-top:24px;font-size:14px}
 </style>
@@ -126,7 +135,7 @@
     <a href="./contatos.html">Contatos</a>
   </nav>
 
-  <!-- conteúdo: AGORA EM DOIS CARDS INDEPENDENTES -->
+  <!-- conteúdo (sem subtrair nada): card "Sobre", card "Busca" e posts como cards individuais -->
   <main class="wrap">
     <!-- CARD 1: SOBRE -->
     <section class="card" id="sobre-card">
@@ -136,11 +145,15 @@
       </div>
     </section>
 
-    <!-- CARD 2: POSTAGENS + BUSCA -->
-    <section class="card" id="posts-card">
-      <div class="bar"><input id="q" type="search" placeholder="Pesquisar postagens…" autocomplete="off"></div>
-      <section id="posts"></section>
+    <!-- CARD 2: BUSCA -->
+    <section class="card" id="busca-card">
+      <div class="bar">
+        <input id="q" type="search" placeholder="Pesquisar postagens…" autocomplete="off">
+      </div>
     </section>
+
+    <!-- POSTS: cada artigo vira um card branco independente -->
+    <section id="posts" class="posts-grid" aria-live="polite"></section>
   </main>
 
   <footer>© 2025 Almanyx Oficial — Todos os Direitos Reservados</footer>
@@ -178,7 +191,7 @@
   $('#banner').addEventListener('mouseleave',start);
   start();
 
-  /* posts (3 mais recentes) */
+  /* posts (3 mais recentes), mantendo sua fonte via JSON */
   const POSTS_SRC='./espiral.json';
   const postsEl=$('#posts'), qInput=$('#q');
 
@@ -186,6 +199,7 @@
     postsEl.innerHTML='';
     list.forEach(p=>{
       const el=document.createElement('article');
+      el.className='post-card';
       el.innerHTML=`<h2>${p.titulo??'Sem título'}</h2>
                     <small>${p.data??''}</small>
                     <div>${p.corpo??''}</div>`;
@@ -198,14 +212,14 @@
       const r=await fetch(POSTS_SRC+'?_'+Date.now(),{cache:'no-store'});
       const data=await r.json();
       const posts=Array.isArray(data?.posts)?data.posts:[];
-      render(posts.slice(0,3));
+      render(posts.slice(0,3)); // mantém o limite existente
       qInput.addEventListener('input',()=>{
-        const q=qInput.value.toLowerCase().trim();
+        const q=(qInput.value||'').toLowerCase().trim();
         const filtered=posts.filter(p=>(p.titulo??'').toLowerCase().includes(q)||(p.corpo??'').toLowerCase().includes(q));
         render((q?filtered:posts).slice(0,3));
       });
     }catch(e){
-      postsEl.innerHTML='<p>Não foi possível carregar as postagens agora.</p>';
+      postsEl.innerHTML='<article class="post-card"><p>Não foi possível carregar as postagens agora.</p></article>';
     }
   }
   loadPosts();
